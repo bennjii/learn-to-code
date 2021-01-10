@@ -5,8 +5,22 @@ html, body {
   height: 100%;
   width: 100%;
 
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  /* font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif; */
+
+  font-family: 'stolzl' sans-serif;
+}
+
+@font-face {
+  font-family:"stolzl";
+  src:url("https://use.typekit.net/af/148b9c/00000000000000007735affe/30/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff2"),url("https://use.typekit.net/af/148b9c/00000000000000007735affe/30/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff"),url("https://use.typekit.net/af/148b9c/00000000000000007735affe/30/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("opentype");
+  font-display:auto;font-style:normal;font-weight:400;
+}
+
+@font-face {
+  font-family:"stolzl";
+  src:url("https://use.typekit.net/af/11d803/00000000000000007735b005/30/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff2"),url("https://use.typekit.net/af/11d803/00000000000000007735b005/30/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff"),url("https://use.typekit.net/af/11d803/00000000000000007735b005/30/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("opentype");
+  font-display:auto;font-style:normal;font-weight:700;
 }
 
 html,
@@ -24,7 +38,7 @@ a {
 }
 
 h5 {
-  font-weight: 600;
+  font-weight: 400;
 }
 
 h5 > a {
@@ -53,15 +67,26 @@ p {
 input {
   background-color: transparent;
   border: none;
+
+  font-weight: 100;
+}
+
+input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  opacity: .5; /* Firefox */
 }
 
 * {
   box-sizing: border-box;
-  font-family: system-ui;
+  /* font-family: system-ui; */
+  font-family: 'stolzl';
 }
 
 :hover {
   transition: .2s ease all;
+}
+
+a:hover {
+  cursor: pointer;
 }
 
 div {

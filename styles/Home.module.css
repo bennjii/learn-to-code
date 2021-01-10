@@ -136,15 +136,22 @@
   flex-direction: column;
 
   height: 100%;
+  padding: 5em;
 
   color: #f4f4f4;
 
-  background: rgb(2,0,36);
-  background: linear-gradient(58deg, rgba(2,0,36,1) 0%, rgba(121,9,64,1) 35%, rgba(124,0,255,1) 100%);  
+  background: rgb(87,78,235);
+  background: linear-gradient(58deg, rgba(87,78,235,1) 0%, rgba(232,76,152,1) 35%, rgba(79,93,234,1) 100%);
+}
+
+.flexLarge h1 {
+  font-size: 4em;
 }
 
 .authInput {
-  width: 32%;
+  width: 33%;
+
+  border-left: 5px solid #f4f4f4;
 
   padding: 3em;
   padding-top: 5em;
@@ -152,6 +159,9 @@
 
   background-color: #1c1e21;
   color: #f4f4f4;
+
+  background: rgb(28,30,33);
+  background: linear-gradient(58deg, rgba(28,30,33,1) 0%, rgba(15,30,52,1) 35%, rgba(28,30,33,1) 100%);
 
   height: 100%;
 
@@ -181,7 +191,8 @@
 
   font-size: 1em !important;
 
-  border: 1.5px solid rgba(255,255,255,.2);
+  /* border: 1.5px solid rgba(255,255,255,.2); */
+  background-color: rgba(255,255,255,.02);
 }
 
 .authenticationInput:hover {
@@ -229,14 +240,14 @@
   border: none;
 
   padding: 15px;
-  background-color: #3a4797;
-  color: rgba(255,255,255,.3);
+  background-color: #5268f4; /* #3a4797;*/
+  color: rgba(255,255,255,.8);
   font-weight: 600;
 }
 
 .hoverButton {
   background-color: #3f57f3;
-  color: rgba(255,255,255,.8);
+  color: rgba(255,255,255,1);
   cursor: pointer;
 }
 
@@ -246,8 +257,9 @@
 }
 
 .socialProfile {
-  border: 1.5px solid rgba(255,255,255,.2);
+  /* border: 1.5px solid rgba(255,255,255,.2); */
   color: rgba(255,255,255,.2);
+  background-color: rgba(255,255,255,.02);
 
   display: flex;
   flex-direction: row;
@@ -271,10 +283,16 @@
 }
 
 .socialProfile:hover {
-  /* color: rgba(255,255,255,.8);
-  border-color: rgba(255,255,255,.8); */
+  /* 
+  color: rgba(255,255,255,.6);
+  border-color: rgba(255,255,255,.6);
 
-  background-color: rgba(255,255,255,.05);
+  background-color: rgba(255,255,255,.05); 
+  */
+
+  color: #4F5DEA;
+  border-color: transparent;
+  background-color: rgba(79, 93, 234, .1);
   cursor: pointer;
 }
 

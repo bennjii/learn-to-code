@@ -21,20 +21,23 @@ function submitForm(e) {
 }
 
 function formHandler() {
-    
+
 }
 
 export default function Home() {
   return (
     <div className={styles.authPage}>
+        <title>L2Cs</title>
         <div className={styles.flexLarge}>
-            <h5>L2C</h5>
+            <h5>Learn To Code</h5>
 
             <h1>
                 Learn to Code. <br/>
                 Interactively. <br/>
                 For Free.
             </h1>
+
+
         </div>
 
         <div className={styles.authInput}>
@@ -50,7 +53,7 @@ export default function Home() {
 
             <div>
                 <form onSubmit={(e) => { submitForm(e); e.preventDefault() }} method="POST">
-                    <TextInput placeholder="Enter your Username" icon={faUser} onChangeHandler={() => formHandler()}/>
+                    <TextInput placeholder="Enter your Username" icon={faUser} />
 
                     <TextInput placeholder="Enter your Email" icon={faEnvelope} />
 
@@ -138,7 +141,7 @@ class Button extends React.Component<{title: string}, Input> {
     constructor(props) {
         super(props)
 
-        this.state = { active: false, hovered: false }
+        this.state = { active: false, hovered: false, value: '' }
         this.activate = this.activate.bind(this);
         this.deactivate = this.deactivate.bind(this);
     }
