@@ -9,9 +9,35 @@ html, body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
+html,
+      body,
+      body > div:first-child,
+      div#__next,
+      div#__next > div,
+      div#__next > div > div {
+        height: 100%;
+      }
+
 a {
   color: inherit;
   text-decoration: none;
+}
+
+h5 {
+  font-weight: 600;
+}
+
+h5 > a {
+  color: #4F5DEA;
+  font-weight: 700;
+}
+
+h6 {
+  opacity: 0.3;
+  font-size: .8em;
+  font-weight: 400;
+
+  text-align: center;
 }
 
 h3 {
@@ -32,6 +58,24 @@ input {
 * {
   box-sizing: border-box;
   font-family: system-ui;
+}
 
+:hover {
   transition: .2s ease all;
+}
+
+div {
+  transition: .2s ease all;
+}
+
+button {
+  outline: none;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+  transition: background-color 9999s;
+  -webkit-text-fill-color: #fff !important;
 }
