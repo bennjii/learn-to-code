@@ -304,3 +304,7 @@
   flex-direction: row;
   justify-content: space-evenly;
 }
+
+.backToHome:hover {
+  cursor: pointer;
+}

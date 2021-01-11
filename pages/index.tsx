@@ -5,6 +5,8 @@ import styles from '../styles/Home.module.css'
 import firebase from 'firebase'
 import 'firebase/auth'
 
+import { useAuth } from '../auth';
+
 function gotoAuth() { 
   Router.push("/auth");
 }
@@ -12,8 +14,13 @@ function gotoAuth() {
 let _user: firebase.User;
 
 export default function Home() {
+  const { user } = useAuth();
+
+  console.log(user);
+
   return (
     <div className={styles.container}>
+      <title>Learn to Code</title>
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
@@ -21,7 +28,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Hi {_user.displayName} Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Hi {user} Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
 
         <a onClick={() => gotoAuth()}>Login</a>

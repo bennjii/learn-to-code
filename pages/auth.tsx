@@ -1,5 +1,6 @@
 import styles from '../styles/Home.module.css'
-import React from 'react'
+import * as React from 'react'
+import { useState, useEffect } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cookie from 'js-cookie';
@@ -16,13 +17,17 @@ import {
 
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
 import Router from 'next/router'
+import App from './_app';
+
+import { firebaseClient } from '../firebaseClient';
+
 
 let submitting = false;
 
 const tokenName = 'tokenName';
 const user = null;
 
-firebase.auth().onAuthStateChanged(async (user: firebase.User) => {
+firebaseClient.auth().onAuthStateChanged(async (user: firebase.User) => {
   if (user) {
     const token = await user.getIdToken();
     cookie.set(tokenName, token, { expires: 1 });
@@ -33,19 +38,34 @@ firebase.auth().onAuthStateChanged(async (user: firebase.User) => {
   }
 });
 
+function login(e) {
+    const form = e.nativeEvent.target;
+    if(!form[0].value || !form[1].value) return false;
+
+    firebaseClient.auth().signInWithEmailAndPassword(form[0].value, form[1].value)
+    .then((user) => {
+        Router.push("/")
+    })
+    .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+    });
+}
+
 function submitForm(e) {
+    const form = e.nativeEvent.target;
+    if(!form[0].value || !form[1].value || !form[2].value) return false;
+
     if(submitting) return false;
     submitting = true;
 
-
-    // Prevent Click Spam...!!
-    const form = e.nativeEvent.target;
+    console.log(form[3])
 
     for(var i = 0; i < form.size; i++) {
         console.log(form[i].value)
     }
 
-    firebase.auth().createUserWithEmailAndPassword(form[1].value, form[2].value)
+    firebaseClient.auth().createUserWithEmailAndPassword(form[1].value, form[2].value)
     .then(e => {
         e.user.updateProfile({
             displayName: form[0].value
@@ -65,10 +85,10 @@ function handleSocialSignin(prov) {
     if(prov == "Google")
         provider = new firebase.auth.GoogleAuthProvider();
     else if(prov == "Github")
-        provider = new firebase.auth.GoogleAuthProvider();
+        provider = new firebase.auth.GithubAuthProvider();
     else return 0
 
-    firebase.auth()
+    firebaseClient.auth()
     .signInWithPopup(provider)
     .then((result) => {
         Router.push("/")
@@ -77,81 +97,105 @@ function handleSocialSignin(prov) {
     });
 }
 
-export default function Home() {
-  return (
-    <div className={styles.authPage}>
-        <title>L2Cs</title>
-        <div className={styles.flexLarge}>
-            <h5>Learn To Code</h5>
+function Home() {
+    const [isProgrammer, setIsProgrammer] = useState<boolean>(true)
 
-            <h1>
-                Learn to Code. <br/>
-                Interactively. <br/>
-                For Free.
-            </h1>
+    const toggleSignup = () => {
+        setIsProgrammer(!isProgrammer)        
+    }
 
-            {/* <h5 style={{ justifySelf: 'flex-end' }}>A Saint Kentigern Initiative</h5> */}
-            <p> UnRealReincarlution &nbsp; 
-                <a href="https://github.com/UnRealReincarlution">
-                    <FontAwesomeIcon
+    return (
+        <div className={styles.authPage}>
+            <title>l2c</title>
+            <div className={styles.flexLarge}>
+                <h5 onClick={() => Router.push("/")} className={styles.backToHome}>Learn To Code</h5>
+
+                <h1>
+                    Learn to Code. <br/>
+                    Interactively. <br/>
+                    For Free.
+                </h1>
+
+                {/* <h5 style={{ justifySelf: 'flex-end' }}>A Saint Kentigern Initiative</h5> */}
+                <p> 
+                    <a href="https://github.com/UnRealReincarlution">
+                        <FontAwesomeIcon
+                            icon={faGithub}
+                            size="1x"
+                        />
+                    </a>
+                    &nbsp; 
+                    UnRealReincarlution 
+                </p>
+            </div>
+
+            <div className={styles.authInput}>
+                <h1 style={{  margin: '0' }}> 
+                    Learn to Code
+                </h1>
+
+                <p>
+                    Master languages of front-end <br/> and back-end development
+                </p>
+
+                <br/>
+
+                {
+                    (isProgrammer)
+                    ?
+                    <div>
+                        <form onSubmit={(e) => { submitForm(e); e.preventDefault() }} method="POST">
+                            <TextInput placeholder="Enter your Username" icon={faUser} />
+
+                            <TextInput placeholder="Enter your Email" icon={faEnvelope} />
+
+                            <TextInput placeholder="Enter your Password" icon={faLock} />
+
+                            <Button title="Start coding now" />
+                        </form>
+                    </div>
+                    :
+                    <div>
+                        <form onSubmit={(e) => { login(e); e.preventDefault() }} method="POST">
+                            <TextInput placeholder="Enter your Email" icon={faEnvelope} />
+
+                            <TextInput placeholder="Enter your Password" icon={faLock} />
+
+                            <Button title="Start coding now" />
+                        </form>
+                    </div>
+                }
+                
+                
+                <h6>Or continue with a social profile</h6>
+                
+                <div className={styles.socialProfiles}>
+                    <div className={styles.socialProfile} onClick={() => handleSocialSignin("Google")}>
+                        <FontAwesomeIcon
+                        icon={faGoogle}
+                        size="1x"
+                        />
+
+                        <h5>Google</h5>
+                    </div>
+
+                    <div className={styles.socialProfile} onClick={() => handleSocialSignin("Github")}>
+                        <FontAwesomeIcon
                         icon={faGithub}
                         size="1x"
-                    />
-                </a>
-            </p>
-        </div>
+                        />
 
-        <div className={styles.authInput}>
-            <h1 style={{  margin: '0' }}> 
-                Learn to Code
-            </h1>
-
-            <p>
-                Master languages of front-end <br/> and back-end development
-            </p>
-
-            <br/>
-
-            <div>
-                <form onSubmit={(e) => { submitForm(e); e.preventDefault() }} method="POST">
-                    <TextInput placeholder="Enter your Username" icon={faUser} />
-
-                    <TextInput placeholder="Enter your Email" icon={faEnvelope} />
-
-                    <TextInput placeholder="Enter your Password" icon={faLock} />
-
-                    <Button title="Start coding now" />
-                </form>
-                
-            </div>
-            
-            <h6>Or continue with a social profile</h6>
-            
-            <div className={styles.socialProfiles}>
-                <div className={styles.socialProfile} onClick={() => handleSocialSignin("Google")}>
-                    <FontAwesomeIcon
-                    icon={faGoogle}
-                    size="1x"
-                    />
-
-                    <h5>Google</h5>
+                        <h5>Github</h5>
+                    </div>
                 </div>
 
-                <div className={styles.socialProfile} onClick={() => handleSocialSignin("Github")}>
-                    <FontAwesomeIcon
-                    icon={faGithub}
-                    size="1x"
-                    />
-
-                    <h5>Github</h5>
-                </div>
+                <h5 style={{ textAlign: 'center' }}>{(isProgrammer ? "Already a member? " : "Want to join us? " )} <a onClick={toggleSignup}>{(isProgrammer ? "Login" : "Signup" )}</a></h5>
             </div>
-
-            <h5 style={{ textAlign: 'center' }}>Already a member? <a>Login</a></h5>
         </div>
-    </div>
-  )
+    )
 }
+
+export default Home
 
 interface Input {
     active: boolean,
@@ -217,6 +261,7 @@ class Button extends React.Component<{title: string}, Input> {
     }
 
     handleClick() {
+        
         this.setState({ activated: true });
     }
 
