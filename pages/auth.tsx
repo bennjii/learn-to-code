@@ -2,26 +2,79 @@ import styles from '../styles/Home.module.css'
 import React from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import cookie from 'js-cookie';
+import firebase from 'firebase'
+import 'firebase/auth'
 
 import {
     faLock,
     faEnvelope,
     faUser,
-    IconDefinition
+    IconDefinition,
+    faCircleNotch
 } from '@fortawesome/free-solid-svg-icons'
 
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
+import Router from 'next/router'
+
+let submitting = false;
+
+const tokenName = 'tokenName';
+const user = null;
+
+firebase.auth().onAuthStateChanged(async (user: firebase.User) => {
+  if (user) {
+    const token = await user.getIdToken();
+    cookie.set(tokenName, token, { expires: 1 });
+    user = user;
+  } else {
+    cookie.remove(tokenName);
+    user = null;
+  }
+});
 
 function submitForm(e) {
+    if(submitting) return false;
+    submitting = true;
+
+
+    // Prevent Click Spam...!!
     const form = e.nativeEvent.target;
 
     for(var i = 0; i < form.size; i++) {
         console.log(form[i].value)
     }
+
+    firebase.auth().createUserWithEmailAndPassword(form[1].value, form[2].value)
+    .then(e => {
+        e.user.updateProfile({
+            displayName: form[0].value
+        }).then(a => {
+            Router.push("/")
+        })
+    }).catch(e => {
+        console.log(`${e.code} [::] ${e.message}`);
+
+        // TODO: Handle and Show user Errors regarding - Email, Password Etc...
+    })
 }
 
-function formHandler() {
+function handleSocialSignin(prov) {
+    var provider;
 
+    if(prov == "Google")
+        provider = new firebase.auth.GoogleAuthProvider();
+    else if(prov == "Github")
+        provider = new firebase.auth.GoogleAuthProvider();
+    else return 0
+
+    firebase.auth()
+    .signInWithPopup(provider)
+    .then((result) => {
+        Router.push("/")
+    }).catch((e) => {
+        console.log(`${e.code} [::] ${e.message}`);
+    });
 }
 
 export default function Home() {
@@ -37,7 +90,15 @@ export default function Home() {
                 For Free.
             </h1>
 
-
+            {/* <h5 style={{ justifySelf: 'flex-end' }}>A Saint Kentigern Initiative</h5> */}
+            <p> UnRealReincarlution &nbsp; 
+                <a href="https://github.com/UnRealReincarlution">
+                    <FontAwesomeIcon
+                        icon={faGithub}
+                        size="1x"
+                    />
+                </a>
+            </p>
         </div>
 
         <div className={styles.authInput}>
@@ -46,7 +107,7 @@ export default function Home() {
             </h1>
 
             <p>
-                Master languages of front-end and back-end development
+                Master languages of front-end <br/> and back-end development
             </p>
 
             <br/>
@@ -59,7 +120,7 @@ export default function Home() {
 
                     <TextInput placeholder="Enter your Password" icon={faLock} />
 
-                    <Button title="Start coding now"/>
+                    <Button title="Start coding now" />
                 </form>
                 
             </div>
@@ -67,7 +128,7 @@ export default function Home() {
             <h6>Or continue with a social profile</h6>
             
             <div className={styles.socialProfiles}>
-                <div className={styles.socialProfile}>
+                <div className={styles.socialProfile} onClick={() => handleSocialSignin("Google")}>
                     <FontAwesomeIcon
                     icon={faGoogle}
                     size="1x"
@@ -76,7 +137,7 @@ export default function Home() {
                     <h5>Google</h5>
                 </div>
 
-                <div className={styles.socialProfile}>
+                <div className={styles.socialProfile} onClick={() => handleSocialSignin("Github")}>
                     <FontAwesomeIcon
                     icon={faGithub}
                     size="1x"
@@ -92,19 +153,18 @@ export default function Home() {
   )
 }
 
-
-
 interface Input {
     active: boolean,
     hovered: boolean,
-    value: string
+    value: string,
+    activated: boolean
 }
 
 class TextInput extends React.Component<{icon: IconDefinition, placeholder: string}, Input> {
     constructor(props) {
         super(props)
 
-        this.state = { active: false, hovered: false, value: '' }
+        this.state = { active: false, hovered: false, value: '', activated: false }
         this.activate = this.activate.bind(this);
         this.deactivate = this.deactivate.bind(this);
 
@@ -141,9 +201,11 @@ class Button extends React.Component<{title: string}, Input> {
     constructor(props) {
         super(props)
 
-        this.state = { active: false, hovered: false, value: '' }
+        this.state = { active: false, hovered: false, value: '', activated: false }
+
         this.activate = this.activate.bind(this);
         this.deactivate = this.deactivate.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
 
     activate() {
@@ -154,10 +216,24 @@ class Button extends React.Component<{title: string}, Input> {
         this.setState({ active: false })
     }
 
+    handleClick() {
+        this.setState({ activated: true });
+    }
+
     render() {
         return (
-            <button type="submit" className={(this.state.hovered) ? `${styles.hoverButton} ${styles.button}` : `${styles.button}`} onMouseOver={() => this.setState({ hovered: true })} onMouseLeave={() => this.setState({ hovered: false })}>
-                {this.props.title}
+            <button type="submit" onClick={this.handleClick} className={(this.state.hovered) ? `${styles.hoverButton} ${styles.button}` : `${styles.button}`} onMouseOver={() => this.setState({ hovered: true })} onMouseLeave={() => this.setState({ hovered: false })}>
+                {
+                    (!this.state.activated)
+                    ?
+                    this.props.title
+                    :
+                    <FontAwesomeIcon
+                    icon={faCircleNotch}
+                    size="1x"
+                    spin
+                    />
+                }
             </button>
         )
     }
