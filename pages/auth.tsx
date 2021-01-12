@@ -1,6 +1,6 @@
 import styles from '../styles/Home.module.css'
 import * as React from 'react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cookie from 'js-cookie';
@@ -17,7 +17,6 @@ import {
 
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
 import Router from 'next/router'
-import App from './_app';
 
 import { firebaseClient } from '../firebaseClient';
 
@@ -25,16 +24,13 @@ import { firebaseClient } from '../firebaseClient';
 let submitting = false;
 
 const tokenName = 'tokenName';
-const user = null;
 
 firebaseClient.auth().onAuthStateChanged(async (user: firebase.User) => {
   if (user) {
     const token = await user.getIdToken();
     cookie.set(tokenName, token, { expires: 1 });
-    user = user;
   } else {
     cookie.remove(tokenName);
-    user = null;
   }
 });
 
@@ -47,19 +43,16 @@ function login(e) {
         Router.push("/")
     })
     .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        console.log(`${e.code} [::] ${e.message}`);
     });
 }
 
-function submitForm(e) {
-    const form = e.nativeEvent.target;
+function submitForm(event) {
+    const form = event.nativeEvent.target;
     if(!form[0].value || !form[1].value || !form[2].value) return false;
 
     if(submitting) return false;
     submitting = true;
-
-    console.log(form[3])
 
     for(var i = 0; i < form.size; i++) {
         console.log(form[i].value)

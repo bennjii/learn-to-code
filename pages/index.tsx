@@ -11,8 +11,6 @@ function gotoAuth() {
   Router.push("/auth");
 }
 
-let _user: firebase.User;
-
 export default function Home() {
   const { user } = useAuth();
 
@@ -28,7 +26,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Hi {user} Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Hi {user.displayName}, Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
 
         <a onClick={() => gotoAuth()}>Login</a>

@@ -152,6 +152,8 @@
   min-width: fit-content;
   width: 33%;
 
+  max-width: 500px;
+
   border-left: 5px solid #f4f4f4;
 
   padding: 3em;

@@ -7,7 +7,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 interface UserData {
   // arbitrary user data you are storing in your DB
 }
-
 interface ValidateResponse {
   user: {
     uid: string;

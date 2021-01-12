@@ -1,6 +1,8 @@
 import { AppProps } from 'next/app'
 import '../styles/globals.css'  
 
+import { AuthProvider } from '../auth';
+
 import cookie from 'js-cookie';
 import firebase from 'firebase';
 import 'firebase/auth';
@@ -21,21 +23,24 @@ if (!firebase.apps.length) {
 }
 
 const tokenName = 'tokenName';
-const user = null;
+let user = null;
 
-firebase.auth().onAuthStateChanged(async (user: firebase.User) => {
-  if (user) {
-    const token = await user.getIdToken();
+firebase.auth().onAuthStateChanged(async (_user: firebase.User) => {
+  if (_user) {
+    const token = await _user.getIdToken();
     cookie.set(tokenName, token, { expires: 1 });
-    user = user;
+    user = _user;
   } else {
     cookie.remove(tokenName);
     user = null;
   }
 });
 
-function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} user={user} />
+function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <AuthProvider>
+      <Component {...pageProps} />
+    </AuthProvider>
+  );
 }
-
-export default App
+export default MyApp;

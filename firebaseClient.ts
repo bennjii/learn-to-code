@@ -9,14 +9,16 @@ already, click the "</>" icon, name your app, and copy/paste the snippet.
 Otherwise, go to Firebase SDK Snippet > click the "Config" radio button >
 copy/paste.
 */
+
 const CLIENT_CONFIG = {
-  apiKey: "AIzaSyAoonOmu_H1Bksv7378GKcKdrExuj-On14",
-  authDomain: "fir-nextjs-ssr.firebaseapp.com",
-  databaseURL: "https://fir-nextjs-ssr.firebaseio.com",
-  projectId: "fir-nextjs-ssr",
-  storageBucket: "fir-nextjs-ssr.appspot.com",
-  messagingSenderId: "364051821923",
-  appId: "1:364051821923:web:658516ef4516511223cf56",
+  apiKey: "AIzaSyB7alTf1WYDY8vBC5kJ8U1tmSi7dg6gxD8",
+  authDomain: "learn-to-code-nz.firebaseapp.com",
+  databaseURL: "https://learn-to-code-nz.firebaseio.com",
+  projectId: "learn-to-code-nz",
+  storageBucket: "learn-to-code-nz.appspot.com",
+  messagingSenderId: "299048324789",
+  appId: "1:299048324789:web:ca0ceca1c5d9cf8598b8fc",
+  measurementId: "G-04BXSRYWNC"
 };
 
 if (typeof window !== "undefined" && !firebaseClient.apps.length) {
