@@ -23,16 +23,13 @@ if (!firebase.apps.length) {
 }
 
 const tokenName = 'tokenName';
-let user = null;
 
 firebase.auth().onAuthStateChanged(async (_user: firebase.User) => {
   if (_user) {
     const token = await _user.getIdToken();
     cookie.set(tokenName, token, { expires: 1 });
-    user = _user;
   } else {
     cookie.remove(tokenName);
-    user = null;
   }
 });
 

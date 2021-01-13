@@ -20,7 +20,6 @@ import Router from 'next/router'
 
 import { firebaseClient } from '../firebaseClient';
 
-
 let submitting = false;
 
 const tokenName = 'tokenName';

@@ -1,6 +1,6 @@
 import firebase from 'firebase'
 import admin from 'firebase-admin';
-import 'firebase/admin'
+import 'firebase-admin'
 
 import { NextApiRequest, NextApiResponse } from 'next'
 

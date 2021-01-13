@@ -1,9 +1,7 @@
-import React from "react";
 import nookies from "nookies";
-import { firebaseAdmin } from "../firebaseAdmin";
-import { firebaseClient } from "../firebaseClient";
+import { firebaseAdmin } from "./firebaseAdmin";
 
-import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
+import { GetServerSidePropsContext } from "next";
 
 export const authenticateUser = async (ctx: GetServerSidePropsContext) => {
   try {
@@ -12,13 +10,10 @@ export const authenticateUser = async (ctx: GetServerSidePropsContext) => {
     const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
     const { uid, email } = token;
 
-    console.log(token)
-
-    // the user is authenticated!
-    // FETCH STUFF HERE
+    console.log("Success!!")
 
     return {
-      props: { user: firebaseClient.auth().currentUser },
+      props: { message: `${uid} [::] ${email}` },
     };
   } catch (err) {
     // either the `token` cookie didn't exist
@@ -35,19 +30,5 @@ export const authenticateUser = async (ctx: GetServerSidePropsContext) => {
     };
   }
 };
-
-const AuthenticatedPage = (props: InferGetServerSidePropsType<typeof authenticateUser>) => (
-  <div>
-    <p>{props.user.displayName}</p>
-    <button
-      onClick={async () => {
-        await firebaseClient.auth().signOut();
-        window.location.href = "/";
-      }}
-    >
-      Sign out
-    </button>
-  </div>
-);
 
 export default authenticateUser;
