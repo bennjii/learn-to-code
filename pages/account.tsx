@@ -1,10 +1,10 @@
 import React from "react";
-import nookies from "nookies";
 
 import styles from '../styles/Home.module.css'
 import Head from 'next/head'
 import Button from '../public/components/button'
 
+import nookies from "nookies"
 import { firebaseAdmin } from "../firebaseAdmin"
 
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
@@ -42,7 +42,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 };
 
-const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Account = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const user = props.user;
 
   return (
@@ -67,7 +67,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             <a>Login</a>
             :
             <div className={styles.linear}>
-              <h5 onClick={() => window.location.href = "/account"}>{user.name}</h5>
+              <h5>{user.name}</h5>
               {/* <a onClick={() => firebaseClient.auth().signOut()}>Signout</a> */}
             </div>
           }
@@ -157,4 +157,4 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   );
 }
 
-export default HomePage;
+export default Account;

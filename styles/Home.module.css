@@ -147,6 +147,10 @@
   font-size: 4em;
 }
 
+.flexLarge p {
+  flex: 1;
+}
+
 .authInput {
   min-width: fit-content;
   width: 33%;
@@ -363,6 +367,10 @@
 
 .linear a {
   font-weight: 100;
+}
+
+.linear h5:hover {
+  cursor: pointer;
 }
 
 .body {
@@ -667,4 +675,57 @@
   height: 3px;
 
   background-color: #4F5DEA;
+}
+
+.signinBubble {
+  border: 2px solid rgba(255,255,255,.15);
+  background-color: rgba(255,255,255,.1);
+  border-radius: 5px;
+
+  padding: 1.2rem;
+  width: 25%;
+
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: .7rem;
+
+  align-self: flex-start;
+  justify-self: flex-end;
+
+  transition: color 0s linear;
+}
+
+.signinBubble * {
+  margin: 0;
+  font-family: Apercu;
+  line-height: 1.1rem;
+}
+
+.signinBubble h3 {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.signinBubble h2 {
+  font-weight: 400;
+  font-size: .875rem; 
+}
+
+.signinBubble:hover {
+  cursor: pointer;
+
+  background-color: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.1);
+}
+
+.signinBubble:hover h2 {
+  color: rgba(255, 255, 255, .6);
+}
+
+.signinBubble:hover h3 {
+  color: rgba(255, 255, 255, .6);
 }

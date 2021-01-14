@@ -7,12 +7,14 @@ import cookie from 'js-cookie';
 import firebase from 'firebase'
 import 'firebase/auth'
 
+import Button from '../public/components/button'
+import TextInput from '../public/components/text_input'
+
 import {
     faLock,
     faEnvelope,
     faUser,
-    IconDefinition,
-    faCircleNotch
+    faChevronRight
 } from '@fortawesome/free-solid-svg-icons'
 
 import { faGithub, faGoogle } from '@fortawesome/free-brands-svg-icons'
@@ -89,8 +91,46 @@ function handleSocialSignin(prov) {
     });
 }
 
-function Home() {
+import nookies from "nookies";
+import { firebaseAdmin } from "../firebaseAdmin"
+import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
+
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+    try {
+      const cookies = nookies.get(ctx);
+      // console.log(JSON.stringify(cookies, null, 2));
+      const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
+      const { uid, email } = token;
+      const user = token;
+  
+      // the user is authenticated!
+      // FETCH STUFF HERE
+  
+      return {
+        props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user },
+      };
+    } catch (err) {
+      // either the `token` cookie didn't exist
+      // or token verification failed
+      // either way: redirect to the login page
+      // either the `token` cookie didn't exist
+      // or token verification failed
+      // either way: redirect to the login page
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/auth",
+        },
+        // `as never` is required for correct type inference
+        // by InferGetServerSidePropsType below
+        props: {} as never,
+      };
+    }
+  };
+
+const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     const [isProgrammer, setIsProgrammer] = useState<boolean>(true)
+    const user = props.user;
 
     const toggleSignup = () => {
         setIsProgrammer(!isProgrammer)        
@@ -119,6 +159,24 @@ function Home() {
                     &nbsp; 
                     UnRealReincarlution 
                 </p>
+
+                {
+                    (user)?
+                    <div className={styles.signinBubble} onClick={() => window.location.href = "/"}>
+                        <div>
+                            <h3>Continue As</h3>
+                            <h2>{user.name}</h2>
+                        </div>
+                        
+                        <FontAwesomeIcon
+                        icon={faChevronRight}
+                        size="1x"
+                        />
+                    </div>
+                    :
+                    <></>
+                }
+                
             </div>
 
             <div className={styles.authInput}>
@@ -188,90 +246,3 @@ function Home() {
 }
 
 export default Home
-
-interface Input {
-    active: boolean,
-    hovered: boolean,
-    value: string,
-    activated: boolean
-}
-
-class TextInput extends React.Component<{icon: IconDefinition, placeholder: string}, Input> {
-    constructor(props) {
-        super(props)
-
-        this.state = { active: false, hovered: false, value: '', activated: false }
-        this.activate = this.activate.bind(this);
-        this.deactivate = this.deactivate.bind(this);
-
-        this.handleInput = this.handleInput.bind(this);
-    }
-
-    activate() {
-        this.setState({ active: true })
-    }
-
-    deactivate() {
-        this.setState({ active: false })
-    }
-
-    handleInput(e) {
-        this.setState({ value: e.target.value });
-    }
-
-    render() {
-        return (
-            <div className={(this.state.active) ? `${styles.activeAuthInput} ${styles.authenticationInput}` : (this.state.value !== "") ? `${styles.idle} ${styles.authenticationInput}` : `${styles.authenticationInput}`}>
-                <FontAwesomeIcon
-                  icon={this.props.icon}
-                  size="1x"
-                />
-
-                <input onChange={this.handleInput} type={(this.props.icon == faLock ? "password" : (this.props.icon == faEnvelope) ? "email" : "text")} placeholder={this.props.placeholder} onFocus={this.activate} onBlur={this.deactivate} required/>
-            </div>
-        )
-    }
-}
-
-class Button extends React.Component<{title: string}, Input> {
-    constructor(props) {
-        super(props)
-
-        this.state = { active: false, hovered: false, value: '', activated: false }
-
-        this.activate = this.activate.bind(this);
-        this.deactivate = this.deactivate.bind(this);
-        this.handleClick = this.handleClick.bind(this);
-    }
-
-    activate() {
-        this.setState({ active: true })
-    }
-
-    deactivate() {
-        this.setState({ active: false })
-    }
-
-    handleClick() {
-        
-        this.setState({ activated: true });
-    }
-
-    render() {
-        return (
-            <button type="submit" onClick={this.handleClick} className={(this.state.hovered) ? `${styles.hoverButton} ${styles.button}` : `${styles.button}`} onMouseOver={() => this.setState({ hovered: true })} onMouseLeave={() => this.setState({ hovered: false })}>
-                {
-                    (!this.state.activated)
-                    ?
-                    this.props.title
-                    :
-                    <FontAwesomeIcon
-                    icon={faCircleNotch}
-                    size="1x"
-                    spin
-                    />
-                }
-            </button>
-        )
-    }
-}
