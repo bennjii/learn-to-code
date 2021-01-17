@@ -316,7 +316,7 @@
 
 .header {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 
   position: sticky;
 
@@ -324,17 +324,18 @@
   align-items: center;
   width: 100%;
 
-  padding: 1em;
   color: #1c1e21;
-
   background-color: #ffffff;
 
   min-height: 4rem;
-  padding: .65rem 0;
+  height: fit-content !important;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 1);
+  
   /* border-bottom: 2px solid rgba(255, 255, 255, 1); */
 }
 
-.header > div {
+.header > div:not(:first-of-type) {
   display: flex;
   flex-direction: row;
 
@@ -345,15 +346,124 @@
   height: 100%;
   width: 100%;
 
+  padding: 1em;
+  padding: .65rem 0;
+
   padding-left: 1rem;
   padding-right: 1rem;
 
   margin-left: auto;
   margin-right: auto;
+
+  flex: 1;
 }
 
 .header * {
   margin: 0;
+}
+
+.headerInside {
+  display: flex;
+  flex-direction: column;
+}
+
+.headerCustom {
+  width: 100%;
+}
+
+.headerCustom {
+  display: flex;
+  flex-direction: column;
+
+  position: sticky;
+
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+  color: #1c1e21;
+  background-color: #ffffff;
+
+  min-height: 4rem;
+  height: fit-content !important;
+  /* border-bottom: 2px solid rgba(255, 255, 255, 1); */
+}
+
+.headerCustom > div:not(:first-of-type) {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-between;
+
+  max-width: calc(1440px + 12rem);
+
+  height: 100%;
+  width: 100%;
+
+  padding: 1em;
+  padding: .65rem 0;
+
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  flex: 1;
+}
+
+.headerInsideCustom {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr auto;
+
+  align-items: center;
+  width: 100%;
+
+  padding-left: 1rem;
+  padding-right: 1rem;
+  min-height: 4rem;
+
+  height: fit-content !important;
+}
+
+.headerInsideCustom > * {
+  flex: 1 1;
+  margin: 0;
+
+  text-align: center;
+}
+
+.headerInsideCustom > h3 {
+  text-align: left;
+  width: fit-content;
+}
+
+.headerInsideCustom > div {
+  text-align: right;
+  justify-self: end;
+}
+
+div.headerProgress {
+  padding: 0 !important;
+
+  width: 100%;
+  height: 5px;
+
+  align-self: flex-start;
+
+  margin: 0;
+
+  opacity: 0;
+
+  height: 2px;
+  background: transparent;
+
+  transition: width .4s linear .4s;
+  transition: opacity .4s linear .4s;
+
+  background: rgb(87,78,235);
+  background: linear-gradient(58deg, #574eeb 0%, #e84c98 35%, #4f5dea 100%);
 }
 
 .linear {
@@ -434,10 +544,18 @@
 .boxDiv > div {
   display: flex;
   flex-direction: row;
-
   width: 100%;
 
   justify-content: space-between;
+  padding: 1rem;
+}
+
+.boxProgress {
+  align-items: center;
+}
+
+.boxProgress h5 {
+  margin: .5rem;
 }
 
 .boxDiv > div > div:not(:first-of-type) {
@@ -504,8 +622,8 @@
   }
 
   .header > div {
-    padding-left: 6rem !important;
-    padding-right: 6rem !important;
+    padding-left: 6rem;
+    padding-right: 6rem;
   }
 }
 
@@ -525,9 +643,21 @@
   margin-right: auto;
 
   display: grid;
-  grid-template-columns: 1fr 20%;
+  grid-template-columns: 1fr 35%;
+  grid-template-rows: 1fr auto;
+
+  height: 58vh;
 
   gap: 15px;
+}
+
+.insideFullScreen > div {
+  height: 100%;
+}
+
+.insideFullScreen > div > h2 {
+  font-family: 'Apercu';
+  font-weight: 500;
 }
 
 .progress {
@@ -545,6 +675,9 @@
   padding: 1rem;
 
   font-weight: 300;
+
+  color: #10162f;
+  font-weight: 600;
 }
 
 .progress > div {
@@ -658,11 +791,54 @@
 .headerTitle {
   position: relative;
   z-index: 2;
+
+  transition: .2s ease all;
+
+  user-select: none;
+}
+
+.headerTitle:after {
+  transition: .2s ease all;
+}
+
+@keyframes easeIn {
+  from {width: 0%;}
+  to {width: 100%}
+}
+
+@keyframes easeOut {
+  to {width: 0%}
+}
+
+.headerTitle:hover {
+  cursor: pointer;
+}
+
+.headerTitle:hover:after {
+  animation: easeIn .2s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+  content: "";
+  position: absolute;
+
+  bottom: 0%;
+  left: 0;
+
+  opacity: 1;
+
+  z-index: -1;
+
+  width: 100%;
+  height: 2px;
+
+  background: rgb(87,78,235);
+  background: linear-gradient(58deg, #574eeb 0%, #e84c98 35%, #4f5dea 100%);
 }
 
 .headerTitle:after {
   content: "";
   position: absolute;
+
+  border-radius: 55px;
 
   bottom: 0%;
   left: 0;
@@ -671,10 +847,11 @@
 
   z-index: -1;
 
-  width: 100%;
-  height: 3px;
+  width: 0%;
+  height: 2px;
 
-  background-color: #4F5DEA;
+  background: rgb(87,78,235);
+  background: linear-gradient(58deg, #574eeb 0%, #e84c98 35%, #4f5dea 100%);
 }
 
 .signinBubble {
@@ -696,7 +873,8 @@
   align-self: flex-start;
   justify-self: flex-end;
 
-  transition: color 0s linear;
+  transition: all .4s ease forwards;
+  animation: antiFlow .4s ease forwards;
 }
 
 .signinBubble * {
@@ -715,6 +893,11 @@
   font-size: .875rem; 
 }
 
+.signinBubble svg {
+  width: 10%;
+  overflow: hidden;
+}
+
 .signinBubble:hover {
   cursor: pointer;
 
@@ -722,10 +905,114 @@
   border-color: rgba(255,255,255,.1);
 }
 
-.signinBubble:hover h2 {
+.signinBubble:hover  {
+  width: 26%;
+}
+
+/* .signinBubble:hover h2 {
   color: rgba(255, 255, 255, .6);
 }
 
 .signinBubble:hover h3 {
   color: rgba(255, 255, 255, .6);
+} */
+
+.teaching {
+  display: flex;
+  flex-direction: column !important;
+
+  align-items: flex-start;
+  flex: 1;
+}
+
+.teaching h3 {
+  font-weight: 400;
+  font-family: "Apercu";
+  font-size: 1rem;
+  margin: 0;
+}
+
+.teachingStat {
+  background-color: rgba(28, 30, 33, 0.1);
+  width: 100%;
+  padding: 1rem;
+
+  font-weight: 300;
+  align-items: flex-start !important;
+  margin: 0 !important;
+}
+
+.teachingStat h5 {
+  font-weight: 300 !important;
+  margin: 0 !important;
+}
+
+.codeGrid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr auto;
+  height: 100%;
+
+  background-color: rgb(1, 14, 23);
+}
+
+.codeGrid svg {
+  max-height: 15px;
+  height: 100%;
+  font-weight: 100;
+}
+
+.headerCustom {
+  background-color: rgb(1, 14, 23);
+  color: #f4f4f4;
+}
+
+.codeDesc {
+  background-color: rgba(255,255,255,1);
+}
+
+.codeDesc > div {
+  padding: 1rem;
+}
+
+.codeDesc h3 {
+  font-weight: 600;
+  font-family: "Apercu";
+  font-size: .875rem;
+  opacity: .6;
+}
+
+.codeDesc h2 {
+  font-weight: 400;
+  font-family: "Apercu";
+  font-size: 1.8rem;
+  opacity: 1;
+}
+
+.codeDesc h4 {
+  background-color: rgba(28, 30, 33, 0.1);
+  width: 100%;
+  padding: 1rem;
+  font-weight: 300;
+  color: #10162f;
+  font-weight: 400;
+  margin: 0;
+
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.linearDark {
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  gap: 15px;
+  color: #f4f4f4;
 }

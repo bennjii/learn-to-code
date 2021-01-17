@@ -1,0 +1,63 @@
+{
+    "courses": [
+        {
+            "inherit_id": null,
+            "title": "Learn Javascript",
+            "desc": "Javascript is an essential...",
+            "dificulty": 0,
+            "lessons": [
+                {
+                    "name": "Variables (1)",
+                    "sub_lessons": [
+                        {
+                            "name": "Constants",
+                            "desc": "QUILL TEMPLATE",
+                            "template_code": "let hello = 'Hello'",
+                            "instructions": [
+                                {
+                                    "desc": "Create a constant variable called 'hello', and set it to \"Hello World\"",
+                                    "desired_output": "\"string\" \n Hello World",
+                                    "server_code": "console.log(typeof hello); console.log(hello)"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "users": [
+        {
+            "name": "Ben White",
+            "account_type": "Teacher",
+            "students": [
+                {
+                    "id": "STUDENT_ID"
+                }
+            ]
+        },
+        {
+            "name": "David Ryder",
+            "account_type": "Student",
+            "teacher": {
+                "id": "TEACHER_ID",
+                "name": "TEACHER_NAME"
+            },
+            "due_work": [
+                {
+                    "id": "COURSE_ID",
+                    "progress": {
+                        "from": "1.4",
+                        "to": "1.8"
+                    }
+                }
+            ],
+            "course_progress": [
+                {
+                    "course": "COURSE_ID",
+                    "progress": ""
+                }
+            ]
+        }
+    ]
+}

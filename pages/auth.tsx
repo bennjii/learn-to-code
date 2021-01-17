@@ -116,21 +116,15 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       // either the `token` cookie didn't exist
       // or token verification failed
       // either way: redirect to the login page
+
       return {
-        redirect: {
-          permanent: false,
-          destination: "/auth",
-        },
-        // `as never` is required for correct type inference
-        // by InferGetServerSidePropsType below
-        props: {} as never,
-      };
+        props: { user: null }
+      }
     }
   };
 
 const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     const [isProgrammer, setIsProgrammer] = useState<boolean>(true)
-    const user = props.user;
 
     const toggleSignup = () => {
         setIsProgrammer(!isProgrammer)        
@@ -161,11 +155,12 @@ const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
                 </p>
 
                 {
-                    (user)?
-                    <div className={styles.signinBubble} onClick={() => window.location.href = "/"}>
+                    (props.user)
+                    ?
+                    <div className={styles.signinBubble}onClick={() => Router.push("/")}>
                         <div>
                             <h3>Continue As</h3>
-                            <h2>{user.name}</h2>
+                            <h2>{props.user.name}</h2>
                         </div>
                         
                         <FontAwesomeIcon
@@ -201,7 +196,7 @@ const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
 
                             <TextInput placeholder="Enter your Password" icon={faLock} />
 
-                            <Button title="Start coding now" />
+                            <Button title="Start coding now"  redirect="" router={Router}/>
                         </form>
                     </div>
                     :
@@ -211,7 +206,7 @@ const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
 
                             <TextInput placeholder="Enter your Password" icon={faLock} />
 
-                            <Button title="Start coding now" />
+                            <Button title="Start coding now"  redirect="" router={Router}/>
                         </form>
                     </div>
                 }

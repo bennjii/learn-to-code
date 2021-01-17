@@ -11,6 +11,14 @@ html, body {
   font-family: 'stolzl' sans-serif;
 }
 
+:root {
+  --background-color: #ffffff;
+  --background-color-alt: #f4f4f4;
+  
+  --font-color: #10162f;
+}
+
+
 @font-face {
   font-family:"stolzl";
   src:url("https://use.typekit.net/af/148b9c/00000000000000007735affe/30/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff2"),url("https://use.typekit.net/af/148b9c/00000000000000007735affe/30/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("woff"),url("https://use.typekit.net/af/148b9c/00000000000000007735affe/30/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3") format("opentype");
@@ -172,4 +180,26 @@ input:-webkit-autofill:active  {
 
 button:hover {
   cursor: pointer;
+}
+
+#editor {
+  height: 100%;
+  width: 100%;
+
+  transition: 0s ease all;
+}
+
+#editor div {
+  transition: 0s ease all;
+}
+
+.ace_editor {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace !important; 
+}
+
+.textEditor h5 {
+  background-color: #011627;
+  margin: 0;
+  padding: 1rem;
+  color: #f4f4f4;
 }

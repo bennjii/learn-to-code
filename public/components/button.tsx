@@ -5,6 +5,7 @@ import styles from '../../styles/Home.module.css'
 import {
     faCircleNotch
 } from '@fortawesome/free-solid-svg-icons'
+import { SingletonRouter } from 'next/router'
 
 interface Input {
     active: boolean,
@@ -13,7 +14,7 @@ interface Input {
     activated: boolean
 }
 
-class Button extends React.Component<{title: string}, Input> {
+class Button extends React.Component<{title: string, redirect: string, router: SingletonRouter}, Input> {
 constructor(props) {
     super(props)
 
@@ -33,8 +34,11 @@ deactivate() {
 }
 
 handleClick() {
-    
     this.setState({ activated: true });
+
+    if(this.props.redirect !== "") {
+        this.props.router.push(this.props.redirect)
+    }
 }
 
 render() {
