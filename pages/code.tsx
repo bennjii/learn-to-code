@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react"
 import nookies from "nookies";
 
 import styles from '../styles/Home.module.css'
@@ -15,9 +16,12 @@ import { firebaseAdmin } from "../firebaseAdmin"
 
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faBook, faBookOpen } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faBookOpen } from "@fortawesome/free-solid-svg-icons";
+import { firebaseClient } from "../firebaseClient";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  
+
   try {
     const cookies = nookies.get(ctx);
     // console.log(JSON.stringify(cookies, null, 2));
@@ -27,11 +31,22 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
     // the user is authenticated!
     // FETCH STUFF HERE
+    const db = firebaseAdmin.firestore();
+    const courseId = "S7ioyCGZ1xow6DRyX3Rw" // TEMPVAR
+    let pageData;
+
+    await db.doc(`courses/${courseId}`).get().then((doc) => {
+      pageData = doc.data()
+    })
+
+    const lV = [ 0, 0 ]  // TEMPVAR
 
     return {
-      props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user },
+      props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user, pageData: pageData, lessonVariance: lV },
     };
   } catch (err) {
+    console.log(err)
+
     return {
       redirect: {
         permanent: false,
@@ -45,6 +60,14 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const user = props.user;
 
+  const [ [lesson, subLesson], setLessonVariance ] = useState(props.lessonVariance);
+  console.log(lesson);
+
+  const [ lessonSelectorVisible, setLessonSelectorVisible ] = useState(false)
+  const currentLesson = props.pageData.lessons[lesson].sub_lessons[subLesson];
+
+  console.log(currentLesson)
+
   return (
     <div className={styles.container}>
         <Head>
@@ -56,7 +79,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             <div className={styles.headerInsideCustom}>
                 <h3 className={styles.headerTitle} onClick={() => Router.push("/")}>Learn to Code.</h3> 
 
-                <h4>Learn Javascript</h4>
+                <h4>{props.pageData.title}</h4>
 
                 {(!user) 
                     ? 
@@ -70,8 +93,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             </div>
         </div>
 
-        <div className={styles.codeGrid}>
-            <div className={styles.codeDesc}>
+        
+        <div className={`${(!lessonSelectorVisible) ? styles.normalOut : styles.blackOut}`}></div>
+
+        <div className={`${styles.codeGrid}`} >
+            <div className={styles.codeDesc} > {/*hidden={lessonSelectorVisible} */}
                 <h4>
                   <FontAwesomeIcon
                     icon={faBookOpen}
@@ -82,33 +108,54 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 </h4>
 
                 <div>
-                  <h3>VARIABLES I</h3>
-                  <h2>Learn</h2>
-                  <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae praesentium modi ipsum sed. Aspernatur est mollitia sint commodi deleniti cupiditate voluptatem alias ipsum dignissimos enim saepe maiores voluptatum, tenetur provident.</p>
+                  <h3>{`${props.pageData.lessons[lesson].name.toUpperCase()} ${"I"}`}</h3>
+                  <h2>{currentLesson.name}</h2>
+                  <p>{currentLesson.desc}</p>
                 </div>
             </div>
+
+            <div className={styles.codeDesc + " " + styles.lessonSelect} hidden={!lessonSelectorVisible}>
+            {
+              props.pageData.lessons.map(e => {
+                return ( 
+                  <div>
+                    {e.name}
+
+                    <div className={styles.subClasses}>
+                      {
+                        e.sub_lessons.map((e2, index) => {
+                          return (
+                            <div onClick={(e) => { setLessonVariance([lesson, index]) }}>{e2.name}</div>
+                          )
+                        })
+                      }
+                    </div>                    
+                  </div>
+                )
+              })
+            }
+        </div>
               
-            <TextEditor lan='javascript'/>
+            <TextEditor lan='javascript' placeholder={currentLesson.template_code}/>
 
             <div>
 
             </div>
 
-            <div className={styles.linearDark}>
+            <div className={styles.linearDark} onClick={() => setLessonSelectorVisible(!lessonSelectorVisible)}>
               <FontAwesomeIcon
                 icon={faBars}
                 size="1x"
               />
-              <h4>1.1 Understanding Variables</h4>
+              <h4>{`${lesson + 1}.${subLesson + 1}`} {currentLesson.name}</h4>
             </div>
 
             <div></div>
 
             <div>
-              <Button title="Submit"></Button>
+              <Button title="Submit" redirect="" router={Router}></Button>
             </div>
-        </div>
-
+        </div>     
     </div>
   );
 }

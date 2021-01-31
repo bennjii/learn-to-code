@@ -35,6 +35,9 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       props: {} as never,
     };
   }
+
+  // SET THEME DARK
+  // document.documentElement.setAttribute('theme', 'dark');
 };
 
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
@@ -73,9 +76,6 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   </div>
                 </div>
               </div>
-              
-              {/* <p>In this course, you will learn about the in's and out's of the JavaScript Language, starting with the basics.</p> */}
-
               <div className={styles.progress}>
                 <h4>1 : Variables</h4>
 
@@ -112,22 +112,16 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
           </div>
 
           <div>
-            <h2>Contact</h2>
+            <h2>Challenges</h2>
 
             <div className={styles.boxDiv}>
               <div className={styles.teaching}>
                 {/* PRESUMING TEACHER IS ASSIGNED ; */}
                 <div>
-                  <h1>Teacher</h1>
-                  <h4>Lorem Impsum</h4>
+                  <h4>C++</h4>
+                  <h1>Daily Challenge</h1>
                 </div>
-
-                {/* <p>
-                  Next Week we cover classes, keep up the good work :) <br />
-                  - Lorem Impsum
-                </p> */}
-                
-                <h3>Lessons: Weekly</h3>
+                {/* <h3>Lessons: Weekly</h3>
                 <div className={styles.teachingStat}>
                   <h5><strong>Next Lesson:</strong> Friday 29th 12:15pm</h5>
                 </div>
@@ -135,13 +129,25 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 <h3>Due Work</h3>
                 <div className={styles.teachingStat}>
                   <h5><strong>Due in 14 Days:</strong> Learn Javascript 1.1 - 1.4</h5>
-                </div>              
+                </div>               */}
+              </div>
+              
+
+              <div className={styles.vertical}>
+                <h5>REVERSE A LINKED LIST</h5>
+
+                <h4>
+                  Reverse a Linked List in C++, without using recurrsion
+                </h4>
+              </div>
+
+              <div>
+                <Button title="View" redirect={"/challange"} router={Router}></Button>
+                <Button title="Begin Challange" redirect={"/challange"} router={Router}></Button>
               </div>
             </div>
-          </div>
-          
+          </div>       
         </div>
-        
       </div>
     </div>
   );

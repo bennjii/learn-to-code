@@ -14,7 +14,7 @@ interface Input {
     activated: boolean
 }
 
-class Button extends React.Component<{title: string, redirect: string, router: SingletonRouter}, Input> {
+class Button extends React.Component<{title: string, redirect: string | undefined, router: SingletonRouter | undefined}, Input> {
 constructor(props) {
     super(props)
 

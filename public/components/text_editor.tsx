@@ -20,6 +20,7 @@ const textEditor = (props) => (
             fontSize={"16px"}
             height=''
             width='100%'
+            value={props.placeholder}
         />
 
         {/* <MonacoEditor

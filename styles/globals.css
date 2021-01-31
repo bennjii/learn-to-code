@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap');
+
 html, body {
   padding: 0;
   margin: 0;
@@ -12,12 +14,20 @@ html, body {
 }
 
 :root {
-  --background-color: #ffffff;
-  --background-color-alt: #f4f4f4;
+  --background-color: #f8f8f8;
+  --background-color-alt: #f0eeee;
+  --border-color: #e9ebf0;
   
-  --font-color: #10162f;
+  --font-color: #1c1e21;
 }
 
+:root[theme="dark"] {
+  --background-color: #222429;
+  --background-color-alt: #141419;
+  --border-color: #2d2f33;
+  
+  --font-color: #d4d4d5;
+}
 
 @font-face {
   font-family:"stolzl";
@@ -131,8 +141,10 @@ h3 {
 }
 
 p {
-  opacity: 0.5;
-  font-size: .9em;
+  opacity: .8;
+  font-size: .9rem;
+
+  font-family: Inter, sans-serif;
 }
 
 input {
@@ -202,4 +214,9 @@ button:hover {
   margin: 0;
   padding: 1rem;
   color: #f4f4f4;
+}
+
+.ace_line * {
+  font-family: monospace;
+  font-size: 16px;
 }
