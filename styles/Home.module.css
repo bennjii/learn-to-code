@@ -143,6 +143,10 @@
   background: linear-gradient(58deg, #574eeb 0%, #e84c98 35%, #4f5dea 100%);
 }
 
+.authPage > div {
+  height: 100%;
+}
+
 .flexLarge h1 {
   font-size: 4em;
 }
@@ -647,8 +651,6 @@ div.headerProgress {
   display: grid;
   grid-template-columns: 1fr 35%;
   grid-template-rows: 1fr auto;
-
-  height: 58vh;
 
   gap: 15px;
 }
