@@ -17,6 +17,8 @@ html, body {
   --background-color: #f8f8f8;
   --background-color-alt: #f0eeee;
   --border-color: #e9ebf0;
+
+  --border-color-rgb: 233, 235, 240;
   
   --font-color: #1c1e21;
 }
@@ -219,4 +221,31 @@ button:hover {
 .ace_line * {
   font-family: monospace;
   font-size: 16px;
+}
+
+.ace_gutter * {
+  font-family: Monaco, monospace !important;
+}
+
+#editor * {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace !important;
+}
+
+.textEditor {
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.textEditor > div:first-of-type {
+  background-color: #01111f;
+}
+
+.textEditor > div:first-of-type h5 {
+  width: fit-content;
+}
+
+.textEditor > div:not(:first-of-type, :last-of-type) {
+  padding: 1rem;
 }

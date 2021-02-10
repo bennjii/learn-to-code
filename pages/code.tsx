@@ -17,14 +17,12 @@ import { firebaseAdmin } from "../firebaseAdmin"
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faBookOpen } from "@fortawesome/free-solid-svg-icons";
-import { firebaseClient } from "../firebaseClient";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   
 
   try {
     const cookies = nookies.get(ctx);
-    // console.log(JSON.stringify(cookies, null, 2));
     const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
     const { uid, email } = token;
     const user = token;
@@ -61,12 +59,10 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const user = props.user;
 
   const [ [lesson, subLesson], setLessonVariance ] = useState(props.lessonVariance);
-  console.log(lesson);
+  const [ lessonCompleted, setLessonCompleted ] = useState(true)
 
   const [ lessonSelectorVisible, setLessonSelectorVisible ] = useState(false)
   const currentLesson = props.pageData.lessons[lesson].sub_lessons[subLesson];
-
-  console.log(currentLesson)
 
   return (
     <div className={styles.container}>
@@ -92,9 +88,35 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 }
             </div>
         </div>
-
         
-        <div className={`${(!lessonSelectorVisible) ? styles.normalOut : styles.blackOut}`}></div>
+        <div className={`${styles.codeDesc} ${(!lessonSelectorVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
+          {
+            props.pageData.lessons.map(e => {
+              return ( 
+                <div>
+                  <div className={styles.subClasses}>
+                    <h2>{props.pageData.title} </h2>
+
+                    <h5>{e.name}</h5>
+                    <h3>LESSONS</h3>
+                    
+                    <div className={styles.lessonList}>
+                      {
+                        e.sub_lessons.map((e2, index) => {
+                          return (
+                            <div className={styles.exc} onClick={() => { setLessonVariance([lesson, index]); setLessonSelectorVisible(!lessonSelectorVisible)}}>{`${lesson+1}.${index+1}`} {e2.name}</div>
+                          )
+                        })
+                      }
+                    </div>
+                  </div>                    
+                </div>
+              )
+            })
+          }
+        </div>
+        
+        <div className={`${(!lessonSelectorVisible) ? styles.normalOut : styles.blackOut}`} onClick={() => setLessonSelectorVisible(!lessonSelectorVisible)}></div>
 
         <div className={`${styles.codeGrid}`} >
             <div className={styles.codeDesc} > {/*hidden={lessonSelectorVisible} */}
@@ -114,31 +136,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 </div>
             </div>
 
-            <div className={styles.codeDesc + " " + styles.lessonSelect} hidden={!lessonSelectorVisible}>
-            {
-              props.pageData.lessons.map(e => {
-                return ( 
-                  <div>
-                    {e.name}
-
-                    <div className={styles.subClasses}>
-                      {
-                        e.sub_lessons.map((e2, index) => {
-                          return (
-                            <div onClick={(e) => { setLessonVariance([lesson, index]) }}>{e2.name}</div>
-                          )
-                        })
-                      }
-                    </div>                    
-                  </div>
-                )
-              })
-            }
-        </div>
-              
             <TextEditor lan='javascript' placeholder={currentLesson.template_code}/>
 
-            <div>
+            <div className={styles.consolePage}>
 
             </div>
 
@@ -150,7 +150,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
               <h4>{`${lesson + 1}.${subLesson + 1}`} {currentLesson.name}</h4>
             </div>
 
-            <div></div>
+            <div className={styles.navigationBottom}>
+              <Button title={"Go Back"} onClick={() => setLessonVariance([lesson, subLesson-1])}></Button>
+              <h3>{subLesson + 1} / {props.pageData.lessons[lesson].sub_lessons.length}</h3>
+              <Button title={"Next Lesson"} onClick={() => setLessonVariance([lesson, subLesson-1])} disabled={(lessonCompleted)}></Button>
+            </div>
 
             <div>
               <Button title="Submit" redirect="" router={Router}></Button>

@@ -7,8 +7,10 @@ import "brace/mode/javascript"
 
 const textEditor = (props) => (
     <div className="textEditor">
-        {/* <h5>main.js</h5>  */}
-
+        <div>
+            <h5>main.js</h5> 
+        </div>
+        
         <AceEditor
             mode={`${props.lan}`}
             theme="night_owl"
