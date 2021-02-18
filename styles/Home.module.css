@@ -4,6 +4,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  height: auto !important;
 }
 
 .main {
@@ -18,7 +20,7 @@
 .footer {
   width: 100%;
   height: 100px;
-  border-top: 1px solid #eaeaea;
+  border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -642,7 +644,7 @@ div.headerProgress {
   padding-left: 1rem;
   padding-right: 1rem;
 
-  padding-top: 2rem;
+  padding-top: 4rem;
   padding-bottom: 4rem;
 
   margin-left: auto;
@@ -653,6 +655,7 @@ div.headerProgress {
   grid-template-rows: 1fr auto;
 
   gap: 15px;
+  row-gap: normal;
 }
 
 .insideFullScreen > div {
@@ -675,6 +678,9 @@ div.headerProgress {
   text-align: left;
   justify-content: flex-start;
   align-items: flex-start;
+
+  flex: 1;
+  justify-content: flex-start !important;
 }
 
 .progress h4 {
@@ -1038,6 +1044,11 @@ div.headerProgress {
   background-color: #010e17;
 }
 
+.dark {
+  color: #f4f4f4;
+  background-color: #051927;
+}
+
 .linearDark h4 {
   user-select: none;
 }
@@ -1048,7 +1059,11 @@ div.headerProgress {
 
 .vertical {
   height: 100%;
+  display: flex;
   flex-direction: column !important;
+
+  justify-content: flex-start !important;
+
 }
 
 /* .lessonSelector {
@@ -1086,7 +1101,7 @@ div.headerProgress {
 
   position: absolute;
 
-  width: 40%;
+  width: 35%;
   height: 100%;
 
   left: 0;
@@ -1240,4 +1255,141 @@ div.headerProgress {
 .navigationBottom button:first-of-type {
   background-color: transparent;
   border: 1px solid #eaeaea;
+}
+
+.createCode {
+  display: grid;
+  width: 100%;
+
+  grid-template-columns: 15% 1fr;
+}
+
+.courseSelector {
+  border: 2px solid rgba(255,255,255,.15);
+  background-color: rgba(255,255,255,.1);
+  border-radius: 5px;
+
+  padding: 1.2rem;
+
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: .7rem;
+
+  align-self: flex-start;
+  justify-self: flex-end;
+
+  transition: all .4s ease forwards;
+  animation: antiFlow .4s ease forwards;
+  
+  width: 100%;
+}
+
+.refrence {
+  padding: 1rem 1rem;
+
+  background-color: #04131f;
+  gap: 15px;
+  display: flex;
+}
+
+.centerExpand {
+  flex: 1;
+
+  gap: 15px;
+  display: flex;
+  flex-direction: column;
+
+  padding: 1rem;
+  user-select: none;
+}
+
+.centerExpand > div > div:first-of-type {
+  border: 2px solid rgba(255,255,255,.15);
+  background-color: rgba(255, 255, 255, 0.041);
+  border-radius: 5px;
+
+  padding: .8rem 1rem;
+
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: .7rem;
+
+  align-self: flex-start;
+  justify-self: flex-end;
+
+  transition: all .4s ease forwards;
+  animation: antiFlow .4s ease forwards;
+  
+  width: 100%;
+}
+
+.centerExpand > div > div:first-of-type:hover {
+  border: 2px solid rgba(255, 255, 255, 0.363);
+  background-color: rgba(255, 255, 255, 0.185);
+
+  cursor: pointer;
+}
+
+.collectionArr {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+
+  margin-left: 5%;
+  padding: 1rem;
+
+  height: 100%;
+  overflow: hidden;
+
+  transition: 0s ease padding;
+}
+
+.footer {
+  padding: 5% 0 2%;
+  /* padding: 1rem 20%; */
+
+  background-color: var(--background-color);
+  color: var(--font-color);
+}
+
+.footer > div {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-between;
+  flex-flow: row wrap;
+
+  margin: 0 auto;
+  max-width: 1240px;
+  padding: 0 2.5%;
+}
+
+.footer > div > div {
+  min-width: 10vw;
+}
+
+.footer h1 {
+  font-family: "Inter";
+  font-weight: 100;
+}
+
+.footerContent {
+  display: flex;
+  flex-direction: row;
+
+  gap: 5rem;
+}
+
+.footer h3 {
+  font-weight: 100;
+  font-size: 1.2em;
 }

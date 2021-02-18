@@ -15,7 +15,7 @@ html, body {
 
 :root {
   --background-color: #f8f8f8;
-  --background-color-alt: #f0eeee;
+  --background-color-alt: #f4f4f4;
   --border-color: #e9ebf0;
 
   --border-color-rgb: 233, 235, 240;
@@ -110,14 +110,14 @@ html, body {
   height: 100%;
 }
 
-/* html,
+html,
       body,
       body > div:first-child,
       div#__next,
       div#__next > div,
       div#__next > div > div {
         height: 100%;
-      } */
+      }
 
 a {
   color: inherit;

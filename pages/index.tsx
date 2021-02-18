@@ -11,6 +11,8 @@ import Router from 'next/router'
 import { firebaseAdmin } from "../firebaseAdmin"
 
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
+import TextInput from "../public/components/text_input";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
@@ -149,6 +151,37 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
           </div>       
         </div>
       </div>
+      
+		<div className={styles.footer}>
+			<div>
+				<div>
+					<h1>{"</>"}</h1>
+				</div>
+
+				<div className={styles.footerContent}>
+					<div>
+						<h3>Languages</h3>
+						<p>Javascript</p>
+						<p>Typescript</p>
+						<p>Python</p>
+						<p>C++</p>
+						<p>HTML & CSS</p>
+					</div>
+
+					<div>
+						<h3>L2C</h3>
+						<p>Our Origin</p>
+						<p>Contact Us</p>
+						<p>Support</p>
+						<p>Tutoring</p>
+					</div>
+				</div>
+
+				<div>
+					<input type="text" placeholder={"Email Us"} className={styles.authenticationInput}/>
+				</div>
+			</div>
+		</div>
     </div>
   );
 }
