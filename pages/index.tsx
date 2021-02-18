@@ -61,7 +61,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
       <div className={styles.fullScreen}>
         <div className={styles.insideFullScreen}>
           <div>
-            <h2>Learn</h2>
+            {/* <h2>Learn</h2> */}
 
             <div className={styles.boxDiv}>
               <div>
@@ -114,7 +114,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
           </div>
 
           <div>
-            <h2>Challenges</h2>
+            {/* <h2>Challenges</h2> */}
 
             <div className={styles.boxDiv}>
               <div className={styles.teaching}>
