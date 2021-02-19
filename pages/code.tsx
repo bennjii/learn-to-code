@@ -10,7 +10,7 @@ import Router from 'next/router'
 import dynamic from 'next/dynamic'
 const TextEditor = dynamic(import('../public/components/text_editor'), {
   ssr: false
-})
+});
 
 import { firebaseAdmin } from "../firebaseAdmin"
 
@@ -137,6 +137,34 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             </div>
 
             <TextEditor lan='javascript' placeholder={currentLesson.template_code}/>
+            {/* <div className="textEditor">
+              <div>
+                  <h5>main.js</h5> 
+              </div>  
+
+              {
+                (process.browser)?
+                <AceEditor
+                    mode={`${currentLesson.lan}`}
+                    theme="night_owl"
+                    onChange={currentLesson.onChange}
+                    name="editor"
+                    editorProps={{
+                        $blockScrolling: true
+                    }}
+                    fontSize={"16px"}
+                    height=''
+                    width='100%'
+                    value={currentLesson.placeholder}
+                />
+                :
+                <div></div>
+              }
+            </div> */}
+
+            {
+              console.log(TextEditor)
+            }
 
             <div className={styles.consolePage}>
 

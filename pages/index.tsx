@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import nookies from "nookies";
 
 import styles from '../styles/Home.module.css'
 import Head from 'next/head'
 import Button from '../public/components/button'
+import Footer from '../public/components/footer'
 
 import Header from "../public/components/header"
 import Router from 'next/router'
@@ -39,11 +40,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 
   // SET THEME DARK
-  // document.documentElement.setAttribute('theme', 'dark');
+  // document.documentElement.setAttribute('theme', 'dark'); 
 };
 
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const user = props.user;
+  const user = props.user; 
 
   return (
     <div className={styles.container}>
@@ -152,36 +153,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
         </div>
       </div>
       
-		<div className={styles.footer}>
-			<div>
-				<div>
-					<h1>{"</>"}</h1>
-				</div>
-
-				<div className={styles.footerContent}>
-					<div>
-						<h3>Languages</h3>
-						<p>Javascript</p>
-						<p>Typescript</p>
-						<p>Python</p>
-						<p>C++</p>
-						<p>HTML & CSS</p>
-					</div>
-
-					<div>
-						<h3>L2C</h3>
-						<p>Our Origin</p>
-						<p>Contact Us</p>
-						<p>Support</p>
-						<p>Tutoring</p>
-					</div>
-				</div>
-
-				<div>
-					<input type="text" placeholder={"Email Us"} className={styles.authenticationInput}/>
-				</div>
-			</div>
-		</div>
+		  <Footer />
     </div>
   );
 }

@@ -1,11 +1,13 @@
 import AceEditor from 'react-ace';
 
-import * as ace from 'brace';
-import "brace/theme/night_owl";
-import "brace/theme/solarized_dark"
+import brace from 'brace';
+import "brace/theme/nightowl";
+import "brace/theme/solarized_dark";
+
+import 'brace/theme/github';
 import "brace/mode/javascript"
 
-const textEditor = (props) => (
+const TextEditor = (props) => (
     <div className="textEditor">
         <div>
             <h5>main.js</h5> 
@@ -13,7 +15,7 @@ const textEditor = (props) => (
         
         <AceEditor
             mode={`${props.lan}`}
-            theme="night_owl"
+            theme="nightowl"
             onChange={props.onChange}
             name="editor"
             editorProps={{
@@ -25,18 +27,22 @@ const textEditor = (props) => (
             value={props.placeholder}
         />
 
-        {/* <MonacoEditor
-            width="800"
-            height="600"
-            language="javascript"
-            theme="vs-dark"
-            value={`const foo = 'bar';`}
-            options={{
-                selectOnLineNumbers: true
-            }}
-            onChange={console.log}
-        /> */}
+        {
+        /* 
+            <MonacoEditor
+                width="800"
+                height="600"
+                language="javascript"
+                theme="vs-dark"
+                value={`const foo = 'bar';`}
+                options={{
+                    selectOnLineNumbers: true
+                }}
+                onChange={console.log}
+            /> 
+        */
+        }
     </div>
 )
 
-export default textEditor
+export default TextEditor

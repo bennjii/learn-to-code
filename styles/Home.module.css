@@ -142,7 +142,7 @@
   color: #f4f4f4;
 
   background: rgb(87,78,235);
-  background: linear-gradient(58deg, #574eeb 0%, #e84c98 35%, #4f5dea 100%);
+  background: var(--gradient)
 }
 
 .authPage > div {
@@ -470,7 +470,7 @@ div.headerProgress {
   transition: opacity .4s linear .4s;
 
   background: rgb(87,78,235);
-  background: linear-gradient(58deg, #574eeb 0%, #e84c98 35%, #4f5dea 100%);
+  background: var(--gradient)
 }
 
 .linear {
@@ -503,7 +503,7 @@ div.headerProgress {
   color: #f4f4f4;
 
   background: rgb(87,78,235);
-  background: linear-gradient(58deg, #574eeb 0%, #e84c98 35%, #4f5dea 100%);
+  background: var(--gradient);
 }
 
 .body h1 {
@@ -847,7 +847,7 @@ div.headerProgress {
   height: 2px;
 
   background: rgb(87,78,235);
-  background: linear-gradient(58deg, #574eeb 0%, #e84c98 35%, #4f5dea 100%);
+  background: var(--gradient);
 }
 
 .headerTitle:after {
@@ -867,7 +867,7 @@ div.headerProgress {
   height: 2px;
 
   background: rgb(87,78,235);
-  background: linear-gradient(58deg, #574eeb 0%, #e84c98 35%, #4f5dea 100%);
+  background: var(--gradient)
 }
 
 .signinBubble {
@@ -967,9 +967,11 @@ div.headerProgress {
   display: grid;
 
   grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 1fr 7%;
   height: 100%;
   width: 100%;
+
+  flex: 1;
 
   background-color: rgb(1, 14, 23);
 

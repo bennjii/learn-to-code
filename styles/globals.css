@@ -21,6 +21,9 @@ html, body {
   --border-color-rgb: 233, 235, 240;
   
   --font-color: #1c1e21;
+  --gradient: linear-gradient(
+    58deg
+    , #574eeb 0%, #e84c98 35%, #4f5dea 100%);
 }
 
 :root[theme="dark"] {
@@ -29,6 +32,9 @@ html, body {
   --border-color: #2d2f33;
   
   --font-color: #d4d4d5;
+  --gradient: linear-gradient(
+    58deg
+    , #010e17 0%, #0f1e34 35%, #1c1e21 100%);
 }
 
 @font-face {
@@ -213,6 +219,11 @@ button:hover {
 
 .ace_editor {
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace !important; 
+}
+
+.textEditor {
+  height: 100%;
+  flex: 1;
 }
 
 .textEditor h5 {

@@ -38,7 +38,7 @@ class Button extends React.Component<{title: string, redirect?: string | never, 
 
         this.setState({ activated: true });
 
-        if(this.props.redirect !== "") {
+        if(this.props.redirect) {
             this.props.router.push(this.props.redirect)
         }
     }
