@@ -1,5 +1,6 @@
 .container {
   min-height: 100vh;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1264,6 +1265,9 @@ div.headerProgress {
   width: 100%;
 
   grid-template-columns: 15% 1fr;
+  grid-template-rows: 100%;
+
+  flex: 1;
 }
 
 .courseSelector {
@@ -1345,9 +1349,7 @@ div.headerProgress {
   flex-direction: column;
 
   gap: 5px;
-
-  margin-left: 5%;
-  padding: 1rem;
+  padding-top: 1rem;
 
   height: 100%;
   overflow: hidden;
@@ -1373,6 +1375,8 @@ div.headerProgress {
   margin: 0 auto;
   max-width: 1240px;
   padding: 0 2.5%;
+
+  gap: 10rem;
 }
 
 .footer > div > div {
@@ -1394,4 +1398,67 @@ div.headerProgress {
 .footer h3 {
   font-weight: 100;
   font-size: 1.2em;
+}
+
+.textEditor {
+  border: 2px solid rgba(255,255,255,.15);
+  background-color: rgba(255, 255, 255, 0.041);
+  border-radius: 5px;
+
+  padding: .8rem 1rem;
+
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: .7rem;
+
+  align-self: flex-start;
+  justify-self: flex-end;
+
+  transition: all .4s ease forwards;
+  animation: antiFlow .4s ease forwards;
+  
+  width: 100%;
+  height: 100%;
+}
+
+.createWindow {
+  height: 100%;
+  width: 100%;
+
+  padding: 1rem;
+}
+
+.changeDefault {
+  border: 2px solid rgba(255,255,255,.05);
+  background-color: rgba(255, 255, 255, 0.02);
+  border-radius: 5px;
+
+  padding: .8rem 1rem;
+  margin: 0;
+
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: space-between;
+
+
+  align-self: flex-start;
+  justify-self: flex-end;
+  
+  width: 100%;
+  font-size: .9rem;
+}
+
+.changeDefault * {
+  margin: 0;
+}
+
+.changeActive {
+  border: 2px solid rgba(255,255,255,.15);
+  background-color: rgba(255, 255, 255, 0.041);
 }

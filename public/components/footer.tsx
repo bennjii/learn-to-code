@@ -18,7 +18,7 @@ class Footer extends React.Component<{}, {theme: string}> {
     }
 
     toggleTheme() {
-        const theme = (this.state.theme == 'light') ? 'dark' : 'light';
+        const theme = (this.state.theme !== 'light') ? 'dark' : 'light';
         this.setState({ theme: theme });
 
         document.documentElement.setAttribute("theme", theme);
@@ -53,8 +53,10 @@ class Footer extends React.Component<{}, {theme: string}> {
                     </div>
 
                     <div>
-                        <Button title={"Toggle Theme"} onClick={this.toggleTheme}></Button>
+                        <h5>Contact Us</h5>
                         <input type="text" placeholder={"Email Us"} className={styles.authenticationInput}/>
+
+                        <Button title={"Toggle Theme"} onClick={this.toggleTheme}></Button>
                     </div>
                 </div>
             </div>

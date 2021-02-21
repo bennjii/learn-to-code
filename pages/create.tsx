@@ -10,9 +10,15 @@ import Router from 'next/router'
 import { useState } from "react"
 
 import { firebaseAdmin } from "../firebaseAdmin"
-
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
-import ReactQuill from "react-quill";
+
+import {
+  Editor,
+  EditorState,
+  RichUtils,
+  convertToRaw,
+  convertFromRaw,
+} from 'draft-js'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
@@ -69,10 +75,99 @@ type Lesson = {
     template_code?: string
 }
 
+type EventTarget = {
+  getElementsByTagName: Function
+}
+
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const user = props.user;
 
-  const [ activeEdit, setActiveEdit ] = useState(props.pageData.lessons[props.lessonVariance[0]][props.lessonVariance[1]]);
+  const initialData = {
+    blocks: [
+      {
+        key: '16d0k',
+        text: 'You can edit this text.',
+        type: 'unstyled',
+        depth: 0,
+        inlineStyleRanges: [{ offset: 0, length: 23, style: 'BOLD' }],
+        entityRanges: [],
+        data: {},
+      },
+      {
+        key: '98peq',
+        text: '',
+        type: 'unstyled',
+        depth: 0,
+        inlineStyleRanges: [],
+        entityRanges: [],
+        data: {},
+      },
+      {
+        key: 'ecmnc',
+        text:
+          'Luke Skywalker has vanished. In his absence, the sinister FIRST ORDER has risen from the ashes of the Empire and will not rest until Skywalker, the last Jedi, has been destroyed.',
+        type: 'unstyled',
+        depth: 0,
+        inlineStyleRanges: [
+          { offset: 0, length: 14, style: 'BOLD' },
+          { offset: 133, length: 9, style: 'BOLD' },
+        ],
+        entityRanges: [],
+        data: {},
+      },
+      {
+        key: 'fe2gn',
+        text: '',
+        type: 'unstyled',
+        depth: 0,
+        inlineStyleRanges: [],
+        entityRanges: [],
+        data: {},
+      },
+      {
+        key: '4481k',
+        text:
+          'With the support of the REPUBLIC, General Leia Organa leads a brave RESISTANCE. She is desperate to find her brother Luke and gain his help in restoring peace and justice to the galaxy.',
+        type: 'unstyled',
+        depth: 0,
+        inlineStyleRanges: [
+          { offset: 34, length: 19, style: 'BOLD' },
+          { offset: 117, length: 4, style: 'BOLD' },
+          { offset: 68, length: 10, style: 'ANYCUSTOMSTYLE' },
+        ],
+        entityRanges: [],
+        data: {},
+      },
+    ],
+    entityMap: {},
+  }
+
+  let state = {
+    editorState: EditorState.createWithContent(convertFromRaw(initialData)),
+    showToolbar: true,
+    windowWidth: 0,
+    toolbarMeasures: {
+      w: 0,
+      h: 0,
+    },
+    selectionMeasures: {
+      w: 0,
+      h: 0,
+    },
+    selectionCoordinates: {
+      x: 0,
+      y: 0,
+    },
+    toolbarCoordinates: {
+      x: 0,
+      y: 0,
+    },
+    showRawData: false,
+  }
+
+  const [ editorState, setEditorState ] = useState(state.editorState);
+  const [ activeEdit, setActiveEdit ] = useState(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]]);
+  const [ activeLocation, setActiveLocation ] = useState(props.lessonVariance);
 
   return (
     <div className={styles.container}>
@@ -85,7 +180,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             <div className={styles.headerInsideCustom}>
                 <h3 className={styles.headerTitle} onClick={() => Router.push("/")}>Learn to Code.</h3> 
 
-                <h4>{}</h4>
+                <h4>{activeEdit.name}</h4>
 
                 {(!user) 
                     ? 
@@ -109,41 +204,43 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 {
                     props.pageData.lessons.map((e, index) => {
                         return ( 
-                            <div onClick={(e) => {
-                                if(e.target.getElementsByTagName("A")[0].innerHTML == "-") {
-                                    e.target.getElementsByTagName("A")[0].innerHTML = "";
+                            <div key={index} onClick={(e) => {
+                                // if((e.target as HTMLDivElement).getElementsByTagName("A")[0].innerHTML == "-") {
+                                //   (e.target as HTMLDivElement).getElementsByTagName("A")[0].innerHTML = "";
 
-                                    console.log(e.target);
-                                    e.target.parentElement.getElementsByClassName(styles.collectionArr)[0].style.height = "0%";
-                                    e.target.parentElement.getElementsByClassName(styles.collectionArr)[0].style.padding = "0%";
-                                }else {
-                                    e.target.getElementsByTagName("A")[0].innerHTML = "-";
+                                //   ((e.target as HTMLDivElement).parentElement.getElementsByClassName(styles.collectionArr)[0] as HTMLDivElement).style.height = "0%";
+                                //   ((e.target as HTMLDivElement).parentElement.getElementsByClassName(styles.collectionArr)[0] as HTMLDivElement).style.padding = "0%";
+                                // }else {
+                                //   (e.target as HTMLDivElement).getElementsByTagName("A")[0].innerHTML = "-";
 
-                                    e.target.parentElement.getElementsByClassName(styles.collectionArr)[0].style.height = "100%";
-                                    e.target.parentElement.getElementsByClassName(styles.collectionArr)[0].style.padding = "1rem";
-                                }
+                                //   ((e.target as HTMLDivElement).parentElement.getElementsByClassName(styles.collectionArr)[0] as HTMLDivElement).style.height = "100%";
+                                //   ((e.target as HTMLDivElement).parentElement.getElementsByClassName(styles.collectionArr)[0] as HTMLDivElement).style.padding = "1rem";
+                                // }
                             }}>
                                 <div>
-                                    {index + 1}. {e.name}
+                                    {e.name}
 
                                     {
                                       (props.lessonVariance[0] == index)?
-                                      <a href="">-</a>
+                                      <a href="">^</a>
                                       :
                                       <a href=""></a>
                                     }
                                 </div>
 
                                 <div className={styles.collectionArr}>
-                                    {
-                                        e.sub_lessons.map((e2, index2) => {
-                                            return (
-                                                <div>
-                                                    {index + 1}.{index2 + 1} {e2.name}
-                                                </div>
-                                            )
-                                        })
-                                    }
+                                  {
+                                    e.sub_lessons.map((e2, index2) => {
+                                      return (
+                                        <div className={`${styles.changeDefault} ${(props.pageData.lessons[index].sub_lessons[index2] == activeEdit) ? styles.changeActive : ''}`} onClick={() => { 
+                                          setActiveEdit(props.pageData.lessons[index].sub_lessons[index2]);
+                                          setActiveLocation([index, index2]);
+                                        }}>
+                                          {index + 1}.{index2 + 1} {e2.name}
+                                        </div>
+                                      )
+                                    })
+                                  }
                                 </div>
                                 
                             </div>
@@ -155,30 +252,49 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 <Button title={"Create"}></Button>
           </div>
 
-          <div className={styles.vertical}>
+          <div className={`${styles.vertical} ${styles.createWindow}`}>
               <div>
                 {
-                  (process.browser == true)
+                  //props.pageData.lessons[props.lessonVariance[0]][props.lessonVariance[1]].desc
+                  
+                  (true)
                   ?
-                    // <ReactQuill 
-                    //   value={props.pageData.lessons[props.lessonVariance[0]][props.lessonVariance[1]].desc}
-                      
-                    // />
-                    <div></div>
+                    <div className={styles.textEditor}>
+                      <Editor 
+                        editorState={editorState}
+                        placeholder={`Start Typing a description for ${activeEdit.name}`}
+                        spellcheck={true}
+                        onChange={(es: EditorState) => { 
+                          setEditorState(es);
+                          let newEdit = activeEdit;
+                          newEdit.desc = es.getCurrentContent();
+                          setActiveEdit(newEdit);
+                        }}
+                      />
+
+                      <div>
+                        <Button title={"Upload"} onClick={() => reMergeContent(activeEdit, activeLocation, props)}></Button>
+                      </div>
+                    </div>
                   :
-                    <div></div>
+                    <div>{"No Browser..."}</div>
                 }
                 
                 
               </div>
 
-              <div>
+              {/* <div>
                 Template Code Editor
-              </div>
+              </div> */}
           </div>
       </div>
     </div>
   );
+}
+
+const reMergeContent = (newAddition, additionLocation, master) => {
+  const remerged = master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]] = newAddition;
+  console.log(remerged);
 }
 
 export default HomePage;

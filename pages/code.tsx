@@ -19,8 +19,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faBookOpen } from "@fortawesome/free-solid-svg-icons";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  
-
   try {
     const cookies = nookies.get(ctx);
     const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);

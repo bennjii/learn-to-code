@@ -1,7 +1,7 @@
 import AceEditor from 'react-ace';
 
 import brace from 'brace';
-import "brace/theme/nightowl";
+// import "brace/theme/nightowl";
 import "brace/theme/solarized_dark";
 
 import 'brace/theme/github';
@@ -15,7 +15,7 @@ const TextEditor = (props) => (
         
         <AceEditor
             mode={`${props.lan}`}
-            theme="nightowl"
+            theme="solarized_dark"
             onChange={props.onChange}
             name="editor"
             editorProps={{
