@@ -143,7 +143,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   }
 
   let state = {
-    editorState: EditorState.createWithContent(convertFromRaw(initialData)),
+    editorState: EditorState.createWithContent(convertFromRaw(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]].desc)),
     showToolbar: true,
     windowWidth: 0,
     toolbarMeasures: {
