@@ -1,0 +1,4 @@
+Fira Code iScript, Menlo, Monaco, 'Courier New', monospace
+
+NORMAL:
+Consolas, 'Courier New', monospace

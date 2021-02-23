@@ -15,10 +15,12 @@ import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import {
   Editor,
   EditorState,
-  RichUtils,
+  ContentState,
   convertToRaw,
   convertFromRaw,
+  Draft
 } from 'draft-js'
+import { firebaseClient } from "../firebaseClient";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
@@ -75,80 +77,37 @@ type Lesson = {
     template_code?: string
 }
 
-type EventTarget = {
-  getElementsByTagName: Function
-}
-
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const user = props.user;
+  let content: ContentState;
 
-  const initialData = {
+  content = ContentState.createFromText(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]].desc);
+
+  // try {
+  //   content = convertFromRaw(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]].desc);
+  // }catch {
+    
+  // }
+
+  const emptyContentState = convertFromRaw({
+    entityMap: {},
     blocks: [
       {
-        key: '16d0k',
-        text: 'You can edit this text.',
-        type: 'unstyled',
-        depth: 0,
-        inlineStyleRanges: [{ offset: 0, length: 23, style: 'BOLD' }],
-        entityRanges: [],
-        data: {},
-      },
-      {
-        key: '98peq',
         text: '',
+        key: 'foo',
         type: 'unstyled',
-        depth: 0,
-        inlineStyleRanges: [],
         entityRanges: [],
-        data: {},
-      },
-      {
-        key: 'ecmnc',
-        text:
-          'Luke Skywalker has vanished. In his absence, the sinister FIRST ORDER has risen from the ashes of the Empire and will not rest until Skywalker, the last Jedi, has been destroyed.',
-        type: 'unstyled',
-        depth: 0,
-        inlineStyleRanges: [
-          { offset: 0, length: 14, style: 'BOLD' },
-          { offset: 133, length: 9, style: 'BOLD' },
-        ],
-        entityRanges: [],
-        data: {},
-      },
-      {
-        key: 'fe2gn',
-        text: '',
-        type: 'unstyled',
-        depth: 0,
-        inlineStyleRanges: [],
-        entityRanges: [],
-        data: {},
-      },
-      {
-        key: '4481k',
-        text:
-          'With the support of the REPUBLIC, General Leia Organa leads a brave RESISTANCE. She is desperate to find her brother Luke and gain his help in restoring peace and justice to the galaxy.',
-        type: 'unstyled',
-        depth: 0,
-        inlineStyleRanges: [
-          { offset: 34, length: 19, style: 'BOLD' },
-          { offset: 117, length: 4, style: 'BOLD' },
-          { offset: 68, length: 10, style: 'ANYCUSTOMSTYLE' },
-        ],
-        entityRanges: [],
-        data: {},
       },
     ],
-    entityMap: {},
-  }
+  });
 
   let state = {
-    editorState: EditorState.createWithContent(convertFromRaw(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]].desc)),
+    editorState: EditorState.createWithContent(emptyContentState),  
     showToolbar: true,
     windowWidth: 0,
     toolbarMeasures: {
-      w: 0,
-      h: 0,
+      w: 100,
+      h: 50,
     },
     selectionMeasures: {
       w: 0,
@@ -264,6 +223,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                         editorState={editorState}
                         placeholder={`Start Typing a description for ${activeEdit.name}`}
                         spellcheck={true}
+                        editorKey="foobaz"
                         onChange={(es: EditorState) => { 
                           setEditorState(es);
                           let newEdit = activeEdit;
@@ -292,9 +252,16 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   );
 }
 
-const reMergeContent = (newAddition, additionLocation, master) => {
-  const remerged = master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]] = newAddition;
+const reMergeContent = (newAddition: ContentState, additionLocation, master) => {
+  const remerged = master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]] = JSON.stringify(newAddition);
   console.log(remerged);
+
+  // const db = firebaseClient.firestore();
+  // const courseId = "S7ioyCGZ1xow6DRyX3Rw" // TEMPVAR
+
+  // db.doc(`courses/${courseId}`).set(master).then((doc) => {
+  //   console.log("Update Sucessful.");
+  // })
 }
 
 export default HomePage;
