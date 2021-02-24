@@ -1425,6 +1425,18 @@ div.headerProgress {
   height: 100%;
 }
 
+.textEditor > div {
+  height: 100%;
+  width: 100%;
+
+  flex: 1;
+}
+
+.textEditor > div * {
+  height: 100%;
+  width: 100%;
+}
+
 .createWindow {
   height: 100%;
   width: 100%;
