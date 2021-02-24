@@ -9,17 +9,12 @@ import Header from "../public/components/header"
 import Router from 'next/router'
 import { useState } from "react"
 
+import { ContentState } from 'draft-js' 
+
 import { firebaseAdmin } from "../firebaseAdmin"
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 
-import {
-  Editor,
-  EditorState,
-  ContentState,
-  convertToRaw,
-  convertFromRaw,
-  Draft
-} from 'draft-js'
+import { SimpleEditor } from '../public/components/editor' 
 import { firebaseClient } from "../firebaseClient";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
@@ -79,52 +74,6 @@ type Lesson = {
 
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const user = props.user;
-  let content: ContentState;
-
-  content = ContentState.createFromText(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]].desc);
-
-  // try {
-  //   content = convertFromRaw(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]].desc);
-  // }catch {
-    
-  // }
-
-  const emptyContentState = convertFromRaw({
-    entityMap: {},
-    blocks: [
-      {
-        text: '',
-        key: 'foo',
-        type: 'unstyled',
-        entityRanges: [],
-      },
-    ],
-  });
-
-  let state = {
-    editorState: EditorState.createWithContent(emptyContentState),  
-    showToolbar: true,
-    windowWidth: 0,
-    toolbarMeasures: {
-      w: 100,
-      h: 50,
-    },
-    selectionMeasures: {
-      w: 0,
-      h: 0,
-    },
-    selectionCoordinates: {
-      x: 0,
-      y: 0,
-    },
-    toolbarCoordinates: {
-      x: 0,
-      y: 0,
-    },
-    showRawData: false,
-  }
-
-  const [ editorState, setEditorState ] = useState(state.editorState);
   const [ activeEdit, setActiveEdit ] = useState(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]]);
   const [ activeLocation, setActiveLocation ] = useState(props.lessonVariance);
 
@@ -163,22 +112,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 {
                     props.pageData.lessons.map((e, index) => {
                         return ( 
-                            <div key={index} onClick={(e) => {
-                                // if((e.target as HTMLDivElement).getElementsByTagName("A")[0].innerHTML == "-") {
-                                //   (e.target as HTMLDivElement).getElementsByTagName("A")[0].innerHTML = "";
-
-                                //   ((e.target as HTMLDivElement).parentElement.getElementsByClassName(styles.collectionArr)[0] as HTMLDivElement).style.height = "0%";
-                                //   ((e.target as HTMLDivElement).parentElement.getElementsByClassName(styles.collectionArr)[0] as HTMLDivElement).style.padding = "0%";
-                                // }else {
-                                //   (e.target as HTMLDivElement).getElementsByTagName("A")[0].innerHTML = "-";
-
-                                //   ((e.target as HTMLDivElement).parentElement.getElementsByClassName(styles.collectionArr)[0] as HTMLDivElement).style.height = "100%";
-                                //   ((e.target as HTMLDivElement).parentElement.getElementsByClassName(styles.collectionArr)[0] as HTMLDivElement).style.padding = "1rem";
-                                // }
-                            }}>
+                            <div key={index}>
                                 <div>
                                     {e.name}
-
                                     {
                                       (props.lessonVariance[0] == index)?
                                       <a href="">^</a>
@@ -191,7 +127,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                                   {
                                     e.sub_lessons.map((e2, index2) => {
                                       return (
-                                        <div className={`${styles.changeDefault} ${(props.pageData.lessons[index].sub_lessons[index2] == activeEdit) ? styles.changeActive : ''}`} onClick={() => { 
+                                        <div key={`${index} ${index2}`} className={`${styles.changeDefault} ${(props.pageData.lessons[index].sub_lessons[index2] == activeEdit) ? styles.changeActive : ''}`} onClick={() => { 
                                           setActiveEdit(props.pageData.lessons[index].sub_lessons[index2]);
                                           setActiveLocation([index, index2]);
                                         }}>
@@ -219,18 +155,14 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   (true)
                   ?
                     <div className={styles.textEditor}>
-                      <Editor 
-                        editorState={editorState}
+                      {/* 
                         placeholder={`Start Typing a description for ${activeEdit.name}`}
                         spellcheck={true}
                         editorKey="foobaz"
-                        onChange={(es: EditorState) => { 
-                          setEditorState(es);
-                          let newEdit = activeEdit;
-                          newEdit.desc = es.getCurrentContent();
-                          setActiveEdit(newEdit);
-                        }}
-                      />
+                        value={editorState.getCurrentContent()}
+                      */}
+
+                      <SimpleEditor content={"Hewwo"}/>
 
                       <div>
                         <Button title={"Upload"} onClick={() => reMergeContent(activeEdit, activeLocation, props)}></Button>
@@ -262,6 +194,9 @@ const reMergeContent = (newAddition: ContentState, additionLocation, master) => 
   // db.doc(`courses/${courseId}`).set(master).then((doc) => {
   //   console.log("Update Sucessful.");
   // })
+
+  /*
+  props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]].desc */
 }
 
 export default HomePage;

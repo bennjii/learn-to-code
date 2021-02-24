@@ -19,8 +19,6 @@ if (!firebaseAdmin.apps.length) {
     }),
     databaseURL: `https://${projectId}.firebaseio.com`,
   });
-
-  console.log("ADMIN CONNECTED")
 }
 
 export { firebaseAdmin };
