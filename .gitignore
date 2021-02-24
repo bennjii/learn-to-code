@@ -33,4 +33,6 @@ yarn-error.log*
 # vercel
 .vercel
 
+# other
 learn-to-code-nz-firebase-adminsdk-28q7g-b715929f52.json
+auth.tsx

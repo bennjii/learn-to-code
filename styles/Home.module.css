@@ -1402,7 +1402,7 @@ div.headerProgress {
 
 .textEditor {
   border: 2px solid rgba(255,255,255,.15);
-  background-color: rgba(255, 255, 255, 0.041);
+  background-color: #f4f4f4;
   border-radius: 5px;
 
   padding: .8rem 1rem;
@@ -1432,16 +1432,21 @@ div.headerProgress {
   flex: 1;
 }
 
-.textEditor > div * {
+/* .textEditor > div * {
   height: 100%;
   width: 100%;
-}
+} */
 
 .createWindow {
   height: 100%;
   width: 100%;
 
   padding: 1rem;
+}
+
+.createWindow > div {
+  height: 100%;
+  width: 100%;
 }
 
 .changeDefault {
@@ -1466,6 +1471,10 @@ div.headerProgress {
   font-size: .9rem;
 }
 
+.changeDefault:hover {
+  cursor: pointer;
+}
+
 .changeDefault * {
   margin: 0;
 }
@@ -1473,4 +1482,38 @@ div.headerProgress {
 .changeActive {
   border: 2px solid rgba(255,255,255,.15);
   background-color: rgba(255, 255, 255, 0.041);
+}
+
+.editingContent {
+  padding: 10px;
+  background-color: #f4f4f4;
+
+  border-radius: 5px;
+  color: #021423;
+
+  height: 100%;
+  
+  display: flex;
+  flex-direction: column;
+}
+
+.editingContent > div:first-of-type {
+  flex: 1;
+}
+
+.editingContent > div > div {
+  height: 100%;
+}
+
+.editingContent > div > div > div {
+  height: 100%;
+}
+
+.editingContent > div > div > div > div {
+  height: 100%;
+}
+
+.borderRadius {
+  border-radius: 7px;
+  overflow: hidden;
 }

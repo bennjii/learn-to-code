@@ -1,38 +1,63 @@
 import React, {Component} from 'react'
-import { Editor, EditorState, convertFromRaw } from 'draft-js'
+import { Editor, EditorState, convertFromRaw, ContentState } from 'draft-js'
+import styles from '../../styles/Home.module.css'
 
-class SimpleEditor extends Component<{content: string}, {editorState: EditorState}> {
+type Lesson = {
+  desc: string,
+  instructions?: Array<Instruction>,
+  name: string,
+  template_code?: string
+}
+
+type Instruction = {
+  desc: string,
+  desired_output: string,
+  server_code?: string
+}
+
+class SimpleEditor extends Component<{content: ContentState | string, changeParent: Function, currentParent: Lesson}, {editorState: EditorState}> {
   constructor(props) {
     super(props);
 
-    const emptyContentState = convertFromRaw({
+    let content;
+
+    if(typeof this.props.content === "string") {
+      content = convertFromRaw({
         entityMap: {},
         blocks: [
             {
-                text: '',
+                text: this.props.content,
                 key: 'foo',
                 type: 'unstyled',
                 entityRanges: [],
             },
         ],
-    });
+      });
+    }else {
+      content = this.props.content;
+    }
 
     this.state = {
-      editorState: EditorState.createWithContent(emptyContentState),
+      editorState: EditorState.createWithContent(content),
     };
 
     this.onChange = this.onChange.bind(this);
   }
 
   onChange(es) {
-    this.setState({editorState: es})
+    this.setState({editorState: es}, () => {
+      this.props.currentParent.desc = es.getCurrentContent()
+      this.props.changeParent(this.props.currentParent)
+
+      this.forceUpdate();
+    });
   }
 
   render() {
     return (
-      <div style={{border: '1px solid black', padding: 10}}>
+      <div>
         <Editor
-          placeholder="Write something!"
+          placeholder={`Write about ${this.props.currentParent.name}`}
           editorKey="foobaz"
           editorState={this.state.editorState}
           onChange={this.onChange}

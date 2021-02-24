@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import nookies from "nookies";
 
 import styles from '../styles/Home.module.css'
@@ -8,6 +8,11 @@ import Button from '../public/components/button'
 import Header from "../public/components/header"
 import Router from 'next/router'
 import { useState } from "react"
+
+import dynamic from 'next/dynamic'
+const TextEditor = dynamic(import('../public/components/text_editor'), {
+  ssr: false
+});
 
 import { ContentState } from 'draft-js' 
 
@@ -66,10 +71,10 @@ type Instruction = {
 }
 
 type Lesson = {
-    desc: string,
-    instructions?: Array<Instruction>,
-    name: string,
-    template_code?: string
+  desc: string,
+  instructions?: Array<Instruction>,
+  name: string,
+  template_code?: string
 }
 
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
@@ -96,7 +101,6 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     :
                     <div className={styles.linear}>
                       <a onClick={() => Router.push("/account")}>{user.name}</a>
-                      {/* <a onClick={() => firebaseClient.auth().signOut()}>Signout</a> */}
                     </div>
                 }
             </div>
@@ -143,41 +147,31 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     })
                 }
                 </div>
-                
                 <Button title={"Create"}></Button>
           </div>
 
           <div className={`${styles.vertical} ${styles.createWindow}`}>
               <div>
                 {
-                  //props.pageData.lessons[props.lessonVariance[0]][props.lessonVariance[1]].desc
-                  
                   (true)
                   ?
                     <div className={styles.textEditor}>
-                      {/* 
-                        placeholder={`Start Typing a description for ${activeEdit.name}`}
-                        spellcheck={true}
-                        editorKey="foobaz"
-                        value={editorState.getCurrentContent()}
-                      */}
 
-                      <SimpleEditor content={"Hewwo"}/>
+                      <div className={styles.editingContent}> 
+                        <SimpleEditor content={activeEdit.desc} changeParent={setActiveEdit} currentParent={activeEdit}/>
 
-                      <div>
                         <Button title={"Upload"} onClick={() => reMergeContent(activeEdit, activeLocation, props)}></Button>
+                      </div>
+                      
+
+                      <div className={styles.borderRadius}>
+                        <TextEditor lan='javascript' placeholder={activeEdit.template_code}/>
                       </div>
                     </div>
                   :
                     <div>{"No Browser..."}</div>
                 }
-                
-                
               </div>
-
-              {/* <div>
-                Template Code Editor
-              </div> */}
           </div>
       </div>
     </div>
@@ -185,15 +179,15 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 }
 
 const reMergeContent = (newAddition: ContentState, additionLocation, master) => {
-  const remerged = master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]] = JSON.stringify(newAddition);
-  console.log(remerged);
+  master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]].desc = newAddition.desc.getPlainText();
 
-  // const db = firebaseClient.firestore();
-  // const courseId = "S7ioyCGZ1xow6DRyX3Rw" // TEMPVAR
+  const remerged = master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]];
+  const db = firebaseClient.firestore();
+  const courseId = "S7ioyCGZ1xow6DRyX3Rw" // TEMPVAR
 
-  // db.doc(`courses/${courseId}`).set(master).then((doc) => {
-  //   console.log("Update Sucessful.");
-  // })
+  db.doc(`courses/${courseId}`).set(master.pageData).then((doc) => {
+    console.log("Update Sucessful.");
+  })
 
   /*
   props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]].desc */
