@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import nookies from "nookies";
 
 import styles from '../styles/Home.module.css'
@@ -7,7 +7,6 @@ import Button from '../public/components/button'
 
 import Header from "../public/components/header"
 import Router from 'next/router'
-import { useState } from "react"
 
 import dynamic from 'next/dynamic'
 const TextEditor = dynamic(import('../public/components/text_editor'), {
@@ -82,7 +81,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const [ activeEdit, setActiveEdit ] = useState(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]]);
   const [ activeLocation, setActiveLocation ] = useState(props.lessonVariance);
 
-  const [ syncStatus, setSyncStatus ] = useState(false)
+  const [ syncStatus, setSyncStatus ] = useState(false);
 
   return (
     <div className={styles.container}>
@@ -98,14 +97,14 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 <h4>{activeEdit.name}</h4>
 
                 <div className={styles.linear}>
-                  <a>
+                  <a className={(syncStatus) ? styles.syncStatusTrue : styles.syncStatusFalse}>
                   {
                     (syncStatus)
                     ?
                     "Synced"
                     :
                     "Not Synced"
-                    }
+                  }
                   </a>
                 </div>
             </div>
@@ -163,7 +162,13 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     <div className={styles.textEditor}>
 
                       <div className={styles.editingContent}> 
-                        <SimpleEditor content={activeEdit.desc} changeParent={setActiveEdit} currentParent={activeEdit} callback={() => { useDebounce(reMergeContent(activeEdit, activeLocation, props), 2500) }}/>
+                        <SimpleEditor content={activeEdit.desc} changeParent={setActiveEdit} currentParent={activeEdit} callback={() => { 
+                          setSyncStatus(
+                            debounceSync(() => {
+                              reMergeContent(activeEdit, activeLocation, props)
+                            })
+                          )
+                        }}/>
 
                         {/* <Button title={"Upload"} onClick={() => setSyncStatus(reMergeContent(activeEdit, activeLocation, props))}></Button> */}
                       </div>
@@ -173,10 +178,13 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                         <TextEditor lan='javascript' placeholder={activeEdit.template_code} onChange={(e) => {
                           let newEdit = activeEdit;
                           newEdit.template_code = e;
-                          setActiveEdit(newEdit)
+                          setActiveEdit(newEdit);
 
-                          useDebounce(reMergeContent(activeEdit, activeLocation, props), 2500);
-                          console.log("TEXTEDITOR - CODE")
+                          setSyncStatus(
+                            debounceSync(() => {
+                              reMergeContent(activeEdit, activeLocation, props)
+                            })
+                          )
                         }}/>
                       </div>
                     </div>
@@ -192,45 +200,34 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
 let lastDebounce = new Date();
 
-const reMergeContent = (newAddition, additionLocation, master) => {
-  console.log("CMD RUN");
-
+const debounceSync = (callback) => {
   if(new Date().getTime() - lastDebounce.getTime() > 2500) {
-    if(typeof newAddition.desc !== 'string') {
-      newAddition.desc = newAddition.desc.getPlainText();
-    }
-    
-    master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]] = newAddition;
-    
-    const db = firebaseClient.firestore();
-    const courseId = "S7ioyCGZ1xow6DRyX3Rw" // TEMPVAR
-  
-    db.doc(`courses/${courseId}`).set(master.pageData).then((doc) => {
-      console.log("Update Sucessful.");
-    });
-
-    lastDebounce = new Date();
-    
-    return true;
+    return callback();
   }else {
-    lastDebounce = new Date();
-
     return false;
   }
 }
 
-const useDebounce = (value, delay) => {
-  const [ debouncedValue, setDebouncedValue ] = useState(value)
+const reMergeContent = (newAddition, additionLocation, master) => {
+  console.log("CMD RUN");
+
+  if(typeof newAddition.desc !== 'string') {
+    newAddition.desc = newAddition.desc.getPlainText();
+  }
   
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay);
+  master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]] = newAddition;
+  
+  const db = firebaseClient.firestore();
+  const courseId = "S7ioyCGZ1xow6DRyX3Rw" // TEMPVAR
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [value, delay]);
+  db.doc(`courses/${courseId}`).set(master.pageData).then((doc) => {
+    console.log("Update Sucessful.");
+    lastDebounce = new Date();
 
-  return debouncedValue;
+    return true;
+  }).catch(e => {
+    return false;
+  });
 }
 
 export default HomePage;

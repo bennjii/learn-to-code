@@ -1517,3 +1517,21 @@ div.headerProgress {
   border-radius: 7px;
   overflow: hidden;
 }
+
+.syncStatusFalse {
+  font-weight: 100;
+  padding: .5rem 1rem;
+  background-color: rgb(209 22 22 / 10%);
+  border-radius: 5px;
+  color: rgb(255 112 112);
+  -webkit-font-smoothing: antialiased;
+}
+
+.syncStatusTrue {
+  font-weight: 100;
+  padding: .5rem 1rem;
+  background-color: rgb(22 209 83 / 10%);
+  border-radius: 5px;
+  color: rgb(172 255 129);
+  -webkit-font-smoothing: antialiased;
+}
