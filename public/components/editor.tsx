@@ -15,7 +15,7 @@ type Instruction = {
   server_code?: string
 }
 
-class SimpleEditor extends Component<{content: ContentState | string, changeParent: Function, currentParent: Lesson}, {editorState: EditorState}> {
+class SimpleEditor extends Component<{content: ContentState | string, changeParent: Function, currentParent: Lesson, callback: Function}, {editorState: EditorState}> {
   constructor(props) {
     super(props);
 
@@ -48,6 +48,7 @@ class SimpleEditor extends Component<{content: ContentState | string, changePare
     this.setState({editorState: es}, () => {
       this.props.currentParent.desc = es.getCurrentContent()
       this.props.changeParent(this.props.currentParent)
+      this.props.callback();
 
       this.forceUpdate();
     });
