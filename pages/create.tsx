@@ -147,7 +147,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     })
                 }
                 </div>
-                <Button title={"Create"}></Button>
+                <Button title={"Create"} onClick={() => {}}></Button>
           </div>
 
           <div className={`${styles.vertical} ${styles.createWindow}`}>
@@ -165,7 +165,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       
 
                       <div className={styles.borderRadius}>
-                        <TextEditor lan='javascript' placeholder={activeEdit.template_code}/>
+                        <TextEditor lan='javascript' placeholder={activeEdit.template_code} onChange={(e) => {
+                          let newEdit = activeEdit;
+                          newEdit.template_code = e;
+                          setActiveEdit(newEdit)
+                        }}/>
                       </div>
                     </div>
                   :
@@ -178,19 +182,19 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   );
 }
 
-const reMergeContent = (newAddition: ContentState, additionLocation, master) => {
-  master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]].desc = newAddition.desc.getPlainText();
-
-  const remerged = master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]];
+const reMergeContent = (newAddition, additionLocation, master) => {
+  if(typeof newAddition.desc !== 'string') {
+    newAddition.desc = newAddition.desc.getPlainText();
+  }
+  
+  master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]] = newAddition;
+  
   const db = firebaseClient.firestore();
   const courseId = "S7ioyCGZ1xow6DRyX3Rw" // TEMPVAR
 
   db.doc(`courses/${courseId}`).set(master.pageData).then((doc) => {
     console.log("Update Sucessful.");
   })
-
-  /*
-  props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]].desc */
 }
 
 export default HomePage;

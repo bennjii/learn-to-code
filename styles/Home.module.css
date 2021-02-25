@@ -1264,7 +1264,7 @@ div.headerProgress {
   display: grid;
   width: 100%;
 
-  grid-template-columns: 15% 1fr;
+  grid-template-columns: minmax(15%, 250px) 1fr;
   grid-template-rows: 100%;
 
   flex: 1;
