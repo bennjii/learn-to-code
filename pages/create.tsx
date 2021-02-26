@@ -4,16 +4,12 @@ import nookies from "nookies";
 import styles from '../styles/Home.module.css'
 import Head from 'next/head'
 import Button from '../public/components/button'
-
-import Header from "../public/components/header"
 import Router from 'next/router'
 
 import dynamic from 'next/dynamic'
 const TextEditor = dynamic(import('../public/components/text_editor'), {
   ssr: false
 });
-
-import { ContentState } from 'draft-js' 
 
 import { firebaseAdmin } from "../firebaseAdmin"
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
@@ -24,8 +20,8 @@ import { firebaseClient } from "../firebaseClient";
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
     const cookies = nookies.get(ctx);
-    // console.log(JSON.stringify(cookies, null, 2));
     const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
+    
     const { uid, email } = token;
     const user = token;
 
@@ -163,14 +159,12 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
                       <div className={styles.editingContent}> 
                         <SimpleEditor content={activeEdit.desc} changeParent={setActiveEdit} currentParent={activeEdit} callback={() => { 
-                          setSyncStatus(
-                            debounceSync(() => {
-                              reMergeContent(activeEdit, activeLocation, props)
-                            })
-                          )
-                        }}/>
+                          setSyncStatus(false);
 
-                        {/* <Button title={"Upload"} onClick={() => setSyncStatus(reMergeContent(activeEdit, activeLocation, props))}></Button> */}
+                          updateSync(() => {
+                            reMergeContent(activeEdit, activeLocation, props, setSyncStatus)  
+                          })                       
+                        }}/>
                       </div>
                       
 
@@ -179,12 +173,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                           let newEdit = activeEdit;
                           newEdit.template_code = e;
                           setActiveEdit(newEdit);
+                          setSyncStatus(false);
 
-                          setSyncStatus(
-                            debounceSync(() => {
-                              reMergeContent(activeEdit, activeLocation, props)
-                            })
-                          )
+                          updateSync(() => {
+                            reMergeContent(activeEdit, activeLocation, props, setSyncStatus)    
+                          })
                         }}/>
                       </div>
                     </div>
@@ -200,15 +193,18 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
 let lastDebounce = new Date();
 
-const debounceSync = (callback) => {
-  if(new Date().getTime() - lastDebounce.getTime() > 2500) {
-    return callback();
-  }else {
-    return false;
-  }
+const updateSync = (callback) => {
+    lastDebounce = new Date();
+
+    setTimeout(() => { 
+      if(new Date().getTime() - lastDebounce.getTime() >= 2500) {
+        lastDebounce = new Date();
+        return callback();
+      }
+    }, 2500);
 }
 
-const reMergeContent = (newAddition, additionLocation, master) => {
+const reMergeContent = (newAddition, additionLocation, master, callback: Function) => {
   console.log("CMD RUN");
 
   if(typeof newAddition.desc !== 'string') {
@@ -224,9 +220,9 @@ const reMergeContent = (newAddition, additionLocation, master) => {
     console.log("Update Sucessful.");
     lastDebounce = new Date();
 
-    return true;
+    callback(true);
   }).catch(e => {
-    return false;
+    callback(false);
   });
 }
 
