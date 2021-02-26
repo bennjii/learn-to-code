@@ -170,7 +170,7 @@ input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
   opacity: .5; /* Firefox */
 }
 
-* {
+*:not(span) {
   box-sizing: border-box;
   /* font-family: system-ui; */
   font-family: 'stolzl';

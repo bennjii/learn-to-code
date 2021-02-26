@@ -1351,6 +1351,11 @@ classnames@2.2.6:
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
 
+clsx@^1.0.4:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
+  integrity sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==
+
 code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
@@ -1846,6 +1851,36 @@ dot-prop@^5.2.0:
   integrity sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==
   dependencies:
     is-obj "^2.0.0"
+
+draft-js-buttons@^2.0.1:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/draft-js-buttons/-/draft-js-buttons-2.0.2.tgz#d96d0dcec9e224a9d62f2543a50f5f1cbef84000"
+  integrity sha512-qC3vkZ4ZvKe86Uskf5CsZxgo4Rt6ITAE51sbiI5YCMasanXdMVRwbF4fQonMyahds1tgj9EeBNePOBnlKTz9gQ==
+  dependencies:
+    clsx "^1.0.4"
+
+draft-js-inline-toolbar-plugin@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/draft-js-inline-toolbar-plugin/-/draft-js-inline-toolbar-plugin-3.0.1.tgz#2fc9da3d64c4b932c1edcccf6e32ace85de7c983"
+  integrity sha512-x3DyHKOnjTWHTn73Cb8ahfncKZvNECU+uuUOCq5LYCekCR7PFoHQnYIWXjoM6Mo+b7MBAsEY0uatW1N/KxinMw==
+  dependencies:
+    draft-js-buttons "^2.0.1"
+
+draft-js-plugins-editor@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/draft-js-plugins-editor/-/draft-js-plugins-editor-3.0.0.tgz#196d1e065e2c29faebaab4ec081b734fdef294a2"
+  integrity sha512-bFEL0FUIPg9VK3KSeBZ3D+uMqQEVe4Cv7++LWCMASRH02jy6x2f87NRxSZLzTQES5+oL6Qg+OEUlaTn409145A==
+  dependencies:
+    immutable "~3.7.4"
+    prop-types "^15.5.8"
+
+draft-js-static-toolbar-plugin@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/draft-js-static-toolbar-plugin/-/draft-js-static-toolbar-plugin-3.0.1.tgz#fcb22e683a82d9acafba6e61adaa149168a51482"
+  integrity sha512-CBBwc2O5A0UVES4ZsOQUIezvYRrqzoyE0k9gep3v2uQVEzJuc1wmIV0MROey9pUY+UivBQ4T9WVkwFBpf8NU1w==
+  dependencies:
+    draft-js-buttons "^2.0.1"
+    prop-types "^15.5.8"
 
 draft-js@^0.11.7:
   version "0.11.7"
@@ -3877,7 +3912,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@15.7.2, prop-types@^15.7.2:
+prop-types@15.7.2, prop-types@^15.5.8, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==

@@ -11,6 +11,7 @@ const TextEditor = dynamic(import('../public/components/text_editor'), {
   ssr: false
 });
 
+
 import { firebaseAdmin } from "../firebaseAdmin"
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 
@@ -77,7 +78,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const [ activeEdit, setActiveEdit ] = useState(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]]);
   const [ activeLocation, setActiveLocation ] = useState(props.lessonVariance);
 
-  const [ syncStatus, setSyncStatus ] = useState(false);
+  const [ syncStatus, setSyncStatus ] = useState(true);
 
   return (
     <div className={styles.container}>

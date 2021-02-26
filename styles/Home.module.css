@@ -1501,17 +1501,17 @@ div.headerProgress {
   flex: 1;
 }
 
-.editingContent > div > div {
+/* .editingContent > div > div {
   height: 100%;
-}
+} */
 
-.editingContent > div > div > div {
+/* .editingContent > div > div > div {
   height: 100%;
 }
 
 .editingContent > div > div > div > div {
   height: 100%;
-}
+} */
 
 .borderRadius {
   border-radius: 7px;
