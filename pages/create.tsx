@@ -11,6 +11,7 @@ const TextEditor = dynamic(import('../public/components/text_editor'), {
   ssr: false
 });
 
+import { convertToRaw } from 'draft-js'
 
 import { firebaseAdmin } from "../firebaseAdmin"
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
@@ -159,6 +160,20 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     <div className={styles.textEditor}>
 
                       <div className={styles.editingContent}> 
+                        <input type="text" placeholder={activeEdit.name} onChange={(e) => {
+                          let editClone = activeEdit;
+                          editClone.name = (e.target.value);
+                          setActiveEdit(editClone)
+
+                          setSyncStatus(false);
+
+                          console.log(activeEdit);
+
+                          // updateSync(() => {
+                          //   reMergeContent(activeEdit, activeLocation, props, setSyncStatus)  
+                          // })   
+                        }}/>
+
                         <SimpleEditor content={activeEdit.desc} changeParent={setActiveEdit} currentParent={activeEdit} callback={() => { 
                           setSyncStatus(false);
 
@@ -170,6 +185,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       
 
                       <div className={styles.borderRadius}>
+                        
                         <TextEditor lan='javascript' placeholder={activeEdit.template_code} onChange={(e) => {
                           let newEdit = activeEdit;
                           newEdit.template_code = e;
@@ -209,7 +225,8 @@ const reMergeContent = (newAddition, additionLocation, master, callback: Functio
   console.log("CMD RUN");
 
   if(typeof newAddition.desc !== 'string') {
-    newAddition.desc = newAddition.desc.getPlainText();
+    //newAddition.desc = newAddition.desc.getPlainText();
+    newAddition.desc = convertToRaw(newAddition.desc);
   }
   
   master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]] = newAddition;

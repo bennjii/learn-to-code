@@ -5,6 +5,8 @@ import nookies from "nookies";
 import styles from '../styles/Home.module.css'
 import Head from 'next/head'
 import Button from "../public/components/button"
+import { EditorState, convertFromRaw, ContentState } from 'draft-js'
+import Editor from 'draft-js-plugins-editor'
 
 import Router from 'next/router'
 import dynamic from 'next/dynamic'
@@ -17,6 +19,20 @@ import { firebaseAdmin } from "../firebaseAdmin"
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faBookOpen } from "@fortawesome/free-solid-svg-icons";
+
+const styleMap = {
+  'CODE': {
+    backgroundColor: '#051927',
+    fontFamily: 'monospace',
+    color: '#f4f4f4',
+    padding: '1rem',
+    borderRadius: '5px',
+    width: '100%',
+    display: 'block',
+    boxSizing: 'border-box',
+    fontSize: '1rem !important'
+  },
+};
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
@@ -62,6 +78,10 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const [ lessonSelectorVisible, setLessonSelectorVisible ] = useState(false)
   const currentLesson = props.pageData.lessons[lesson].sub_lessons[subLesson];
 
+  const [ content, setContent ] = useState(EditorState.createWithContent(
+    convertFromRaw(currentLesson.desc)
+  ))
+
   return (
     <div className={styles.container}>
         <Head>
@@ -69,24 +89,6 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <div className={styles.headerCustom}>
-            <div className={styles.headerInsideCustom}>
-                <h3 className={styles.headerTitle} onClick={() => Router.push("/")}>Learn to Code.</h3> 
-
-                <h4>{props.pageData.title}</h4>
-
-                {(!user) 
-                    ? 
-                    <a>Login</a>
-                    :
-                    <div className={styles.linear}>
-                      <a onClick={() => Router.push("/account")}>{user.name}</a>
-                      {/* <a onClick={() => firebaseClient.auth().signOut()}>Signout</a> */}
-                    </div>
-                }
-            </div>
-        </div>
-        
         <div className={`${styles.codeDesc} ${(!lessonSelectorVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
           {
             props.pageData.lessons.map(e => {
@@ -113,79 +115,85 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             })
           }
         </div>
-        
         <div className={`${(!lessonSelectorVisible) ? styles.normalOut : styles.blackOut}`} onClick={() => setLessonSelectorVisible(!lessonSelectorVisible)}></div>
 
-        <div className={`${styles.codeGrid}`} >
-            <div className={styles.codeDesc} > {/*hidden={lessonSelectorVisible} */}
-                <h4>
-                  <FontAwesomeIcon
-                    icon={faBookOpen}
-                    size="1x"
-                    />
-                  
-                  Learn
-                </h4>
+        <div className={styles.learnInterface}>
+          <div className={`${styles.codeGrid}`} >
+            <div className={styles.headerCustom}>
+              <div className={styles.headerInsideCustom}>
+                <h3 className={styles.headerTitle} onClick={() => Router.push("/")}>Learn to Code.</h3> 
 
-                <div>
-                  <h3>{`${props.pageData.lessons[lesson].name.toUpperCase()} ${"I"}`}</h3>
-                  <h2>{currentLesson.name}</h2>
-                  <p>{currentLesson.desc}</p>
-                </div>
+                <h4>{props.pageData.title}</h4>
+
+                {(!user) 
+                    ? 
+                    <a>Login</a>
+                    :
+                    <div className={styles.linear}>
+                      <a onClick={() => Router.push("/account")}>{user.name}</a>
+                      {/* <a onClick={() => firebaseClient.auth().signOut()}>Signout</a> */}
+                    </div>
+                }
+              </div>
             </div>
-
-            <TextEditor lan='javascript' placeholder={currentLesson.template_code}/>
-            {/* <div className="textEditor">
-              <div>
-                  <h5>main.js</h5> 
-              </div>  
-
-              {
-                (process.browser)?
-                <AceEditor
-                    mode={`${currentLesson.lan}`}
-                    theme="night_owl"
-                    onChange={currentLesson.onChange}
-                    name="editor"
-                    editorProps={{
-                        $blockScrolling: true
-                    }}
-                    fontSize={"16px"}
-                    height=''
-                    width='100%'
-                    value={currentLesson.placeholder}
-                />
-                :
-                <div></div>
-              }
-            </div> */}
 
             {
-              console.log(TextEditor)
+              (currentLesson.type === 'code') ?
+                <div className={styles.codeInterface}>
+                  <div className={styles.codeDesc}> {/*hidden={lessonSelectorVisible} */}
+                    <h4>
+                      <FontAwesomeIcon
+                        icon={faBookOpen}
+                        size="1x"
+                        />
+                      
+                      Learn
+                    </h4>
+
+                    <div>
+                      <h3>{`${props.pageData.lessons[lesson].name.toUpperCase()} ${"I"}`}</h3>
+                      <h2>{currentLesson.name}</h2>
+                      {/* <p>{currentLesson.desc}</p> */}
+
+                      
+                      <Editor
+                        editorState={content}
+                        onChange={() => {}}
+                        readOnly={true}
+                        customStyleMap={styleMap}
+                      />
+                      
+                    </div>
+                  </div>
+
+                  <TextEditor lan='javascript' placeholder={currentLesson.template_code}/>
+                  <div className={styles.consolePage}></div>
+                </div>
+              :
+                <div></div>
             }
+              <div className={styles.codeFooter}>
+                <div className={styles.linearDark} onClick={() => setLessonSelectorVisible(!lessonSelectorVisible)}>
+                  <FontAwesomeIcon
+                    icon={faBars}
+                    size="1x"
+                  />
+                  <h4>{`${lesson + 1}.${subLesson + 1}`} {currentLesson.name}</h4>
+                </div>
 
-            <div className={styles.consolePage}>
+                <div className={styles.navigationBottom}>
+                  <Button title={"Go Back"} onClick={() => setLessonVariance([lesson, subLesson-1])}></Button>
+                  <h3>{subLesson + 1} / {props.pageData.lessons[lesson].sub_lessons.length}</h3>
+                  <Button title={"Next Lesson"} onClick={() => setLessonVariance([lesson, subLesson-1])} disabled={(lessonCompleted)}></Button>
+                </div>
 
-            </div>
-
-            <div className={styles.linearDark} onClick={() => setLessonSelectorVisible(!lessonSelectorVisible)}>
-              <FontAwesomeIcon
-                icon={faBars}
-                size="1x"
-              />
-              <h4>{`${lesson + 1}.${subLesson + 1}`} {currentLesson.name}</h4>
-            </div>
-
-            <div className={styles.navigationBottom}>
-              <Button title={"Go Back"} onClick={() => setLessonVariance([lesson, subLesson-1])}></Button>
-              <h3>{subLesson + 1} / {props.pageData.lessons[lesson].sub_lessons.length}</h3>
-              <Button title={"Next Lesson"} onClick={() => setLessonVariance([lesson, subLesson-1])} disabled={(lessonCompleted)}></Button>
-            </div>
-
-            <div>
-              <Button title="Submit" redirect="" router={Router}></Button>
-            </div>
-        </div>     
+                <div>
+                  <Button title="Submit" redirect="" router={Router}></Button>
+                </div>
+              </div>
+          </div> 
+        </div>
+            
     </div>
   );
 }

@@ -966,24 +966,48 @@ div.headerProgress {
 
 .codeGrid {
   display: grid;
-
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 7%;
-  height: 100%;
-  width: 100%;
-
-  flex: 1;
-
+  grid-template-rows: 4rem 87% 4rem;
   background-color: rgb(1, 14, 23);
+  height: 100vh;
+}
 
-  position: relative;
+.codeGrid > div:first-of-type {
+  height: 4rem;
 }
 
 .codeGrid > div:last-of-type {
+  height: 4rem;
+}
+
+.learnInterface {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  flex-direction: column;
+  position: relative;
+
+  z-index: 0;
+  min-height: 100vh !important;
+  overflow: hidden;
+}
+
+.codeGrid > div:last-of-type {
   padding: 0rem 5px;
+}
+
+.codeGrid span {
+  font-family: 'Apercu';
+  font-weight: 400;
+  
+  color: inherit;
+  font-size: inherit;
+}
+
+.codeDesc {
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.ace_line {
+  line-height: normal;
 }
 
 .codeGrid svg {
@@ -997,8 +1021,33 @@ div.headerProgress {
   color: #f4f4f4;
 }
 
+.codeInterface {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+  height: 100%;
+}
+
+.codeFooter {
+  display: grid;
+
+  width: 100%;
+  grid-template-columns: 1fr 1fr 1fr;
+  background-color: #010e17;
+}
+
 .codeDesc {
   background-color: rgba(255,255,255,1);
+
+  overflow-y: auto;
+  flex: 1 1;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  position: relative;
 }
 
 .codeDesc > div {
@@ -1017,6 +1066,8 @@ div.headerProgress {
   font-family: "Apercu";
   font-size: 1.8rem;
   opacity: 1;
+
+  margin-bottom: 0;
 }
 
 .codeDesc h4 {
@@ -1497,9 +1548,27 @@ div.headerProgress {
   flex-direction: column;
 }
 
-.editingContent > div:first-of-type {
-  flex: 1;
+.editingContent input {
+  padding: 1rem .5rem;
+
+  font-size: 2rem;
 }
+
+.editor {
+  border-radius: 5px;
+  background-color: #eaeaea;
+
+  height: 100%;
+}
+
+.editor > div:not(:first-of-type) {
+  padding: 1rem;
+}
+
+
+/* .editingContent > div:first-of-type {
+  flex: 1;
+} */
 
 /* .editingContent > div > div {
   height: 100%;
@@ -1535,3 +1604,4 @@ div.headerProgress {
   color: rgb(172 255 129);
   -webkit-font-smoothing: antialiased;
 }
+

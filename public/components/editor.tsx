@@ -23,7 +23,6 @@ import {
 } from "draft-js-buttons";
 
 import createToolbarPlugin, { Separator } from "draft-js-static-toolbar-plugin";
-import createInlineToolbarPlugin from 'draft-js-inline-toolbar-plugin';
 
 const inlineToolbarPlugin = createToolbarPlugin({
   structure: [
@@ -45,6 +44,20 @@ const inlineToolbarPlugin = createToolbarPlugin({
 
 const plugins = [inlineToolbarPlugin];
 const { Toolbar } = inlineToolbarPlugin;
+
+const styleMap = {
+  'CODE': {
+    backgroundColor: '#051927',
+    fontFamily: 'monospace',
+    color: '#f4f4f4',
+    padding: '1rem',
+    borderRadius: '5px',
+    width: '100%',
+    display: 'block',
+    boxSizing: 'border-box'
+  },
+};
+
 
 type Lesson = {
   desc: string,
@@ -78,7 +91,7 @@ class SimpleEditor extends Component<{content: ContentState | string, changePare
         ],
       });
     }else {
-      content = this.props.content;
+      content = convertFromRaw(this.props.content);
     }
 
     this.state = {
@@ -100,17 +113,14 @@ class SimpleEditor extends Component<{content: ContentState | string, changePare
 
   render() {
     return (
-      <div>
+      <div className={styles.editor}>
         <Toolbar />
 
-        {
-          // placeholder={`Write about ${this.props.currentParent.name}`}
-          // editorKey="foobaz" 
-        }
         <Editor
           editorState={this.state.editorState}
           onChange={this.onChange}
           plugins={plugins}
+          customStyleMap={styleMap}
         />
       </div>
     );
