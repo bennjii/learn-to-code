@@ -6,6 +6,8 @@ import Head from 'next/head'
 import Button from '../public/components/button'
 import Router from 'next/router'
 
+import { EditorState, convertFromRaw, ContentState } from 'draft-js'
+
 import dynamic from 'next/dynamic'
 const TextEditor = dynamic(import('../public/components/text_editor'), {
   ssr: false
@@ -71,15 +73,22 @@ type Lesson = {
   desc: string,
   instructions?: Array<Instruction>,
   name: string,
-  template_code?: string
+  template_code?: string,
+  type: string
 }
 
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const user = props.user;
   const [ activeEdit, setActiveEdit ] = useState(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]]);
   const [ activeLocation, setActiveLocation ] = useState(props.lessonVariance);
+  const [ overlayVisible, setOverlayVisible ] = useState(false);
 
   const [ syncStatus, setSyncStatus ] = useState(true);
+  const [ newLesson, setNewLesson ] = useState({
+    desc: '',
+    name: '',
+    type: ''
+  })
 
   return (
     <div className={styles.container}>
@@ -87,6 +96,38 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
         <title>Learn to Code</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+        <div className={`${styles.codeDesc} ${(overlayVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
+          <div>
+            <div className={styles.subClasses}>
+              <h2>{props.pageData.title}</h2>
+              <h5>Create Lesson</h5>
+
+              <h3>TITLE</h3>
+              <input type="text" className={styles.createInput} placeholder={"Name"} onChange={(e) => {
+                let temp_lesson = newLesson;
+                temp_lesson.name = e.target.value; 
+                setNewLesson(temp_lesson);
+              }}/>
+
+              <h3>DESCRIPTION</h3>
+              <input type="paragraph" className={styles.createInput} placeholder={"Description"} onChange={(e) => {
+                let temp_lesson = newLesson;
+                temp_lesson.desc = e.target.value; 
+                setNewLesson(temp_lesson);
+              }}/>
+
+              <h3>FORMAT</h3>
+              <input type="text" className={styles.createInput} placeholder={"Format"} onChange={(e) => {
+                let temp_lesson = newLesson;
+                temp_lesson.type = e.target.value; 
+                setNewLesson(temp_lesson);
+              }}/>
+
+            </div>                    
+          </div>
+        </div>
+      <div className={`${(overlayVisible) ? styles.normalOut : styles.blackOut}`} onClick={() => setOverlayVisible(!overlayVisible)}></div>
 
       <div className={styles.headerCustom}>
             <div className={styles.headerInsideCustom}>
@@ -149,7 +190,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     })
                 }
                 </div>
-                <Button title={"Create"} onClick={() => {}}></Button>
+                <Button title={"Create"} onClick={() => {
+                  setOverlayVisible(!overlayVisible)
+                }}></Button>
           </div>
 
           <div className={`${styles.vertical} ${styles.createWindow}`}>
@@ -160,7 +203,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     <div className={styles.textEditor}>
 
                       <div className={styles.editingContent}> 
-                        <input type="text" placeholder={activeEdit.name} onChange={(e) => {
+                        <input type="text" placeholder={activeEdit.name} defaultValue={activeEdit.name} onChange={(e) => {
                           let editClone = activeEdit;
                           editClone.name = (e.target.value);
                           setActiveEdit(editClone)
@@ -169,9 +212,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
                           console.log(activeEdit);
 
-                          // updateSync(() => {
-                          //   reMergeContent(activeEdit, activeLocation, props, setSyncStatus)  
-                          // })   
+                          updateSync(() => {
+                            reMergeContent(activeEdit, activeLocation, props, setSyncStatus)  
+                          })   
                         }}/>
 
                         <SimpleEditor content={activeEdit.desc} changeParent={setActiveEdit} currentParent={activeEdit} callback={() => { 
@@ -224,10 +267,9 @@ const updateSync = (callback) => {
 const reMergeContent = (newAddition, additionLocation, master, callback: Function) => {
   console.log("CMD RUN");
 
-  if(typeof newAddition.desc !== 'string') {
-    //newAddition.desc = newAddition.desc.getPlainText();
+  if(!newAddition.desc.blocks) {
     newAddition.desc = convertToRaw(newAddition.desc);
-  }
+  } 
   
   master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]] = newAddition;
   

@@ -1067,7 +1067,7 @@ div.headerProgress {
   font-size: 1.8rem;
   opacity: 1;
 
-  margin-bottom: 0;
+  margin-top: 0;
 }
 
 .codeDesc h4 {
@@ -1605,3 +1605,40 @@ div.headerProgress {
   -webkit-font-smoothing: antialiased;
 }
 
+.overlayVisible {
+  height: 100%;
+  width: 100%;
+
+  position: absolute;
+  background-color: #010e17;
+  color: #f4f4f4;
+
+  z-index: 900;
+  animation: overlayIn .55s ease;
+}
+
+.overlayInvisible {
+  display: none;
+  animation: overlayOut .55s ease;
+}
+
+@keyframes overlayIn {
+  from {width: 0%;}
+  to {width: 100%}
+}
+
+@keyframes overlayOut {
+  to {width: 0%}
+}
+
+.createInput {
+  padding: 1rem 1rem;
+  color: #010e17;
+
+  background-color: rgba(var(--border-color-rgb), 0.015);
+  border: 2px solid rgba(var(--border-color-rgb), 0.1);
+
+  border-radius: 5px;
+  width: 100%;
+  margin-bottom: 2rem;
+}
