@@ -1237,6 +1237,8 @@ div.headerProgress {
 
 .subClasses h3 {
   margin: 0;
+
+  margin-top: 2rem;
 }
 
 .subClasses {
@@ -1633,7 +1635,7 @@ div.headerProgress {
 
 .createInput {
   padding: 1rem 1rem;
-  color: #010e17;
+  color: #f4f4f4;
 
   background-color: rgba(var(--border-color-rgb), 0.015);
   border: 2px solid rgba(var(--border-color-rgb), 0.1);
@@ -1641,4 +1643,63 @@ div.headerProgress {
   border-radius: 5px;
   width: 100%;
   margin-bottom: 2rem;
+
+  outline: none;
+}
+
+.createInput:focus {
+  border: 2px solid rgba(var(--border-color-rgb), 0.8);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.radialInput {
+  padding: 1rem;
+  display: flex;
+  flex-direction: row-reverse;
+  color: rgba(255, 255, 255, 0.363);
+  font-size: 13.333px;
+  font-weight: 100;
+
+  font-family: 'stolzl';
+
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: rgba(255, 255, 255, 0.0141);
+  border: 2px solid rgba(var(--border-color-rgb), 0.015);
+  border-radius: 5px;
+
+  height: fit-content;
+
+  padding: 10px;
+  border-radius: 5px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  border: 1.5px solid rgba(255,255,255,.1);
+  background-color: rgba(255,255,255,.02);
+
+  width: 100%;
+}
+
+.radialInput input {
+  padding: 10px;
+}
+
+.createInputRadial {
+  margin: 0;
+
+  border: none;
+  visibility: hidden;
+}
+
+.multiChoice {
+  display: flex;
+
+  flex-direction: row;
+  justify-content: space-evenly;
+  gap: 1rem;
 }

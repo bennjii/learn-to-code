@@ -6,6 +6,8 @@ import Head from 'next/head'
 import Button from '../public/components/button'
 import Router from 'next/router'
 
+import TextInput from '../public/components/text_input'
+
 import { EditorState, convertFromRaw, ContentState } from 'draft-js'
 
 import dynamic from 'next/dynamic'
@@ -81,7 +83,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const user = props.user;
   const [ activeEdit, setActiveEdit ] = useState(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]]);
   const [ activeLocation, setActiveLocation ] = useState(props.lessonVariance);
-  const [ overlayVisible, setOverlayVisible ] = useState(false);
+  const [ overlayVisible, setOverlayVisible ] = useState(true);
 
   const [ syncStatus, setSyncStatus ] = useState(true);
   const [ newLesson, setNewLesson ] = useState({
@@ -103,27 +105,52 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
               <h2>{props.pageData.title}</h2>
               <h5>Create Lesson</h5>
 
-              <h3>TITLE</h3>
-              <input type="text" className={styles.createInput} placeholder={"Name"} onChange={(e) => {
-                let temp_lesson = newLesson;
-                temp_lesson.name = e.target.value; 
-                setNewLesson(temp_lesson);
-              }}/>
+              <form action="">
+                <h3>TITLE</h3>
+                <TextInput placeholder="Enter lesson name" onChange={(e) => {
+                  console.log(e);
 
-              <h3>DESCRIPTION</h3>
-              <input type="paragraph" className={styles.createInput} placeholder={"Description"} onChange={(e) => {
-                let temp_lesson = newLesson;
-                temp_lesson.desc = e.target.value; 
-                setNewLesson(temp_lesson);
-              }}/>
+                  let temp_lesson = newLesson;
+                  temp_lesson.name = e.target.value;
+                    
+                  setNewLesson(temp_lesson);
+                }} />
 
-              <h3>FORMAT</h3>
-              <input type="text" className={styles.createInput} placeholder={"Format"} onChange={(e) => {
-                let temp_lesson = newLesson;
-                temp_lesson.type = e.target.value; 
-                setNewLesson(temp_lesson);
-              }}/>
+                <h3>DESCRIPTION</h3>
+                <TextInput placeholder="Enter lesson description" onChange={(e) => {
+                  console.log(e);
 
+                  let temp_lesson = newLesson;
+                  temp_lesson.desc = e.target.value;
+                    
+                  setNewLesson(temp_lesson);
+                }} />
+
+                <h3>FORMAT</h3>
+                <div className={styles.multiChoice}>
+                  <div className={styles.radialInput}>
+                    <input type="radio" className={styles.createInputRadial} value={"Interactive"} name={"1"} onChange={(e) => {
+                      let temp_lesson = newLesson;
+                      temp_lesson.type = e.target.value;
+
+                      setNewLesson(temp_lesson);
+                    }}/>
+
+                    <label htmlFor="1">Interactive</label>
+                  </div>
+                  
+                  <div className={styles.radialInput}>
+                    <input type="radio" className={styles.createInputRadial} value={"Learn"} name={"2"} onChange={(e) => {
+                      let temp_lesson = newLesson;
+                      temp_lesson.type = e.target.value; 
+
+                      setNewLesson(temp_lesson);
+                    }}/>
+
+                    <label htmlFor="2">Learner</label>
+                  </div>
+                </div>
+              </form>
             </div>                    
           </div>
         </div>
@@ -265,8 +292,6 @@ const updateSync = (callback) => {
 }
 
 const reMergeContent = (newAddition, additionLocation, master, callback: Function) => {
-  console.log("CMD RUN");
-
   if(!newAddition.desc.blocks) {
     newAddition.desc = convertToRaw(newAddition.desc);
   } 

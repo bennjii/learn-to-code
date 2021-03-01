@@ -15,7 +15,7 @@ interface Input {
     activated: boolean
 }
 
-class TextInput extends React.Component<{icon: IconDefinition, placeholder: string}, Input> {
+class TextInput extends React.Component<{icon?: IconDefinition, onChange?: Function, placeholder: string}, Input> {
     constructor(props) {
         super(props)
 
@@ -36,15 +36,26 @@ class TextInput extends React.Component<{icon: IconDefinition, placeholder: stri
 
     handleInput(e) {
         this.setState({ value: e.target.value });
+
+        if(this.props.onChange) {
+            this.props.onChange(e);
+        }
     }
 
     render() {
         return (
             <div className={(this.state.active) ? `${styles.activeAuthInput} ${styles.authenticationInput}` : (this.state.value !== "") ? `${styles.idle} ${styles.authenticationInput}` : `${styles.authenticationInput}`}>
-                <FontAwesomeIcon
-                  icon={this.props.icon}
-                  size="1x"
-                />
+                {
+                    (this.props.icon)
+                    ?
+                    <FontAwesomeIcon
+                        icon={this.props.icon}
+                        size="1x"
+                        />
+                    :
+                    <div></div>
+                }
+                
 
                 <input onChange={this.handleInput} type={(this.props.icon == faLock ? "password" : (this.props.icon == faEnvelope) ? "email" : "text")} placeholder={this.props.placeholder} onFocus={this.activate} onBlur={this.deactivate} required/>
             </div>
