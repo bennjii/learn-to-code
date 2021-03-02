@@ -985,6 +985,7 @@ div.headerProgress {
   position: relative;
 
   z-index: 0;
+  width: 100%;
   min-height: 100vh !important;
   overflow: hidden;
 }
@@ -1211,9 +1212,12 @@ div.headerProgress {
 
 .lessonSelect h5 {
   font-size: 2rem;
-  font-weight: 400;
 
+  font-weight: 400;
   margin-top: 0;
+
+  padding-bottom: 1.2rem;
+  margin-bottom: 0;
 }
 
 .lessonsHidden h5 {
@@ -1241,6 +1245,22 @@ div.headerProgress {
   margin-top: 2rem;
 }
 
+.subClasses > form > button {
+  width: 100%;
+}
+
+.subClasses > form > div {
+  flex: 1;
+}
+
+.subClasses > form {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: flex-start;
+  height: 100%;
+}
+
 .subClasses {
   /* background-color: rgba(255,255,255,.02); */
   border-radius: 15px;
@@ -1250,6 +1270,8 @@ div.headerProgress {
   flex: 1;
 
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .subClasses h2 {
@@ -1633,23 +1655,10 @@ div.headerProgress {
   to {width: 0%}
 }
 
-.createInput {
-  padding: 1rem 1rem;
-  color: #f4f4f4;
-
-  background-color: rgba(var(--border-color-rgb), 0.015);
-  border: 2px solid rgba(var(--border-color-rgb), 0.1);
-
-  border-radius: 5px;
-  width: 100%;
-  margin-bottom: 2rem;
-
-  outline: none;
-}
-
-.createInput:focus {
-  border: 2px solid rgba(var(--border-color-rgb), 0.8);
-  background-color: rgba(255, 255, 255, 0.02);
+.activeRadialInput {
+  border: 1.5px solid rgba(var(--border-color-rgb), 0.4) !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #f4f4f4 !important;
 }
 
 .radialInput {
@@ -1683,6 +1692,8 @@ div.headerProgress {
   background-color: rgba(255,255,255,.02);
 
   width: 100%;
+
+  user-select: none;
 }
 
 .radialInput input {
@@ -1702,4 +1713,17 @@ div.headerProgress {
   flex-direction: row;
   justify-content: space-evenly;
   gap: 1rem;
+}
+
+.widthContent {
+  padding: 1rem;
+
+  width: 100%;
+  flex: 1;
+  background-color: #f4f4f4;
+}
+
+.widthContent > div {
+  width: 30%;
+  margin: auto;
 }

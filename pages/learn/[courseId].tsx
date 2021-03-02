@@ -2,19 +2,19 @@ import React from "react";
 import { useState } from "react"
 import nookies from "nookies";
 
-import styles from '../styles/Home.module.css'
+import styles from '../../styles/Home.module.css'
 import Head from 'next/head'
-import Button from "../public/components/button"
+import Button from "../../public/components/button"
 import { EditorState, convertFromRaw, ContentState } from 'draft-js'
 import Editor from 'draft-js-plugins-editor'
 
 import Router from 'next/router'
 import dynamic from 'next/dynamic'
-const TextEditor = dynamic(import('../public/components/text_editor'), {
+const TextEditor = dynamic(import('../../public/components/text_editor'), {
   ssr: false
 });
 
-import { firebaseAdmin } from "../firebaseAdmin"
+import { firebaseAdmin } from "../../firebaseAdmin"
 
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -44,7 +44,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     // the user is authenticated!
     // FETCH STUFF HERE
     const db = firebaseAdmin.firestore();
-    const courseId = "S7ioyCGZ1xow6DRyX3Rw" // TEMPVAR
+    const courseId = ctx.params.courseId; // TEMPVAR
     let pageData;
 
     await db.doc(`courses/${courseId}`).get().then((doc) => {
@@ -76,7 +76,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const [ lessonCompleted, setLessonCompleted ] = useState(true)
 
   const [ lessonSelectorVisible, setLessonSelectorVisible ] = useState(false)
-  const currentLesson = props.pageData.lessons[lesson].sub_lessons[subLesson];
+  let currentLesson = props.pageData.lessons[lesson].sub_lessons[subLesson];
 
   const [ content, setContent ] = useState(EditorState.createWithContent(
     convertFromRaw(currentLesson.desc)
@@ -104,7 +104,21 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       {
                         e.sub_lessons.map((e2, index) => {
                           return (
-                            <div className={styles.exc} onClick={() => { setLessonVariance([lesson, index]); setLessonSelectorVisible(!lessonSelectorVisible)}}>{`${lesson+1}.${index+1}`} {e2.name}</div>
+                            <div className={styles.exc} onClick={() => { 
+                              setLessonVariance([lesson, index]); 
+                              setLessonSelectorVisible(!lessonSelectorVisible);
+
+                              setContent(EditorState.createWithContent(
+                                convertFromRaw(props.pageData.lessons[lesson].sub_lessons[index].desc)
+                              ))
+
+                              currentLesson = (
+                                props.pageData.lessons[lesson].sub_lessons[index]
+                              )
+                            }}>
+                            
+                              {`${lesson+1}.${index+1}`} {e2.name}
+                            </div>
                           )
                         })
                       }
@@ -157,7 +171,8 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
                       
                       <Editor
-                        editorState={content}
+                      
+                        editorState={content} 
                         onChange={() => {}}
                         readOnly={true}
                         customStyleMap={styleMap}
@@ -170,7 +185,18 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   <div className={styles.consolePage}></div>
                 </div>
               :
-                <div></div>
+                <div className={styles.widthContent}>
+                  <div>
+                    <h1>{currentLesson.name}</h1>
+                    
+                    <Editor
+                      editorState={content}
+                      onChange={() => {}}
+                      readOnly={true}
+                      customStyleMap={styleMap}
+                    />
+                  </div>
+                </div>
             }
               <div className={styles.codeFooter}>
                 <div className={styles.linearDark} onClick={() => setLessonSelectorVisible(!lessonSelectorVisible)}>
@@ -188,7 +214,13 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 </div>
 
                 <div>
-                  <Button title="Submit" redirect="" router={Router}></Button>
+                  {
+                    (currentLesson.type === 'code') ?
+                    <Button title="Submit" redirect="" router={Router}></Button>
+                    :
+                    <div></div>
+                  }
+                  
                 </div>
               </div>
           </div> 

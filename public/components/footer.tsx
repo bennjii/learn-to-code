@@ -18,7 +18,7 @@ class Footer extends React.Component<{}, {theme: string}> {
     }
 
     toggleTheme() {
-        const theme = (this.state.theme !== 'light') ? 'dark' : 'light';
+        const theme = (this.state.theme == 'light') ? 'dark' : 'light';
         this.setState({ theme: theme });
 
         document.documentElement.setAttribute("theme", theme);
@@ -26,6 +26,8 @@ class Footer extends React.Component<{}, {theme: string}> {
     }
 
     render() {
+        if(process.browser) document.documentElement.setAttribute('theme', this.state.theme);
+
         return (
             <div className={styles.footer}>
                 <div>

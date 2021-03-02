@@ -104,11 +104,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
               </div>
 
               <div>
-                <button>
+                <button onClick={() => Router.push('/create/S7ioyCGZ1xow6DRyX3Rw/0/0')}>
                   View Syllabus
                 </button>
 
-                <Button title="Resume Learning" redirect="/code" router={Router}/>
+                <Button title="Resume Learning" redirect="/learn/S7ioyCGZ1xow6DRyX3Rw" router={Router}/>
               </div>
               
             </div>

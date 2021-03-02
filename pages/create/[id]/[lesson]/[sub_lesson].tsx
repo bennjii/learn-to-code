@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from "react";
 import nookies from "nookies";
 
-import styles from '../styles/Home.module.css'
+import styles from '../../../../styles/Home.module.css'
 import Head from 'next/head'
-import Button from '../public/components/button'
+import Button from '../../../../public/components/button'
 import Router from 'next/router'
 
-import TextInput from '../public/components/text_input'
+import TextInput from '../../../../public/components/text_input'
 
 import { EditorState, convertFromRaw, ContentState } from 'draft-js'
 
 import dynamic from 'next/dynamic'
-const TextEditor = dynamic(import('../public/components/text_editor'), {
+const TextEditor = dynamic(import('../../../../public/components/text_editor'), {
   ssr: false
 });
 
 import { convertToRaw } from 'draft-js'
 
-import { firebaseAdmin } from "../firebaseAdmin"
+import { firebaseAdmin } from "../../../../firebaseAdmin"
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 
-import { SimpleEditor } from '../public/components/editor' 
-import { firebaseClient } from "../firebaseClient";
+import { SimpleEditor } from '../../../../public/components/editor' 
+import { firebaseClient } from "../../../../firebaseClient";
+import { useRouter } from 'next/router'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
@@ -33,20 +34,31 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
     // the user is authenticated!
     // FETCH STUFF HERE
+
     const db = firebaseAdmin.firestore();
-    const courseId = "S7ioyCGZ1xow6DRyX3Rw" // TEMPVAR
+    const courseId = ctx.params.id; // TEMPVAR S7ioyCGZ1xow6DRyX3Rw
     let pageData;
 
     await db.doc(`courses/${courseId}`).get().then((doc) => {
       pageData = doc.data()
+    }).catch((e) => {
+        return {
+            redirect: {
+              permanent: false,
+              destination: "/err",
+            },
+            props: {} as never,
+        };
     })
 
-    const lV = [ 0, 0 ]  // TEMPVAR
+    const lV = [ parseInt(ctx.params.lesson[0]), parseInt(ctx.params.sub_lesson[0]) ]  // TEMPVAR
 
     return {
       props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user, pageData: pageData, lessonVariance: lV, courseId: courseId },
     };
   } catch (err) {
+      console.log(err)
+
     return {
       redirect: {
         permanent: false,
@@ -214,9 +226,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                                   {
                                     e.sub_lessons.map((e2, index2) => {
                                       return (
-                                        <div key={`${index} ${index2}`} className={`${styles.changeDefault} ${(props.pageData.lessons[index].sub_lessons[index2] == activeEdit) ? styles.changeActive : ''}`} onClick={() => { 
+                                        <div key={`${index} ${index2}`} className={`${styles.changeDefault} ${(props.pageData.lessons[index].sub_lessons[index2] == props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]]) ? styles.changeActive : ''}`} onClick={() => { 
                                           setActiveEdit(props.pageData.lessons[index].sub_lessons[index2]);
                                           setActiveLocation([index, index2]);
+
+                                          Router.push(`../../${props.courseId}/${index}/${index2}`);
                                         }}>
                                           {index + 1}.{index2 + 1} {e2.name}
                                         </div>
@@ -282,7 +296,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       </div>
                     </div>
                   :
-                    <div>
+                    <div className={styles.editingContent}>
                       <SimpleEditor content={activeEdit.desc} changeParent={setActiveEdit} currentParent={activeEdit} callback={() => { 
                           setSyncStatus(false);
 
