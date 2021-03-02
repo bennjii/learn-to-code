@@ -119,7 +119,7 @@ class SimpleEditor extends Component<{content: ContentState | string, changePare
         <Editor
           editorState={this.state.editorState}
           onChange={this.onChange}
-          plugins={plugins}
+          plugins={[plugins, inlineToolbarPlugin]}
           customStyleMap={styleMap}
         />
       </div>

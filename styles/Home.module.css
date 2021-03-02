@@ -1005,6 +1005,28 @@ div.headerProgress {
 .codeDesc {
   font-size: 1.1rem;
   line-height: 1.5;
+
+  transition: 0s ease all !important;
+}
+
+.codeDesc * {
+  transition: 0s ease all !important;
+}
+
+.widthContent {
+  transition: 0s ease all !important;
+}
+
+.widthContent * {
+  transition: 0s ease all !important;
+}
+
+.codeInterface {
+  transition: 0s ease all !important;
+}
+
+.codeInterface * {
+  transition: 0s ease all !important;
 }
 
 .ace_line {
@@ -1724,6 +1746,6 @@ div.headerProgress {
 }
 
 .widthContent > div {
-  width: 30%;
+  width: 25%;
   margin: auto;
 }

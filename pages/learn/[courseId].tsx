@@ -208,7 +208,18 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 </div>
 
                 <div className={styles.navigationBottom}>
-                  <Button title={"Go Back"} onClick={() => setLessonVariance([lesson, subLesson-1])}></Button>
+                  <Button title={"Go Back"} onClick={() => { 
+                    setLessonVariance([lesson, subLesson-1])
+
+                    setContent(EditorState.createWithContent(
+                      convertFromRaw(props.pageData.lessons[lesson].sub_lessons[subLesson-1].desc)
+                    ))
+
+                    currentLesson = (
+                      props.pageData.lessons[lesson].sub_lessons[subLesson-1]
+                    )
+
+                  }}></Button>
                   <h3>{subLesson + 1} / {props.pageData.lessons[lesson].sub_lessons.length}</h3>
                   <Button title={"Next Lesson"} onClick={() => setLessonVariance([lesson, subLesson-1])} disabled={(lessonCompleted)}></Button>
                 </div>

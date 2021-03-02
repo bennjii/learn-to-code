@@ -211,35 +211,36 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 {
                     props.pageData.lessons.map((e, index) => {
                         return ( 
-                            <div key={index}>
-                                <div>
-                                    {e.name}
-                                    {
-                                      (props.lessonVariance[0] == index)?
-                                      <a href="">^</a>
-                                      :
-                                      <a href=""></a>
-                                    }
-                                </div>
-
-                                <div className={styles.collectionArr}>
-                                  {
-                                    e.sub_lessons.map((e2, index2) => {
-                                      return (
-                                        <div key={`${index} ${index2}`} className={`${styles.changeDefault} ${(props.pageData.lessons[index].sub_lessons[index2] == props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]]) ? styles.changeActive : ''}`} onClick={() => { 
-                                          setActiveEdit(props.pageData.lessons[index].sub_lessons[index2]);
-                                          setActiveLocation([index, index2]);
-
-                                          Router.push(`../../${props.courseId}/${index}/${index2}`);
-                                        }}>
-                                          {index + 1}.{index2 + 1} {e2.name}
-                                        </div>
-                                      )
-                                    })
-                                  }
-                                </div>
-                                
+                          <div key={index}>
+                            <div>
+                              {e.name}
+                              {
+                                (props.lessonVariance[0] == index)?
+                                <a href="">^</a>
+                                :
+                                <a href=""></a>
+                              }
                             </div>
+
+                            <div className={styles.collectionArr}>
+                              {
+                                e.sub_lessons.map((e2, index2) => {
+                                  return (
+                                    <div key={`${index} ${index2}`} className={`${styles.changeDefault} ${(props.pageData.lessons[index].sub_lessons[index2] == props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]]) ? styles.changeActive : ''}`} onClick={() => { 
+                                      setActiveEdit(props.pageData.lessons[index].sub_lessons[index2]);
+                                      setActiveLocation([index, index2]);
+
+                                      console.log(activeEdit);
+
+                                      Router.push(`../../${props.courseId}/${index}/${index2}`);
+                                    }}>
+                                      {index + 1}.{index2 + 1} {e2.name}
+                                    </div>
+                                  )
+                                })
+                              }
+                            </div>
+                          </div>
                         )
                     })
                 }

@@ -264,3 +264,11 @@ button:hover {
 .textEditor > div:not(:first-of-type, :last-of-type) {
   padding: 1rem;
 }
+
+.DraftEditor-root * {
+  transition: 0s ease all !important;
+}
+
+.DraftEditor-root {
+  transition: 0s ease all !important;
+}
