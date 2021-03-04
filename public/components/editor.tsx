@@ -117,6 +117,7 @@ class SimpleEditor extends Component<{content: ContentState | string, changePare
         <Toolbar />
 
         <Editor
+          // @ts-ignore
           editorState={this.state.editorState}
           onChange={this.onChange}
           plugins={[plugins, inlineToolbarPlugin]}

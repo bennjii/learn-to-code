@@ -4,7 +4,6 @@ import { useState } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cookie from 'js-cookie';
-import firebase from 'firebase'
 import 'firebase/auth'
 
 import Button from '../public/components/button'
@@ -26,7 +25,7 @@ let submitting = false;
 
 const tokenName = 'tokenName';
 
-firebaseClient.auth().onAuthStateChanged(async (user: firebase.User) => {
+firebaseClient.auth().onAuthStateChanged(async (user: firebaseClient.User) => {
   if (user) {
     const token = await user.getIdToken();
     cookie.set(tokenName, token, { expires: 1 });
@@ -77,9 +76,9 @@ function handleSocialSignin(prov) {
     var provider;
 
     if(prov == "Google")
-        provider = new firebase.auth.GoogleAuthProvider();
+        provider = new firebaseClient.auth.GoogleAuthProvider();
     else if(prov == "Github")
-        provider = new firebase.auth.GithubAuthProvider();
+        provider = new firebaseClient.auth.GithubAuthProvider();
     else return 0
 
     firebaseClient.auth()

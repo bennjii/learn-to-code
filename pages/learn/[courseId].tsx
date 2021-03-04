@@ -170,8 +170,8 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       {/* <p>{currentLesson.desc}</p> */}
 
                       
-                      <Editor
-                      
+                      <Editor               
+                        // @ts-ignore       
                         editorState={content} 
                         onChange={() => {}}
                         readOnly={true}
@@ -190,6 +190,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     <h1>{currentLesson.name}</h1>
                     
                     <Editor
+                      // @ts-ignore
                       editorState={content}
                       onChange={() => {}}
                       readOnly={true}

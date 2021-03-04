@@ -12,12 +12,14 @@ const CLIENT_CONFIG = {
   measurementId: "G-04BXSRYWNC"
 };
 
-if (typeof window !== "undefined" && !firebaseClient.apps.length) {
-  firebaseClient.initializeApp(CLIENT_CONFIG);
-  firebaseClient
-    .auth()
-    .setPersistence(firebaseClient.auth.Auth.Persistence.SESSION);
-  (window as any).firebase = firebaseClient;
-}
+(!firebaseClient.apps.length) ? firebaseClient.initializeApp(CLIENT_CONFIG) : firebaseClient.app()
 
-export { firebaseClient };
+// if (typeof window !== "undefined" && !firebaseClient.apps.length) {
+//   firebaseClient.initializeApp(CLIENT_CONFIG);
+//   firebaseClient
+//     .auth()
+//     .setPersistence(firebaseClient.auth.Auth.Persistence.SESSION);
+//   (window as any).firebase = firebaseClient;
+// }
+
+export { firebaseClient } 

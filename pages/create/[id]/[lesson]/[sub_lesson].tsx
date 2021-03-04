@@ -268,6 +268,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                           console.log(activeEdit);
 
                           updateSync(() => {
+                            // @ts-ignore
                             reMergeContent(activeEdit, activeLocation, props, setSyncStatus, props.courseId)  
                           })   
                         }}/>
@@ -276,6 +277,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                           setSyncStatus(false);
 
                           updateSync(() => {
+                            // @ts-ignore
                             reMergeContent(activeEdit, activeLocation, props, setSyncStatus, props.courseId)  
                           })                       
                         }}/>
@@ -291,6 +293,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                           setSyncStatus(false);
 
                           updateSync(() => {
+                            // @ts-ignore
                             reMergeContent(activeEdit, activeLocation, props, setSyncStatus, props.courseId)    
                           })
                         }}/>
@@ -302,6 +305,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                           setSyncStatus(false);
 
                           updateSync(() => {
+                            // @ts-ignore
                             reMergeContent(activeEdit, activeLocation, props, setSyncStatus, props.courseId)  
                           })                       
                         }}/>
