@@ -1,7 +1,7 @@
 import * as firebaseAdmin from "firebase-admin";
 
 const { privateKey } = JSON.parse(process.env["FIREBASE_PRIVATE_KEY"]);
-const clientEmail = `${process.env["CLIENT_EMAIL"]}@learn-to-code-nz.iam.gserviceaccount.com`;
+const clientEmail = `firebase-adminsdk-28q7g@learn-to-code-nz.iam.gserviceaccount.com`;
 const projectId = "learn-to-code-nz";
 
 if (!privateKey || !clientEmail || !projectId) {
