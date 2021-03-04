@@ -2,7 +2,7 @@ import * as firebaseAdmin from "firebase-admin";
 
 const privateKey = process.env["PRIVATE_KEY"];
 const clientEmail = process.env["CLIENT_EMAIL"];
-const projectId = process.env["PROJECT_ID"];
+const projectId = "learn-to-code-nz";
 
 if (!privateKey || !clientEmail || !projectId) {
   console.log(
