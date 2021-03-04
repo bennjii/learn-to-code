@@ -20,5 +20,5 @@ if (!firebaseAdmin.apps.length) {
     databaseURL: `https://${projectId}.firebaseio.com`,
   });
 }
-
+ 
 export { firebaseAdmin };
