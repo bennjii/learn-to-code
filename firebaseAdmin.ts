@@ -1,6 +1,6 @@
 import * as firebaseAdmin from "firebase-admin";
 
-const privateKey = `-----BEGIN PRIVATE KEY-----${process.env["PRIVATE_KEY"]}-----END PRIVATE KEY-----`;
+const privateKey = `-----BEGIN PRIVATE KEY-----${JSON.parse(process.env["PRIVATE_KEY"]).p}-----END PRIVATE KEY-----`;
 const clientEmail = `firebase-adminsdk-28q7g@learn-to-code-nz.iam.gserviceaccount.com`;
 const projectId = "learn-to-code-nz";
 
