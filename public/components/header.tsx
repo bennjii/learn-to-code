@@ -3,6 +3,7 @@ import styles from '../../styles/Home.module.css'
 
 import { firebaseAdmin } from '../../firebaseAdmin'
 import { SingletonRouter } from 'next/router'
+import Link from 'next/link'
 
 class Header extends React.Component<{user: firebaseAdmin.auth.DecodedIdToken, progress: number, loading: boolean, router: SingletonRouter}, {}> {
     constructor(props) {
@@ -18,9 +19,9 @@ class Header extends React.Component<{user: firebaseAdmin.auth.DecodedIdToken, p
                     <div className={styles.linear}>
                         <h3 className={styles.headerTitle} onClick={() => this.props.router.push("/")}>Learn to Code.</h3> 
 
-                        <a href="">Dashboard</a>
-                        <a href="">Courses</a>
-                        <a href="">My Account</a>
+                        <Link href="./">Dashboard</Link>
+                        <Link href="./courses">Courses</Link>
+                        <Link href="./account">Account</Link>
                     </div>
                     
                     {(!this.props.user) 

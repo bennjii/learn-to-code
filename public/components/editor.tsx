@@ -20,25 +20,11 @@ import {
   OrderedListButton,
   BlockquoteButton,
   CodeBlockButton
-} from "draft-js-buttons";
+} from "@draft-js-plugins/buttons";
 
-import createToolbarPlugin, { Separator } from "draft-js-static-toolbar-plugin";
+import createToolbarPlugin, { Separator } from "@draft-js-plugins/static-toolbar";
 
 const inlineToolbarPlugin = createToolbarPlugin({
-  structure: [
-    BoldButton,
-    ItalicButton,
-    UnderlineButton,
-    CodeButton,
-    Separator,
-    HeadlineOneButton,
-    HeadlineTwoButton,
-    HeadlineThreeButton,
-    UnorderedListButton,
-    OrderedListButton,
-    BlockquoteButton,
-    CodeBlockButton
-  ],
   theme: { buttonStyles, toolbarStyles }
 });
 
@@ -56,8 +42,17 @@ const styleMap = {
     display: 'block',
     boxSizing: 'border-box'
   },
+  'BLOCK': {
+    backgroundColor: '#051927',
+    fontFamily: 'monospace',
+    color: '#f4f4f4',
+    padding: '1rem',
+    borderRadius: '5px',
+    width: '100%',
+    display: 'block',
+    boxSizing: 'border-box'
+  }
 };
-
 
 type Lesson = {
   desc: string,
@@ -77,6 +72,7 @@ class SimpleEditor extends Component<{content: ContentState | string, changePare
     super(props);
 
     let content;
+    console.log(this.props.content);
 
     if(typeof this.props.content === "string") {
       content = convertFromRaw({
@@ -90,7 +86,7 @@ class SimpleEditor extends Component<{content: ContentState | string, changePare
             },
         ],
       });
-    }else {
+    }else if(!this.props.content._map){
       content = convertFromRaw(this.props.content);
     }
 
@@ -114,7 +110,26 @@ class SimpleEditor extends Component<{content: ContentState | string, changePare
   render() {
     return (
       <div className={styles.editor}>
-        <Toolbar />
+        <Toolbar>
+            {
+              // may be use React.Fragment instead of div to improve perfomance after React 16
+              (externalProps) => (
+                <React.Fragment>
+                  <BoldButton {...externalProps} />
+                  <ItalicButton {...externalProps} />
+                  <UnderlineButton {...externalProps} />
+                  <CodeButton {...externalProps} />
+                  
+                  <HeadlineOneButton {...externalProps} />
+                  <HeadlineTwoButton {...externalProps} />
+                  <UnorderedListButton {...externalProps} />
+                  <OrderedListButton {...externalProps} />
+                  <BlockquoteButton {...externalProps} />
+                  <CodeBlockButton {...externalProps} />
+                </React.Fragment>
+              )
+            }
+          </Toolbar>
 
         <Editor
           // @ts-ignore

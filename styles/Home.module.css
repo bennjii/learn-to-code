@@ -7,6 +7,7 @@
   align-items: center;
 
   height: auto !important;
+  background-color: var(--background-color);
 }
 
 .main {
@@ -21,7 +22,7 @@
 .footer {
   width: 100%;
   height: 100px;
-  border-top: 1px solid var(--border-color);
+  border-top: 2px solid var(--border-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -339,7 +340,7 @@
 
   /* border-bottom: 1px solid var(--border-color); */
   
-  /* border-bottom: 2px solid rgba(255, 255, 255, 1); */
+  border-bottom: 2px solid var(--border-color);
 }
 
 .header > div:not(:first-of-type) {
@@ -617,11 +618,81 @@ div.headerProgress {
   width: 100%;
   height: 100%;
 
-  background-color: var(--background-color-alt);
+  flex: 1;
+
+  /* border-top: 2px solid var(--border-color); */
+  background-color: var(--background-color);
+  color: var(--font-color);
 
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.fullScreen2 {
+  width: 40%;
+  height: 100%;
+
+  flex: 1;
+
+  /* border-top: 2px solid var(--border-color); */
+  background-color: var(--background-color);
+  color: var(--font-color);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+}
+
+.fullScreen2 h1 {
+  font-weight: 400;
+  margin: 5rem;
+}
+
+.coursesOverview {
+  display: flex;
+  flex-wrap: wrap;
+  
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  
+  gap: 2rem;
+
+  width: 60%;
+  height: 100%;
+}
+
+.coursesOverview div {
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  border: 2px solid var(--border-color);
+  border-radius: 5px;
+  padding: .7rem 1rem;
+
+  max-width: 28%;
+  min-width: 28%;
+
+  user-select: none;
+}
+
+.coursesOverview div:hover {
+  transform: translate3d(0, -3px, 0);
+  cursor: pointer;
+}
+
+.coursesOverview div h2 {
+  font-size: 2.5rem;
+}
+
+.coursesOverview div h4 {
+  margin: 0;
+  font-weight: 100;
+  font-size: 1.1rem;
 }
 
 @media only screen and (min-width: 75rem) {
@@ -1592,6 +1663,8 @@ div.headerProgress {
   
   display: flex;
   flex-direction: column;
+
+  font-family: 'Apercu' !important;
 }
 
 .editingContent input {

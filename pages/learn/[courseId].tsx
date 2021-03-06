@@ -209,7 +209,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 </div>
 
                 <div className={styles.navigationBottom}>
-                  <Button title={"Go Back"} onClick={() => { 
+                  <Button title={"Go Back"} onClick={(e, callback) => { 
                     setLessonVariance([lesson, subLesson-1])
 
                     setContent(EditorState.createWithContent(
@@ -218,10 +218,12 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
                     currentLesson = (
                       props.pageData.lessons[lesson].sub_lessons[subLesson-1]
-                    )
+                    );
+
+                    callback();
                   }}></Button>
                   <h3>{subLesson + 1} / {props.pageData.lessons[lesson].sub_lessons.length}</h3>
-                  <Button title={"Next Lesson"} onClick={() => { 
+                  <Button title={"Next Lesson"} onClick={(e, callback) => { 
                     setLessonVariance([lesson, subLesson+1])
 
                     setContent(EditorState.createWithContent(
@@ -231,6 +233,8 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     currentLesson = (
                       props.pageData.lessons[lesson].sub_lessons[subLesson+1]
                     )
+
+                    callback();
 
                   }} disabled={(lessonCompleted)}></Button>
                 </div>

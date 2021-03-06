@@ -90,6 +90,27 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@draft-js-plugins/buttons@^4.0.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/buttons/-/buttons-4.1.0.tgz#8a330fc93aa302caac9df9f888821ddacc975459"
+  integrity sha512-sGt5mSo6TwX53EYCHgF7KnwTJCT0OBHbWlvB0UG7aUSK2oiT2QD+z51o3d/BvM7105m/rdLA8WCeWW23tw771Q==
+  dependencies:
+    clsx "^1.0.4"
+
+"@draft-js-plugins/static-toolbar@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/static-toolbar/-/static-toolbar-4.1.0.tgz#b6dcbc18bd2f187ea26b44013076a998b0a8e2bd"
+  integrity sha512-p1oPopV/svcifwMOaOwLsQi37oZIv7UX9TTbVkpwYAAQ73Nws630Imm92tyEMy7bU5nxZ4PxiVMZ018MiGydlA==
+  dependencies:
+    "@draft-js-plugins/buttons" "^4.0.0"
+    "@draft-js-plugins/utils" "^4.0.0"
+    prop-types "^15.5.8"
+
+"@draft-js-plugins/utils@^4.0.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/utils/-/utils-4.1.0.tgz#e63129c5678a9f150e2e07003fc866e779e982c4"
+  integrity sha512-bU1deEINlqHPX9+IqFyMT8EwDBsqn1o0C5U8VfhbVGXTuvTu/F0LI6XT2h7VD9ufoYK0s/BE6XBkyO+764Petg==
+
 "@firebase/analytics-types@0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@firebase/analytics-types/-/analytics-types-0.4.0.tgz#d6716f9fa36a6e340bc0ecfe68af325aa6f60508"

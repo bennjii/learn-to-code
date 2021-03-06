@@ -34,12 +34,15 @@ class Button extends React.Component<{title: string, redirect?: string | never, 
     }
 
     handleClick(e) {
-        if(this.props.onClick) this.props.onClick(e);
-
         this.setState({ activated: true });
 
+        if(this.props.onClick) { 
+            this.props.onClick(e, (e) => { this.setState({ activated: false }) });
+        }
+        
         if(this.props.redirect) {
-            this.props.router.push(this.props.redirect)
+            this.props.router.push(this.props.redirect);
+            this.setState({ activated: false });
         }
     }
 

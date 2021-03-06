@@ -145,7 +145,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   </div>
                 </div>
 
-                <Button title={"Create"} onClick={(e) => {
+                <Button title={"Create"} onClick={(e, callback) => {
                   e.preventDefault();
 
                   props.pageData.lessons[props.lessonVariance[0]].sub_lessons.push(newLesson);
@@ -153,6 +153,8 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
                   db.doc(`courses/${props.courseId}`).set(props.pageData).then((doc) => {
                     console.log("Update Sucessful.");
+
+                    callback();
 
                     setNewLesson({
                       desc: convertToRaw(EditorState.createEmpty().getCurrentContent()),
@@ -230,8 +232,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     })
                 }
                 </div>
-                <Button title={"Create"} onClick={() => {
-                  setOverlayVisible(!overlayVisible)
+                <Button title={"Create"} onClick={(e, callback) => {
+                  setOverlayVisible(!overlayVisible);
+                  callback();
                 }}></Button>
           </div>
 

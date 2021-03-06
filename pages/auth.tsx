@@ -195,7 +195,7 @@ const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
 
                             <TextInput placeholder="Enter your Password" icon={faLock} />
 
-                            <Button title="Start coding now"  redirect="" router={Router}/>
+                            <Button title="Start coding now" redirect="" router={Router}/>
                         </form>
                     </div>
                     :

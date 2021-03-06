@@ -267,6 +267,7 @@ button:hover {
 
 .DraftEditor-root * {
   transition: 0s ease all !important;
+  font-family: 'Apercu';
 }
 
 .DraftEditor-root {

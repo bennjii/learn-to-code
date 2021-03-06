@@ -1,7 +1,9 @@
 // @ts-nocheck
 import React, { useState, useEffect, useContext, createContext } from "react";
+
 import nookies from "nookies";
 import cookie from 'js-cookie';
+
 import firebase from 'firebase';
 import { firebaseClient } from "./firebaseClient";
 
@@ -37,6 +39,8 @@ firebase.auth().onAuthStateChanged(async (_user: firebase.User) => {
 
 export function AuthProvider({ children }: any) {
   const [user, setUser] = useState<firebaseClient.User | null>(null);
+
+  //firebaseClient.auth().setPersistence(firebaseClient.auth.Auth.Persistence.SESSION)
 
   useEffect(() => {
     if (typeof window !== undefined) {
