@@ -56,34 +56,34 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
           <h1>What would you like to learn?</h1>
 
           <div className={styles.coursesOverview}>
-            <div style={{ backgroundColor: '#f7df1e0f', borderColor: '#f7df1e3f', color: '#f7df1e' }}>
+            <div style={{ backgroundColor: '#f7df1e5f', borderColor: '#f7df1e3f', color: '#535c6b' }}>
               <h2>JS</h2>
               <h4>Javascript</h4>
             </div>
 
-            <div style={{ backgroundColor: '#007ACC0f', borderColor: '#007ACC3f', color: '#007ACC' }}>
+            <div style={{ backgroundColor: '#007ACC5f', borderColor: '#007ACC3f', color: 'rgb(77 103 121)' }}>
               <h2>TS</h2>
               <h4>Typescript</h4>
             </div>
 
-            <div style={{ backgroundColor: '#007ACC0f', borderColor: '#007ACC3f', color: '#007ACC' }}>
-              <h2>Py</h2>
-              <h4>Python</h4>
-            </div>
-
-            <div style={{ backgroundColor: '#007ACC0f', borderColor: '#007ACC3f', color: '#007ACC' }}>
+            <div style={{ backgroundColor: '#f896bb', borderColor: 'rgb(230 124 164)', color: 'rgb(112 73 88)' }}>
               <h2>CSS</h2>
               <h4>CSS</h4>
             </div>
 
-            <div style={{ backgroundColor: '#007ACC0f', borderColor: '#007ACC3f', color: '#007ACC' }}>
+            <div style={{ backgroundColor: '#cc12006b', borderColor: '#cc12003f', color: 'hsl(5deg 20% 42%);' }}>
               <h2>HTML</h2>
               <h4>HTML</h4>
             </div>
 
-            <div style={{ backgroundColor: '#007ACC0f', borderColor: '#007ACC3f', color: '#007ACC' }}>
-              <h2>C</h2>
-              <h4>C</h4>
+            <div style={{ backgroundColor: '#7f87d985', borderColor: '#a0a7f39e', color: '#54577a' }}>
+              <h2>Py</h2>
+              <h4>Python</h4>
+            </div>
+
+            <div style={{ backgroundColor: '#17499366', borderColor: '#378dc76b', color: '#406076' }}>
+              <h2>C++</h2>
+              <h4>C++</h4>
             </div>
           </div>
         </div>
