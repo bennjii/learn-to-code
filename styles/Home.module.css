@@ -38,6 +38,15 @@
   align-items: center;
 }
 
+.footerSpacing {
+  padding: 1rem 0rem;
+  width: 100%;
+}
+
+.footerSpacing * {
+  width: 100%;
+}
+
 .title a {
   color: #0070f3;
   text-decoration: none;
@@ -646,6 +655,16 @@ div.headerProgress {
   
 }
 
+.courseSylibus {
+  padding: 5rem;
+  text-align: center;
+}
+
+.courseSylibus h1 {
+  margin: 0rem !important;
+  text-align: center;
+}
+
 .fullScreen2 h1 {
   font-weight: 400;
   margin: 5rem;
@@ -696,6 +715,43 @@ div.headerProgress {
   margin: 0;
   font-weight: 100;
   font-size: 1.1rem;
+}
+
+.courseSylibusOverview {
+  display: flex;
+  flex-wrap: wrap;
+  
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  
+  gap: 2rem;
+
+  width: 70%;
+  height: 100%;
+}
+
+.lessonOverview {
+  width: 100%;
+  border: 2px solid var(--border-color);
+
+  padding: 1rem 2rem;
+  border-radius: 5px;
+
+  color: var(--font-color-light);
+  /* box-shadow: rgba(103, 103, 103, 0.2) 0px 0px 15px; */
+  background-color: var(--background-color-alt);
+}
+
+.lessonOverview:hover {
+  width: 100%;
+  border: 2px solid var(--background-color);
+
+  padding: 1rem 2rem;
+  border-radius: 5px;
+
+  color: #676767;
+  background-color: var(--background-color-alt);
 }
 
 @media only screen and (min-width: 75rem) {

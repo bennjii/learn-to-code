@@ -20,11 +20,20 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       const { uid, email } = token;
       const user = token;
   
-      // the user is authenticated!
-      // FETCH STUFF HERE
+      const db = firebaseAdmin.firestore();
+      let pageData = [];
   
+      await db.collection(`course_index`).get().then(snapshot => {
+        snapshot.forEach(doc => {
+          let data = doc.data();
+          pageData.push(data);
+        });
+      }).catch(e => {
+        console.log(e)
+      })
+
       return {
-        props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user },
+        props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user, pageData: pageData },
       };
     } catch (err) {
       return {
@@ -56,35 +65,39 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
           <h1>What would you like to learn?</h1>
 
           <div className={styles.coursesOverview}>
-            <div style={{ backgroundColor: '#f7df1e5f', borderColor: '#f7df1e3f', color: '#535c6b' }}>
-              <h2>JS</h2>
-              <h4>Javascript</h4>
-            </div>
+            {
+              props.pageData.map(e => {
+                return (
+                  <div style={{ backgroundColor: `${e.colour}`, borderColor: `${e.colour}e0`, color: '#2a2a2ab5' }} onClick={() => Router.push(`./course/${e.link}`)}>
+                    <h2>{e._short}</h2>
+                    <h4>{e.name}</h4>
+                  </div>
+                )
+              })
+            }
 
-            <div style={{ backgroundColor: '#007ACC5f', borderColor: '#007ACC3f', color: 'rgb(77 103 121)' }}>
+            {/*
+            TEMPLATE COLOURS
+
+            <div style={{ backgroundColor: '#9cc9e8', borderColor: '#007ACC3f', color: 'rgb(77 103 121)' }}>
               <h2>TS</h2>
               <h4>Typescript</h4>
             </div>
 
-            <div style={{ backgroundColor: '#ee8cb1c4', borderColor: 'rgb(230 124 164 / 63%)', color: 'rgb(112 73 88)' }}>
-              <h2>CSS</h2>
-              <h4>CSS</h4>
-            </div>
-
-            <div style={{ backgroundColor: '#cc12006b', borderColor: '#cc12003f', color: 'hsl(5deg 20% 42%);' }}>
+            <div style={{ backgroundColor: '#e69890', borderColor: '#cc12003f', color: 'rgb(106 68 68)' }}>
               <h2>HTML</h2>
               <h4>HTML</h4>
             </div>
 
-            <div style={{ backgroundColor: '#7f87d985', borderColor: '#a0a7f39e', color: '#54577a' }}>
-              <h2>Py</h2>
-              <h4>Python</h4>
+            <div style={{ backgroundColor: '#f0a5c1', borderColor: 'rgb(230 124 164 / 63%)', color: 'rgb(112 73 88)' }}>
+              <h2>CSS</h2>
+              <h4>CSS</h4>
             </div>
 
-            <div style={{ backgroundColor: '#17499366', borderColor: '#378dc76b', color: '#406076' }}>
-              <h2>C++</h2>
-              <h4>C++</h4>
-            </div>
+            <div style={{ backgroundColor: '#b9bde8', borderColor: '#a0a7f39e', color: '#54577a' }}>
+              <h2>Py</h2>
+              <h4>Python</h4>
+            </div> */}
           </div>
         </div>
 

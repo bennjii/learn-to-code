@@ -21,6 +21,7 @@ html, body {
   --border-color-rgb: 233, 235, 240;
   
   --font-color: #1c1e21;
+  --font-color-light: #676767;
   --gradient: linear-gradient(
     58deg
     , #574eeb 0%, #e84c98 35%, #4f5dea 100%);
@@ -32,6 +33,7 @@ html, body {
   --border-color: #2d2f33;
   
   --font-color: #d4d4d5;
+  --font-color-light: rgb(85, 85, 85);
   --gradient: linear-gradient(
     58deg
     , #010e17 0%, #0f1e34 35%, #1c1e21 100%);
