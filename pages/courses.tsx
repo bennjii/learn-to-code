@@ -66,7 +66,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
               <h4>Typescript</h4>
             </div>
 
-            <div style={{ backgroundColor: '#f896bb', borderColor: 'rgb(230 124 164)', color: 'rgb(112 73 88)' }}>
+            <div style={{ backgroundColor: '#ee8cb1c4', borderColor: 'rgb(230 124 164 / 63%)', color: 'rgb(112 73 88)' }}>
               <h2>CSS</h2>
               <h4>CSS</h4>
             </div>
