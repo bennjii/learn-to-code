@@ -42,7 +42,7 @@ const styleMap = {
     display: 'block',
     boxSizing: 'border-box'
   },
-  'BLOCK': {
+  'blockquote': {
     backgroundColor: '#051927',
     fontFamily: 'monospace',
     color: '#f4f4f4',
@@ -51,7 +51,8 @@ const styleMap = {
     width: '100%',
     display: 'block',
     boxSizing: 'border-box'
-  }
+  },
+
 };
 
 type Lesson = {
@@ -112,7 +113,6 @@ class SimpleEditor extends Component<{content: ContentState | string, changePare
       <div className={styles.editor}>
         <Toolbar>
             {
-              // may be use React.Fragment instead of div to improve perfomance after React 16
               (externalProps) => (
                 <React.Fragment>
                   <BoldButton {...externalProps} />
@@ -137,6 +137,7 @@ class SimpleEditor extends Component<{content: ContentState | string, changePare
           onChange={this.onChange}
           plugins={[plugins, inlineToolbarPlugin]}
           customStyleMap={styleMap}
+          spellCheck
         />
       </div>
     );

@@ -41,10 +41,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     const { uid, email } = token;
     const user = token;
 
-    // the user is authenticated!
-    // FETCH STUFF HERE
     const db = firebaseAdmin.firestore();
-    const courseId = ctx.params.courseId; // TEMPVAR
+    const courseId = ctx.params.courseId;
     let pageData;
 
     await db.doc(`courses/${courseId}`).get().then((doc) => {
@@ -182,7 +180,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   </div>
 
                   <TextEditor lan='javascript' placeholder={currentLesson.template_code}/>
-                  <div className={styles.consolePage}></div>
+                  
                 </div>
               :
                 <div className={styles.widthContent}>
@@ -210,6 +208,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
                 <div className={styles.navigationBottom}>
                   <Button title={"Go Back"} onClick={(e, callback) => { 
+                    if(!props.pageData.lessons[lesson].sub_lessons[subLesson-1]) return callback();
                     setLessonVariance([lesson, subLesson-1])
 
                     setContent(EditorState.createWithContent(
@@ -224,6 +223,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   }}></Button>
                   <h3>{subLesson + 1} / {props.pageData.lessons[lesson].sub_lessons.length}</h3>
                   <Button title={"Next Lesson"} onClick={(e, callback) => { 
+                    if(!props.pageData.lessons[lesson].sub_lessons[subLesson+1]) return callback();
                     setLessonVariance([lesson, subLesson+1])
 
                     setContent(EditorState.createWithContent(

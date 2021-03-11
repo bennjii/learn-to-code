@@ -275,3 +275,18 @@ button:hover {
 .DraftEditor-root {
   transition: 0s ease all !important;
 }
+
+blockquote {
+  background-color: #ebc62462;
+  color: #4b4b4b;
+
+  border-radius: 5px;
+
+  padding: 1rem 1rem;
+  margin: 2rem 0rem;
+}
+
+.public-DraftEditor-content {
+  color: #585858;
+  letter-spacing: 0.25px;
+}

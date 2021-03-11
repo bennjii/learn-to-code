@@ -1,48 +1,47 @@
 import AceEditor from 'react-ace';
 
 import brace from 'brace';
-// import "brace/theme/nightowl";
 import "brace/theme/solarized_dark";
+import "brace/theme/tomorrow_night";
 
 import 'brace/theme/github';
 import "brace/mode/javascript"
 
-const TextEditor = (props) => (
-    <div className="textEditor">
-        <div>
-            <h5>main.js</h5> 
-        </div>
-        
-        <AceEditor
-            mode={`${props.lan}`}
-            theme="solarized_dark"
-            onChange={props.onChange}
-            name="editor"
-            editorProps={{
-                $blockScrolling: true
-            }}
-            fontSize={"16px"}
-            height=''
-            width='100%'
-            value={props.placeholder}
-        />
-
-        {
-        /* 
-            <MonacoEditor
-                width="800"
-                height="600"
-                language="javascript"
-                theme="vs-dark"
-                value={`const foo = 'bar';`}
-                options={{
-                    selectOnLineNumbers: true
-                }}
-                onChange={console.log}
-            /> 
-        */
-        }
-    </div>
-)
+import React from 'react'
+class TextEditor extends React.Component<{lan: string, onChange: Function, placeholder: string}> {
+    constructor(props) {
+        super(props);
+    }
+    componentDidMount() {
+        // const customMode = new CustomSqlMode();
+        // this.refs.aceEditor.editor.getSession().setMode(customMode);
+    }
+    
+    render() {
+        return (
+            <div className="textEditor">
+                <div>
+                    <h5>main.js</h5> 
+                </div>
+                
+                <AceEditor
+                    mode={`${this.props.lan}`}
+                    theme="solarized_dark"
+                    // @ts-ignore
+                    onChange={this.props.onChange}
+                    name="editor"
+                    editorProps={{
+                        $blockScrolling: true
+                    }}
+                    fontSize={"16px"}
+                    height=''
+                    width='100%'
+                    value={this.props.placeholder}
+                    tabSize={2}
+                />
+            </div>
+        );
+    }
+}
 
 export default TextEditor
