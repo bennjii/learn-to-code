@@ -2,6 +2,8 @@ import React from "react";
 import { useState } from "react"
 import nookies from "nookies";
 
+import Button from '../../public/components/button'
+
 import styles from '../../styles/Home.module.css'
 import Head from 'next/head'
 import { firebaseAdmin } from "../../firebaseAdmin"
@@ -70,7 +72,6 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             <h1>{props.pageData.title}</h1>
             <p>{props.pageData.desc}</p>
           </div>
-          
 
           <div className={styles.courseSylibusOverview}>
             {
@@ -83,6 +84,8 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
               })
             }
           </div>
+
+          <Button title={"Join Course"}/>
         </div>
 
         <Footer />

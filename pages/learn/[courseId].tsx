@@ -195,6 +195,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       customStyleMap={styleMap}
                     />
                   </div>
+                  {
+                    setLessonCompleted(true)
+                  }
                 </div>
             }
               <div className={styles.codeFooter}>
