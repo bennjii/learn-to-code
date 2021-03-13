@@ -5,7 +5,7 @@ import { firebaseAdmin } from '../../firebaseAdmin'
 import { SingletonRouter } from 'next/router'
 import Link from 'next/link'
 
-class Header extends React.Component<{user: firebaseAdmin.auth.DecodedIdToken, progress: number, loading: boolean, router: SingletonRouter}, {}> {
+class Header extends React.Component<{user: firebaseAdmin.auth.DecodedIdToken, router: SingletonRouter, progress?: number, loading?: boolean}, {}> {
     constructor(props) {
         super(props)
     }
@@ -13,15 +13,16 @@ class Header extends React.Component<{user: firebaseAdmin.auth.DecodedIdToken, p
     render() {
         return (
             <div className={styles.header}>
-                <div className={styles.headerProgress} style={{ width: `${this.props.progress}% !important`, opacity: (this.props.loading) ? "1" : "0" }}></div>
+                {/* <div className={styles.headerProgress} style={{ width: `${this.props.progress}% !important`, opacity: (this.props.loading) ? "1" : "0" }}></div> */}
 
                 <div className={styles.headerInside}>
                     <div className={styles.linear}>
                         <h3 className={styles.headerTitle} onClick={() => this.props.router.push("/")}>Learn to Code.</h3> 
+                        
+                        <br/> <br/>
 
-                        <Link href="./">Dashboard</Link>
                         <Link href="./courses">Courses</Link>
-                        <Link href="./account">Account</Link>
+                        <Link href="./resourses">Resources</Link>
                     </div>
                     
                     {(!this.props.user) 
@@ -29,7 +30,8 @@ class Header extends React.Component<{user: firebaseAdmin.auth.DecodedIdToken, p
                         <a>Login</a>
                         :
                         <div className={styles.linear}>
-                        <a onClick={() => this.props.router.push("/account")}>{this.props.user.name}</a>
+                            {/* <a onClick={() => this.props.router.push("/account")}>{this.props.user.name}</a> */}
+                            <img src={this.props.user.picture} className={styles.headerImage} alt={this.props.user.name} onClick={() => this.props.router.push("/account")}/>
                         {/* <a onClick={() => firebaseClient.auth().signOut()}>Signout</a> */}
                         </div>
                     }

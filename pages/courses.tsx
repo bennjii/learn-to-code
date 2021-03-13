@@ -72,6 +72,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     <h2>{e._short}</h2>
                     <h4>{e.name}</h4>
                   </div>
+
+                  // <div style={{ backgroundColor: `${e.colour}1a`, borderColor: `${e.colour}e0` }} onClick={() => Router.push(`./course/${e.link}`)}>
+                  //   <h2>{e._short}</h2>
+                  //   <h4>{e.name}</h4>
+                  // </div>
                 )
               })
             }

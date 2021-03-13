@@ -121,32 +121,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
               <div className={styles.teaching}>
                 {/* PRESUMING TEACHER IS ASSIGNED ; */}
                 <div>
-                  <h4>C++</h4>
-                  <h1>Daily Challenge</h1>
+                  <h4>Daily Streak</h4>
+                  <h1><strong>0</strong> <h3>Days</h3></h1>
                 </div>
-                {/* <h3>Lessons: Weekly</h3>
-                <div className={styles.teachingStat}>
-                  <h5><strong>Next Lesson:</strong> Friday 29th 12:15pm</h5>
-                </div>
-
-                <h3>Due Work</h3>
-                <div className={styles.teachingStat}>
-                  <h5><strong>Due in 14 Days:</strong> Learn Javascript 1.1 - 1.4</h5>
-                </div>               */}
-              </div>
-              
-
-              <div className={styles.vertical}>
-                <h5>REVERSE A LINKED LIST</h5>
-
-                <h4>
-                  Reverse a Linked List in C++, without using recurrsion
-                </h4>
-              </div>
-
-              <div>
-                <Button title="View" redirect={"/challange"} router={Router}></Button>
-                <Button title="Begin Challange" redirect={"/challange"} router={Router}></Button>
               </div>
             </div>
           </div>       

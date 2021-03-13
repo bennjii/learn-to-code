@@ -83,8 +83,25 @@ function handleSocialSignin(prov) {
 
     firebaseClient.auth()
     .signInWithPopup(provider)
-    .then((result) => {
-        Router.push("/")
+    .then(async (result) =>  {
+        console.log(firebaseClient.firestore().collection(`users`).doc(result.user.uid).get());
+
+        await firebaseClient.firestore().collection(`users`).doc(result.user.uid).get()
+        .then(async doc =>  {
+            let document = await doc;
+            
+            (!document.exists) 
+            ?
+                await firebaseClient.firestore().collection(`users`).doc(result.user.uid).set({
+                    account_type: 'student',
+                    courses: [],
+                    badges: []
+                }).then(e => {
+                    Router.push("/")
+                })
+            :
+                Router.push("/")
+        })
     }).catch((e) => {
         console.log(`${e.code} [::] ${e.message}`);
     });
@@ -93,6 +110,8 @@ function handleSocialSignin(prov) {
 import nookies from "nookies";
 import { firebaseAdmin } from "../firebaseAdmin"
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
+import Header from '../public/components/header';
+import Head from 'next/head';
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     try {
@@ -131,7 +150,11 @@ const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
 
     return (
         <div className={styles.authPage}>
-            <title>l2c</title>
+            <Head>
+                <title>Learn to Code</title>
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+
             <div className={styles.flexLarge}>
                 <h5 onClick={() => Router.push("/")} className={styles.backToHome}>Learn To Code</h5>
 

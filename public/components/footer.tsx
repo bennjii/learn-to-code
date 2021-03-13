@@ -59,7 +59,7 @@ class Footer extends React.Component<{}, {theme: string}> {
                         <input type="text" placeholder={"Email Us"} className={styles.authenticationInput}/>
                         
                         <div className={styles.footerSpacing}>
-                            <Button title={"Toggle Theme"} onClick={this.toggleTheme}></Button>
+                            <Button title={"Toggle Theme"} onClick={(e, callback) => { this.toggleTheme(); callback(); }}></Button>
                         </div>
                     </div>
                 </div>

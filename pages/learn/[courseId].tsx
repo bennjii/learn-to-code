@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react"
 import nookies from "nookies";
 
@@ -71,7 +71,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const user = props.user;
 
   const [ [lesson, subLesson], setLessonVariance ] = useState(props.lessonVariance);
-  const [ lessonCompleted, setLessonCompleted ] = useState(true)
+  const [ lessonCompleted, setLessonCompleted ] = useState(false)
 
   const [ lessonSelectorVisible, setLessonSelectorVisible ] = useState(false)
   let currentLesson = props.pageData.lessons[lesson].sub_lessons[subLesson];
@@ -79,6 +79,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const [ content, setContent ] = useState(EditorState.createWithContent(
     convertFromRaw(currentLesson.desc)
   ))
+
+  useEffect(() => {
+    if(currentLesson.type !== "code") setLessonCompleted(true);
+    else setLessonCompleted(false);
+  }, [currentLesson]);
 
   return (
     <div className={styles.container}>
@@ -236,7 +241,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
                     callback();
 
-                  }} disabled={(lessonCompleted)}></Button>
+                  }} disabled={(!lessonCompleted)}></Button>
                 </div>
 
                 <div>

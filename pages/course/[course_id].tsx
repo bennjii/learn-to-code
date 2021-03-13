@@ -13,6 +13,7 @@ import Header from "../../public/components/header";
 
 import Router from 'next/router'
 import Footer from "../../public/components/footer";
+import { firebaseClient } from "../../firebaseClient";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     try {
@@ -85,7 +86,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             }
           </div>
 
-          <Button title={"Join Course"}/>
+          <Button title={"Join Course"} onClick={(e, callback) => {
+              const db = firebaseClient.firestore();
+
+              // db.collection(`users/${user.uid}`)
+          }}/>
         </div>
 
         <Footer />

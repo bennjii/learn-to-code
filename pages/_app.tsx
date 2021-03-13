@@ -13,6 +13,8 @@ import { AuthProvider } from '../auth';
 import 'firebase/auth';
 
 function MyApp({ Component, pageProps }: AppProps) {
+  if(process.browser) document.documentElement.setAttribute("theme", localStorage.getItem('theme') ? localStorage.getItem('theme') : 'light');
+
   return (
     <AuthProvider>
       <Component {...pageProps} />
