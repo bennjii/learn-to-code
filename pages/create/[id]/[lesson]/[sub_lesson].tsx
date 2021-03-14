@@ -32,11 +32,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     const { uid, email } = token;
     const user = token;
 
-    // the user is authenticated!
-    // FETCH STUFF HERE
-
     const db = firebaseAdmin.firestore();
-    const courseId = ctx.params.id; // TEMPVAR S7ioyCGZ1xow6DRyX3Rw
+    const courseId = ctx.params.id;
     let pageData;
 
     await db.doc(`courses/${courseId}`).get().then((doc) => {
@@ -51,7 +48,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
         };
     })
 
-    const lV = [ parseInt(ctx.params.lesson[0]), parseInt(ctx.params.sub_lesson[0]) ]  // TEMPVAR
+    const lV = [ parseInt(ctx.params.lesson[0]), parseInt(ctx.params.sub_lesson[0]) ] 
 
     return {
       props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user, pageData: pageData, lessonVariance: lV, courseId: courseId },
@@ -67,9 +64,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       props: {} as never,
     };
   }
-
-  // SET THEME DARK
-  // document.documentElement.setAttribute('theme', 'dark');
 };
 
 type LessonParent = {
@@ -131,7 +125,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
                   <h3>FORMAT</h3>
                   <div className={styles.multiChoice}>
-                    <div className={`${styles.radialInput} ${(newLesson.type == 'code' ? styles.activeRadialInput : styles.normal)}`}  onClick={(e) => {
+                    <div className={`${styles.radialInput} ${(newLesson.type == 'code') ? styles.activeRadialInput : styles.normal}`}  onClick={(e) => {
                         let temp_lesson = newLesson;
                         temp_lesson.type = "code";
 
@@ -143,7 +137,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       <label>Interactive</label>
                     </div>
                     
-                    <div className={`${styles.radialInput} ${(newLesson.type == 'learn' ? styles.activeRadialInput : styles.normal)}`} onClick={(e) => {
+                    <div className={`${styles.radialInput} ${(newLesson.type == 'learn') ? styles.activeRadialInput : styles.normal}`} onClick={(e) => {
                         let temp_lesson = newLesson;
                         temp_lesson.type = "learn";
 

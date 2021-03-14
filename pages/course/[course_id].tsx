@@ -18,7 +18,7 @@ import { firebaseClient } from "../../firebaseClient";
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     try {
       const cookies = nookies.get(ctx);
-      // console.log(JSON.stringify(cookies, null, 2));
+
       const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
       const { uid, email } = token;
       const user = token;
@@ -26,7 +26,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       const db = firebaseAdmin.firestore();
       const courseId = ctx.params.course_id;
       let pageData;
-  
+      
+      const master = (await db.collection("users").doc(user.uid).get()).data();
       await db.doc(`courses/${courseId}`).get().then((doc) => {
         pageData = doc.data();
       }).catch((e) => {
@@ -40,7 +41,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       });
 
       return {
-        props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user, pageData: pageData },
+        props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user, pageData: pageData, master: master },
       };
     } catch (err) {
       return {
@@ -51,13 +52,13 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
         props: {} as never,
       };
     }
-  
-    // SET THEME DARK
-    // document.documentElement.setAttribute('theme', 'dark'); 
   };
 
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const user = props.user;
+  const db = firebaseClient.firestore();
+  
+  const [ courseSubsriber, setCourseSubscriber ] = useState(props.master.courses.findIndex(e => e._loc == props.pageData.inherit_id));
 
   return (
     <div className={styles.container}>
@@ -86,11 +87,24 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             }
           </div>
 
-          <Button title={"Join Course"} onClick={(e, callback) => {
-              const db = firebaseClient.firestore();
-
-              // db.collection(`users/${user.uid}`)
-          }}/>
+          <Button title={(courseSubsriber >= 0) ? "Resume Course" : "Join Course"} onClick={async (e, callback) => {
+              if(courseSubsriber == -1) {
+                props.master.courses.push({
+                  title: props.pageData.title,
+                  desc: props.pageData.desc,
+                  _loc: props.pageData.inherit_id,
+                  lesson: 0,
+                  sub_lesson: 0
+                });
+  
+                db.collection("users").doc(user.uid).set(props.master).then(e => {
+                  callback();
+                  setCourseSubscriber(true);
+                });
+              }else {
+                Router.push(`/learn/${props.pageData.inherit_id}/${props.master.courses[courseSubsriber].lesson}/${props.master.courses[courseSubsriber].sub_lesson}`)
+              }
+          }} />
         </div>
 
         <Footer />

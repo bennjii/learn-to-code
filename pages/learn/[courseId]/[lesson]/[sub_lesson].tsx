@@ -2,19 +2,19 @@ import React, { useEffect } from "react";
 import { useState } from "react"
 import nookies from "nookies";
 
-import styles from '../../styles/Home.module.css'
+import styles from '../../../../styles/Home.module.css'
 import Head from 'next/head'
-import Button from "../../public/components/button"
+import Button from "../../../../public/components/button"
 import { EditorState, convertFromRaw, ContentState } from 'draft-js'
 import Editor from 'draft-js-plugins-editor'
 
 import Router from 'next/router'
 import dynamic from 'next/dynamic'
-const TextEditor = dynamic(import('../../public/components/text_editor'), {
+const TextEditor = dynamic(import('../../../../public/components/text_editor'), {
   ssr: false
 });
 
-import { firebaseAdmin } from "../../firebaseAdmin"
+import { firebaseAdmin } from "../../../../firebaseAdmin"
 
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -49,7 +49,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       pageData = doc.data()
     })
 
-    const lV = [ 0, 0 ]  // TEMPVAR
+    const lV = [ parseInt(ctx.params.lesson[0]), parseInt(ctx.params.sub_lesson[0]) ] 
 
     return {
       props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user, pageData: pageData, lessonVariance: lV },

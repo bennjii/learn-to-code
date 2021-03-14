@@ -15,7 +15,7 @@ import Footer from "../public/components/footer";
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     try {
       const cookies = nookies.get(ctx);
-      // console.log(JSON.stringify(cookies, null, 2));
+
       const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
       const { uid, email } = token;
       const user = token;
@@ -44,9 +44,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
         props: {} as never,
       };
     }
-  
-    // SET THEME DARK
-    // document.documentElement.setAttribute('theme', 'dark'); 
   };
 
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
@@ -68,15 +65,15 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             {
               props.pageData.map(e => {
                 return (
-                  <div style={{ backgroundColor: `${e.colour}`, borderColor: `${e.colour}e0`, color: '#2a2a2ab5' }} onClick={() => Router.push(`./course/${e.link}`)}>
-                    <h2>{e._short}</h2>
-                    <h4>{e.name}</h4>
-                  </div>
-
-                  // <div style={{ backgroundColor: `${e.colour}1a`, borderColor: `${e.colour}e0` }} onClick={() => Router.push(`./course/${e.link}`)}>
+                  // <div style={{ backgroundColor: `${e.colour}`, borderColor: `${e.colour}e0`, color: '#2a2a2ab5' }} onClick={() => Router.push(`./course/${e.link}`)}>
                   //   <h2>{e._short}</h2>
                   //   <h4>{e.name}</h4>
                   // </div>
+
+                  <div style={{ backgroundColor: `${e.colour}1a`, borderColor: `${e.colour}e0` }} onClick={() => Router.push(`./course/${e.link}`)}>
+                    <h2>{e._short}</h2>
+                    <h4>{e.name}</h4>
+                  </div>
                 )
               })
             }
