@@ -23,11 +23,11 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     const { uid, email } = token;
     const user = token;
 
-    // the user is authenticated!
-    // FETCH STUFF HERE
+    const db = firebaseAdmin.firestore();
+    const userData = await (await db.doc(`users/${user.uid}`).get()).data();
 
     return {
-      props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user },
+      props: { userData, user },
     };
   } catch (err) {
     return {
@@ -62,56 +62,60 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
       <div className={styles.fullScreen}>
         <div className={styles.insideFullScreen}>
           <div>
-            {/* <h2>Learn</h2> */}
+            {
+              props.userData.courses.map(e => {
+                return (
+                  <div className={styles.boxDiv}>
+                    <div>
+                      <div>
+                        <h4>COURSE</h4>
+                        <h1>{e.title}</h1>
+                      </div>
+                      
+                      <div className={styles.boxProgress}>
+                        <h5>27% Progress</h5>
 
-            <div className={styles.boxDiv}>
-              <div>
-                <div>
-                  <h4>COURSE</h4>
-                  <h1>Learn Javascript</h1>
-                </div>
-                
-                <div className={styles.boxProgress}>
-                  <h5>27% Progress</h5>
+                        <div className={styles.progressBar}>
+                          <div style={{ width: "27%" }}></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className={styles.progress}>
+                      <h4>1 : Variables</h4>
 
-                  <div className={styles.progressBar}>
-                    <div style={{ width: "27%" }}></div>
+                      <div>
+                        <div className={styles.first}>
+                          <div className={styles.circle}><h6>1.2</h6></div>
+                          <h5>Lesson</h5>
+                          <p>Constants</p>
+                        </div>
+
+                        <div className={styles.active}>
+                          <div className={styles.circle}><h6>1.3</h6></div>
+                          <h5>Lesson</h5>
+                          <p>Assignment</p>
+                        </div>
+
+                        <div>
+                          <div className={styles.circle}><h6>1.4</h6></div>
+                          <h5>Lesson</h5>
+                          <p>Mutation</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      {/* /create/S7ioyCGZ1xow6DRyX3Rw/0/0 */}
+                      <button onClick={() => Router.push(`/course/${e._loc}`)}>
+                        View Syllabus
+                      </button>
+
+                      <Button title="Resume Learning" redirect={`/learn/${e._loc}/${e.lesson}/${e.sub_lesson}`} router={Router}/>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className={styles.progress}>
-                <h4>1 : Variables</h4>
-
-                <div>
-                  <div className={styles.first}>
-                    <div className={styles.circle}><h6>1.2</h6></div>
-                    <h5>Lesson</h5>
-                    <p>Constants</p>
-                  </div>
-
-                  <div className={styles.active}>
-                    <div className={styles.circle}><h6>1.3</h6></div>
-                    <h5>Lesson</h5>
-                    <p>Assignment</p>
-                  </div>
-
-                  <div>
-                    <div className={styles.circle}><h6>1.4</h6></div>
-                    <h5>Lesson</h5>
-                    <p>Mutation</p>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <button onClick={() => Router.push('/create/S7ioyCGZ1xow6DRyX3Rw/0/0')}>
-                  View Syllabus
-                </button>
-
-                <Button title="Resume Learning" redirect="/learn/S7ioyCGZ1xow6DRyX3Rw" router={Router}/>
-              </div>
-              
-            </div>
+                )
+              })
+            }
           </div>
 
           <div>

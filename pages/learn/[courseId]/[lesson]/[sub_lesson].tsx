@@ -47,12 +47,14 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
     await db.doc(`courses/${courseId}`).get().then((doc) => {
       pageData = doc.data()
-    })
+    });
+
+    const userData = await (await db.doc(`users/${user.uid}`).get()).data();
 
     const lV = [ parseInt(ctx.params.lesson[0]), parseInt(ctx.params.sub_lesson[0]) ] 
 
     return {
-      props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user, pageData: pageData, lessonVariance: lV },
+      props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user, userData: userData, pageData: pageData, lessonVariance: lV },
     };
   } catch (err) {
     console.log(err)
@@ -237,7 +239,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
                     currentLesson = (
                       props.pageData.lessons[lesson].sub_lessons[subLesson+1]
-                    )
+                    );
+
+                    
 
                     callback();
 
