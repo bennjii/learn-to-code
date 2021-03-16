@@ -19,6 +19,7 @@ import { firebaseAdmin } from "../../../../firebaseAdmin"
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faBookOpen } from "@fortawesome/free-solid-svg-icons";
+import { firebaseClient } from "../../../../firebaseClient";
 
 const styleMap = {
   'CODE': {
@@ -218,9 +219,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     if(!props.pageData.lessons[lesson].sub_lessons[subLesson-1]) return callback();
                     setLessonVariance([lesson, subLesson-1]);
 
-                    props.userData.courses.find(f => f._loc == props.pageData.inherit_id).then(e => {
-                      console.log(e)
-                    })
+                    // Going Backwards is not going to change the progress.
 
                     setContent(EditorState.createWithContent(
                       convertFromRaw(props.pageData.lessons[lesson].sub_lessons[subLesson-1].desc)
@@ -235,7 +234,15 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   <h3>{subLesson + 1} / {props.pageData.lessons[lesson].sub_lessons.length}</h3>
                   <Button title={"Next Lesson"} onClick={(e, callback) => { 
                     if(!props.pageData.lessons[lesson].sub_lessons[subLesson+1]) return callback();
-                    setLessonVariance([lesson, subLesson+1])
+                    setLessonVariance([lesson, subLesson+1]);
+
+                    const data = props.userData.courses.find(f => f._loc == props.pageData.inherit_id)
+                    console.log(data);
+
+                    if(data.lesson < lesson) { data.lesson = lesson; data.sub_lesson = subLesson; }
+                    else if(data.lesson == lesson && data.sub_lesson < lesson) { data.sub_lesson = subLesson; }
+
+                    firebaseClient.firestore().doc(`users/${user.uid}`).set(props.userData);
 
                     setContent(EditorState.createWithContent(
                       convertFromRaw(props.pageData.lessons[lesson].sub_lessons[subLesson+1].desc)
@@ -245,10 +252,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       props.pageData.lessons[lesson].sub_lessons[subLesson+1]
                     );
 
-                    
-
                     callback();
-
                   }} disabled={(!lessonCompleted)}></Button>
                 </div>
 

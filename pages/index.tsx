@@ -24,10 +24,22 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     const user = token;
 
     const db = firebaseAdmin.firestore();
-    const userData = await (await db.doc(`users/${user.uid}`).get()).data();
+    const userData =
+    await db.doc(`users/${user.uid}`).get()
+    .catch(e => {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/auth",
+        },
+        props: {} as never,
+      };
+    });
+
+    
 
     return {
-      props: { userData, user },
+      props: { userData: await (userData.data()), user },
     };
   } catch (err) {
     return {
@@ -45,6 +57,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const user = props.user; 
+
+  if(props.userData.courses.length == 0) Router.push('/courses')
 
   return (
     <div className={styles.container}>
@@ -115,6 +129,28 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   </div>
                 )
               })
+            }
+
+            {
+              (props.userData.courses.length == 0) ?
+              <div className={styles.boxDiv}>
+                <div>
+                  <div>
+                    <h4>WELCOME</h4>
+                    <h1>Try to learn a new Language!</h1>
+                  </div>
+                </div>
+
+                <div>
+                  <button onClick={() => Router.push(`/courses`)}>
+                    View Course List
+                  </button>
+
+                  <Button title="Join a course" redirect={`/courses`} router={Router}/>
+                </div>
+              </div>
+              :
+              <></>
             }
           </div>
 

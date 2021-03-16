@@ -25,20 +25,9 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   
       const db = firebaseAdmin.firestore();
       const courseId = ctx.params.course_id;
-      let pageData;
+      const pageData = await(await db.doc(`courses/${courseId}`).get()).data()
       
       const master = (await db.collection("users").doc(user.uid).get()).data();
-      await db.doc(`courses/${courseId}`).get().then((doc) => {
-        pageData = doc.data();
-      }).catch((e) => {
-          return {
-              redirect: {
-                permanent: false,
-                destination: "/err",
-              },
-              props: {} as never,
-          };
-      });
 
       return {
         props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user, pageData: pageData, master: master },
