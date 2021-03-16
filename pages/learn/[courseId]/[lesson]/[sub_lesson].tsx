@@ -216,7 +216,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 <div className={styles.navigationBottom}>
                   <Button title={"Go Back"} onClick={(e, callback) => { 
                     if(!props.pageData.lessons[lesson].sub_lessons[subLesson-1]) return callback();
-                    setLessonVariance([lesson, subLesson-1])
+                    setLessonVariance([lesson, subLesson-1]);
+
+                    props.userData.courses.find(f => f._loc == props.pageData.inherit_id).then(e => {
+                      console.log(e)
+                    })
 
                     setContent(EditorState.createWithContent(
                       convertFromRaw(props.pageData.lessons[lesson].sub_lessons[subLesson-1].desc)
