@@ -84,8 +84,12 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   ))
 
   useEffect(() => {
+    const les = props.userData.courses.find(f => f._loc == props.pageData.inherit_id);
     if(currentLesson.type !== "code") setLessonCompleted(true);
+    else if(les.lesson < lesson) setLessonCompleted(false);
+    else if(les.sub_lesson < subLesson) setLessonCompleted(false);
     else setLessonCompleted(false);
+    
   }, [currentLesson]);
 
   return (
@@ -236,13 +240,17 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     if(!props.pageData.lessons[lesson].sub_lessons[subLesson+1]) return callback();
                     setLessonVariance([lesson, subLesson+1]);
 
-                    const data = props.userData.courses.find(f => f._loc == props.pageData.inherit_id)
-                    console.log(data);
+                    const data = props.userData.courses.findIndex(f => f._loc == props.pageData.inherit_id)
+                    if(data !== -1) {
+                      if(props.userData.courses[data].lesson < lesson) { props.userData.courses[data].lesson = lesson; props.userData.courses[data].sub_lesson = subLesson+1; }
+                      else if(props.userData.courses[data].lesson == lesson && props.userData.courses[data].sub_lesson < lesson) { props.userData.courses[data].sub_lesson = subLesson+1; }
 
-                    if(data.lesson < lesson) { data.lesson = lesson; data.sub_lesson = subLesson; }
-                    else if(data.lesson == lesson && data.sub_lesson < lesson) { data.sub_lesson = subLesson; }
-
-                    firebaseClient.firestore().doc(`users/${user.uid}`).set(props.userData);
+                      props.userData.courses[props.userData.courses.findIndex(f => f._loc == props.pageData.inherit_id)] = data;
+                      
+                      console.log(props.userData.courses[data]);
+                      firebaseClient.firestore().doc(`users/${user.uid}`).set(props.userData);
+                    }
+                    
 
                     setContent(EditorState.createWithContent(
                       convertFromRaw(props.pageData.lessons[lesson].sub_lessons[subLesson+1].desc)
