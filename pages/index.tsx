@@ -10,6 +10,7 @@ import Header from "../public/components/header"
 import Router from 'next/router'
 
 import { firebaseAdmin } from "../firebaseAdmin"
+import { firebaseClient } from "../firebaseClient";
 
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import TextInput from "../public/components/text_input";
@@ -35,8 +36,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
         props: {} as never,
       };
     });
-
-    
 
     return {
       props: { userData: await (userData.data()), user },
@@ -78,6 +77,20 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
           <div>
             {
               props.userData.courses.map(e => {
+                if(process.browser) {
+                  firebaseClient.firestore().doc(`courses/${e._loc}`).get().then(doc => {
+                    console.log(doc.data())
+                    return (
+                      <div>
+                        {
+                          doc.data().lessons[e.lesson].name
+                          //sub_lessons[e.sub_lessons]
+                        }
+                      </div>
+                    );
+                  });
+                }
+
                 return (
                   <div className={styles.boxDiv}>
                     <div>
@@ -87,10 +100,10 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       </div>
                       
                       <div className={styles.boxProgress}>
-                        <h5>27% Progress</h5>
+                        <h5>{e.progress * 100}% Progress</h5>
 
                         <div className={styles.progressBar}>
-                          <div style={{ width: "27%" }}></div>
+                          <div style={{ width: `${e.progress * 100}%` }}></div>
                         </div>
                       </div>
                     </div>

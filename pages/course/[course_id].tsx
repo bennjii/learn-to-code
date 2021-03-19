@@ -94,6 +94,25 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 Router.push(`/learn/${props.pageData.inherit_id}/${props.master.courses[courseSubsriber].lesson}/${props.master.courses[courseSubsriber].sub_lesson}`)
               }
           }} />
+
+          <Button title={(courseSubsriber >= 0) ? "Edit" : "Join Course"} onClick={async (e, callback) => {
+              if(courseSubsriber == -1) {
+                props.master.courses.push({
+                  title: props.pageData.title,
+                  desc: props.pageData.desc,
+                  _loc: props.pageData.inherit_id,
+                  lesson: 0,
+                  sub_lesson: 0
+                });
+  
+                db.collection("users").doc(user.uid).set(props.master).then(e => {
+                  callback();
+                  setCourseSubscriber(true);
+                });
+              }else {
+                Router.push(`/learn/${props.pageData.inherit_id}/${props.master.courses[courseSubsriber].lesson}/${props.master.courses[courseSubsriber].sub_lesson}`)
+              }
+          }} />
         </div>
 
         <Footer />
