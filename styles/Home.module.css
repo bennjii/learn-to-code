@@ -1927,3 +1927,27 @@ div.headerProgress {
   width: 40%;
   margin: auto;
 }
+
+.adminCourses {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-between !important;
+}
+
+.adminButtons {
+  display: flex;
+  flex-direction: row !important;
+
+  justify-content: space-between !important;
+  align-items: center !important;
+
+  gap: 15px;
+  width: auto;
+}
+
+.adminButtons button:first-of-type {
+  border: none;
+  background-color: transparent;
+  color: #0070f3;
+}

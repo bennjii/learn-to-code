@@ -25,12 +25,15 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   
       const db = firebaseAdmin.firestore();
       const courseId = ctx.params.course_id;
-      const pageData = await(await db.doc(`courses/${courseId}`).get()).data()
+      const pageData = await(await db.doc(`courses/${courseId}`).get()).data();
+
+      const userData =
+      await (await db.doc(`users/${user.uid}`).get()).data();
       
       const master = (await db.collection("users").doc(user.uid).get()).data();
 
       return {
-        props: { message: `Your email is ${email} and your UID is ${uid}.`, user: user, pageData: pageData, master: master },
+        props: { userData, user, pageData, master },
       };
     } catch (err) {
       return {
@@ -76,26 +79,12 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             }
           </div>
 
-          <Button title={(courseSubsriber >= 0) ? "Resume Course" : "Join Course"} onClick={async (e, callback) => {
-              if(courseSubsriber == -1) {
-                props.master.courses.push({
-                  title: props.pageData.title,
-                  desc: props.pageData.desc,
-                  _loc: props.pageData.inherit_id,
-                  lesson: 0,
-                  sub_lesson: 0
-                });
-  
-                db.collection("users").doc(user.uid).set(props.master).then(e => {
-                  callback();
-                  setCourseSubscriber(true);
-                });
-              }else {
-                Router.push(`/learn/${props.pageData.inherit_id}/${props.master.courses[courseSubsriber].lesson}/${props.master.courses[courseSubsriber].sub_lesson}`)
-              }
-          }} />
+          
 
-          <Button title={(courseSubsriber >= 0) ? "Edit" : "Join Course"} onClick={async (e, callback) => {
+          {
+            (props.userData.account_type == 'student')
+            ?
+            <Button title={(courseSubsriber >= 0) ? "Resume Course" : "Join Course"} onClick={async (e, callback) => {
               if(courseSubsriber == -1) {
                 props.master.courses.push({
                   title: props.pageData.title,
@@ -112,7 +101,14 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
               }else {
                 Router.push(`/learn/${props.pageData.inherit_id}/${props.master.courses[courseSubsriber].lesson}/${props.master.courses[courseSubsriber].sub_lesson}`)
               }
+            }} />
+            :
+            <Button title={"Edit Course"} onClick={async (e, callback) => {
+              Router.push(`/create/${props.pageData.inherit_id}/${props.master.courses[courseSubsriber].lesson}/${props.master.courses[courseSubsriber].sub_lesson}`)
           }} />
+          }
+          
+          
         </div>
 
         <Footer />
