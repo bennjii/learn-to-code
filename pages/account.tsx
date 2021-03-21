@@ -5,11 +5,14 @@ import styles from '../styles/Home.module.css'
 import Head from 'next/head'
 import Header from '../public/components/header'
 
+import Button from '../public/components/button'
+
 import nookies from "nookies"
 import { firebaseAdmin } from "../firebaseAdmin"
 import Router from 'next/router'
 
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
+import { firebaseClient } from "../firebaseClient";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
@@ -54,6 +57,13 @@ const Account = (props: InferGetServerSidePropsType<typeof getServerSideProps>) 
           <div>
             <h1>{user.name}</h1>
           </div>
+
+          <Button title={"Logout"} onClick={(e, callback) => {
+            firebaseClient.auth().signOut();
+            callback();
+
+            Router.push('./auth')
+          }}></Button>
           
         </div>
         

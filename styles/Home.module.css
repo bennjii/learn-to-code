@@ -902,6 +902,10 @@ div.headerProgress {
   padding: .3rem;
 
   position: relative;
+
+  width: 2rem;
+  height: 2rem;
+  justify-content: center;
 }
 
 .circle:before {
@@ -1101,11 +1105,13 @@ div.headerProgress {
   flex: 1;
 }
 
-.teaching h3 {
+.teaching i {
   font-weight: 400;
   font-family: "Apercu";
   font-size: 1rem;
   margin: 0;
+
+  font-style: normal;
 }
 
 .teaching h1 {

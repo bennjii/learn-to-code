@@ -112,6 +112,7 @@ import { firebaseAdmin } from "../firebaseAdmin"
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import Header from '../public/components/header';
 import Head from 'next/head';
+import { userInfo } from 'os';
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     try {
@@ -142,6 +143,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   };
 
 const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+    if(props.user && process.browser) Router.push('./');
+
     const [isProgrammer, setIsProgrammer] = useState<boolean>(true)
 
     const toggleSignup = () => {

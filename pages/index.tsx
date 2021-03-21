@@ -25,11 +25,17 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     const user = token;
 
     const db = firebaseAdmin.firestore();
-    const userData =
-    await db.doc(`users/${user.uid}`).get();
+    const userData = await (await db.doc(`users/${user.uid}`).get()).data();
+
+    let pageData = [];
+
+    for(let i = 0; i < userData.courses.length; i++){
+      const data = await (await db.doc(`courses/${userData.courses[i]._loc}`).get()).data();
+      pageData.push(data);
+    }
 
     return {
-      props: { userData: await (userData.data()), user },
+      props: { userData, pageData, user },
     };
   } catch (err) {
     return {
@@ -40,10 +46,16 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       props: {} as never,
     };
   }
-
-  // SET THEME DARK
-  // document.documentElement.setAttribute('theme', 'dark'); 
 };
+
+function capitalize (value) {
+  var textArray = value.split(' ')
+  var capitalizedText = ''
+  for (var i = 0; i < textArray.length; i++) {
+    capitalizedText += textArray[i].charAt(0).toUpperCase() + textArray[i].slice(1) + ' '
+  }
+  return capitalizedText
+}
 
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const user = props.user; 
@@ -70,21 +82,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
           <div className={styles.insideFullScreen}>
             <div>
               {
-                props.userData.courses.map(e => {
-                  if(process.browser) {
-                    firebaseClient.firestore().doc(`courses/${e._loc}`).get().then(doc => {
-                      console.log(doc.data())
-                      return (
-                        <div>
-                          {
-                            doc.data().lessons[e.lesson].name
-                            //sub_lessons[e.sub_lessons]
-                          }
-                        </div>
-                      );
-                    });
-                  }
-
+                props.userData.courses.map((e, index) => {
                   return (
                     <div className={styles.boxDiv}>
                       <div>
@@ -102,26 +100,35 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                         </div>
                       </div>
                       <div className={styles.progress}>
-                        <h4>1 : Variables</h4>
-
+                        <h4>{e.lesson+1} : { props.pageData[index].lessons[e.lesson].name}</h4> 
                         <div>
-                          <div className={styles.first}>
-                            <div className={styles.circle}><h6>1.2</h6></div>
-                            <h5>Lesson</h5>
-                            <p>Constants</p>
-                          </div>
-
+                          {
+                            (e.sub_lesson <= 0) ?
+                              <></>
+                            :
+                              <div className={styles.first}>
+                                <div className={styles.circle}><h6>{e.lesson+1}.{e.sub_lesson}</h6></div>
+                                <h5>{capitalize(props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson].type)}</h5>
+                                <p>{props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson-1].name}</p>
+                              </div>
+                          }
+                          
                           <div className={styles.active}>
-                            <div className={styles.circle}><h6>1.3</h6></div>
-                            <h5>Lesson</h5>
-                            <p>Assignment</p>
+                            <div className={styles.circle}><h6>{e.lesson+1}.{e.sub_lesson+1}</h6></div>
+                            <h5>{capitalize(props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson].type)}</h5>
+                            <p>{props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson].name}</p>
                           </div>
 
-                          <div>
-                            <div className={styles.circle}><h6>1.4</h6></div>
-                            <h5>Lesson</h5>
-                            <p>Mutation</p>
-                          </div>
+                          {
+                            (!props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson+2]) ?
+                              <></>
+                            :
+                              <div className={styles.first}>
+                                <div className={styles.circle}><h6>{e.lesson+1}.{e.sub_lesson+2}</h6></div>
+                                <h5>{capitalize(props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson].type)}</h5>
+                                <p>{props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson+1].name}</p>
+                              </div>
+                          }
                         </div>
                       </div>
 
@@ -169,7 +176,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   {/* PRESUMING TEACHER IS ASSIGNED ; */}
                   <div>
                     <h4>Daily Streak</h4>
-                    <h1><strong>0</strong> <h3>Days</h3></h1>
+                    <h1><strong>0</strong> <i>Days</i></h1>
                   </div>
                 </div>
               </div>
@@ -246,8 +253,12 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 <div className={styles.teaching}>
                   {/* PRESUMING TEACHER IS ASSIGNED ; */}
                   <div>
-                    <h4>Daily Streak</h4>
-                    <h1><strong>0</strong> <h3>Days</h3></h1>
+                    <h4>CREATE</h4>
+
+                    <h1>Create a Course</h1>
+
+                    <br/>
+                    <Button title={"Create"}></Button>
                   </div>
                 </div>
               </div>
