@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import nookies from "nookies";
 
 import styles from '../../../../styles/Home.module.css'
@@ -89,8 +89,10 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const user = props.user;
   const [ activeEdit, setActiveEdit ] = useState(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]]);
   const [ activeLocation, setActiveLocation ] = useState(props.lessonVariance);
-  const [ overlayVisible, setOverlayVisible ] = useState(true);
+  const [ overlayVisible, setOverlayVisible ] = useState(false);
 
+  const [ chooseLessonVisible, setChooseLessonVisible ] = useState(false);
+  const [ createNewLessonVisible, setCreateNewLessonVisible ] = useState(false);
   const [ syncStatus, setSyncStatus ] = useState(true);
   const [ newLesson, setNewLesson ] = useState({
     desc: convertToRaw(EditorState.createEmpty().getCurrentContent()),
@@ -105,76 +107,108 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-        <div className={`${styles.codeDesc} ${(overlayVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
-          <div>
-            <div className={styles.subClasses}>
-              <h2>{props.pageData.title}</h2>
-              <h5>Create Lesson</h5>
+      <div className={`${styles.codeDesc} ${(!overlayVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
+        <div>
+          <div className={styles.subClasses}>
+            <h2>{props.pageData.title}</h2>
+            <h5>Create Lesson</h5>
 
-              <form action="#">
-                <div>
-                  <h3>TITLE</h3>
-                  <TextInput placeholder="Enter lesson name" onChange={(e) => {
-                    console.log(e);
+            <form action="#">
+              <div>
+                <h3>TITLE</h3>
+                <TextInput placeholder="Enter lesson name" onChange={(e) => {
+                  console.log(e);
 
-                    let temp_lesson = newLesson;
-                    temp_lesson.name = e.target.value;
-                      
-                    setNewLesson(temp_lesson);
-                  }}/>
-
-                  <h3>FORMAT</h3>
-                  <div className={styles.multiChoice}>
-                    <div className={`${styles.radialInput} ${(newLesson.type == 'code') ? styles.activeRadialInput : styles.normal}`}  onClick={(e) => {
-                        let temp_lesson = newLesson;
-                        temp_lesson.type = "code";
-
-                        setNewLesson(temp_lesson);
-                      }}>
-
-                      <input type="radio" className={styles.createInputRadial} value={"Interactive"} name={"type"} />
-
-                      <label>Interactive</label>
-                    </div>
+                  let temp_lesson = newLesson;
+                  temp_lesson.name = e.target.value;
                     
-                    <div className={`${styles.radialInput} ${(newLesson.type == 'learn') ? styles.activeRadialInput : styles.normal}`} onClick={(e) => {
-                        let temp_lesson = newLesson;
-                        temp_lesson.type = "learn";
+                  setNewLesson(temp_lesson);
+                }}/>
 
-                        setNewLesson(temp_lesson);
-                      }}>
+                <h3>FORMAT</h3>
+                <div className={styles.multiChoice}>
+                  <div className={`${styles.radialInput} ${(newLesson.type == 'code') ? styles.activeRadialInput : styles.normal}`}  onClick={(e) => {
+                      let temp_lesson = newLesson;
+                      temp_lesson.type = "code";
 
-                      <input type="radio" className={styles.createInputRadial} value={"Learn"} name={"type"}/>
+                      setNewLesson(temp_lesson);
+                    }}>
 
-                      <label>Learner</label>
-                    </div>
+                    <input type="radio" className={styles.createInputRadial} value={"Interactive"} name={"type"} />
+
+                    <label>Interactive</label>
+                  </div>
+                  
+                  <div className={`${styles.radialInput} ${(newLesson.type == 'learn') ? styles.activeRadialInput : styles.normal}`} onClick={(e) => {
+                      let temp_lesson = newLesson;
+                      temp_lesson.type = "learn";
+
+                      setNewLesson(temp_lesson);
+                    }}>
+
+                    <input type="radio" className={styles.createInputRadial} value={"Learn"} name={"type"}/>
+
+                    <label>Learner</label>
                   </div>
                 </div>
+              </div>
 
-                <Button title={"Create"} onClick={(e, callback) => {
-                  e.preventDefault();
+              <Button title={"Create"} onClick={(e, callback) => {
+                e.preventDefault();
 
-                  props.pageData.lessons[props.lessonVariance[0]].sub_lessons.push(newLesson);
-                  const db = firebaseClient.firestore();
+                props.pageData.lessons[props.lessonVariance[0]].sub_lessons.push(newLesson);
+                const db = firebaseClient.firestore();
 
-                  db.doc(`courses/${props.courseId}`).set(props.pageData).then((doc) => {
-                    console.log("Update Sucessful.");
-                    
-                    callback();
-                    setNewLesson({
-                      desc: convertToRaw(EditorState.createEmpty().getCurrentContent()),
-                      name: '',
-                      type: ''
-                    });
-                  }).catch(e => {
-                    console.log(e);
+                db.doc(`courses/${props.courseId}`).set(props.pageData).then((doc) => {
+                  console.log("Update Sucessful.");
+                  
+                  callback();
+                  setNewLesson({
+                    desc: convertToRaw(EditorState.createEmpty().getCurrentContent()),
+                    name: '',
+                    type: ''
                   });
-                }}></Button>
-              </form>
-            </div>                    
-          </div>
+                }).catch(e => {
+                  console.log(e);
+                });
+              }}></Button>
+            </form>
+          </div>                    
         </div>
-      <div className={`${(overlayVisible) ? styles.normalOut : styles.blackOut}`} onClick={() => setOverlayVisible(!overlayVisible)}></div>
+      </div>
+      <div className={`${(!overlayVisible) ? styles.normalOut : styles.blackOut}`} onClick={() => setOverlayVisible(!overlayVisible)}></div>
+
+      <div className={`${styles.codeDesc} ${(!chooseLessonVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
+        <div>
+          <div className={styles.subClasses}>
+            <h2>{props.pageData.title}</h2>
+            <h5>Lesson Plan</h5>
+
+            <br/><br/>
+
+            <div className={styles.lessonSylabusOverview}>
+            {
+              props.pageData.lessons.map((e, index) => {
+                return (
+                  <div className={styles.lessonOverviewBlue} onClick={() => {
+                    Router.push(`../../../create/${props.pageData.inherit_id}/${index}/0`);
+                    setChooseLessonVisible(!chooseLessonVisible);
+                  }}>
+                    { index+1 }. { e.name }
+                  </div>
+                )
+              })
+            }
+            </div>
+            
+            <Button title={"Create New"} onClick={(e, callback) => {
+              setCreateNewLessonVisible(!createNewLessonVisible);
+              callback();
+            }}></Button>
+          </div>                    
+        </div>
+      </div>
+      <div className={`${(!chooseLessonVisible) ? styles.normalOut : styles.blackOut}`} onClick={() => setChooseLessonVisible(!chooseLessonVisible)}></div>
 
       <div className={styles.headerCustom}>
             <div className={styles.headerInsideCustom}>
@@ -207,14 +241,8 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     props.pageData.lessons.map((e, index) => {
                         return ( 
                           <div key={index}>
-                            <div>
+                            <div onClick={() => setChooseLessonVisible(!chooseLessonVisible)}>
                               {e.name}
-                              {
-                                (props.lessonVariance[0] == index)?
-                                <a href="">^</a>
-                                :
-                                <a href=""></a>
-                              }
                             </div>
 
                             <div className={styles.collectionArr}>

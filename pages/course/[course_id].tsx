@@ -69,11 +69,25 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
           <div className={styles.courseSylibusOverview}>
             {
-              props.pageData.lessons.map(e => {
+              props.pageData.lessons.map((e, index) => {
                 return (
-                  <div className={styles.lessonOverview}>
-                    {e.name}
-                  </div>
+                  <div className={styles.lessonOverviewParent}>
+                    <div className={styles.lessonOverview}>
+                      {index+1}: {e.name}
+                    </div>
+
+                    <div className={styles.lessonOverviewSubLessons}>
+                      {
+                        e.sub_lessons.map((data, data_index) => {
+                          return (
+                            <div>
+                              <p>{index+1}.{data_index+1}: {data.name}</p>
+                            </div>
+                          )
+                        })
+                      }
+                    </div>
+                  </div>  
                 )
               })
             }
