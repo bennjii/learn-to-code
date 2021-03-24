@@ -51,6 +51,22 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     });
 
     const userData = await (await db.doc(`users/${user.uid}`).get()).data();
+    if(userData.date) {
+      if(new Date().getTime() - userData.date > 86400000 && new Date().getTime() - userData.date < (2*86400000))  {// 1 < Day < 2     Difference
+        userData.date = new Date().getTime();
+        userData.streak += 1;
+
+        db.doc(`users/${user.uid}`).set(userData);
+      }else if (new Date().getTime() - userData.date > (2*86400000)) {
+        userData.streak = 0;
+        db.doc(`users/${user.uid}`).set(userData);
+      }
+    }else {
+      userData.date = new Date().getTime();
+      userData.streak = 0;
+
+      db.doc(`users/${user.uid}`).set(userData);
+    }
 
     const lV = [ parseInt(ctx.params.lesson[0]), parseInt(ctx.params.sub_lesson[0]) ] 
 
