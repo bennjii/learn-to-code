@@ -27,6 +27,23 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     const db = firebaseAdmin.firestore();
     const userData = await (await db.doc(`users/${user.uid}`).get()).data();
 
+    if(userData.date) {
+      if(new Date().getTime() - userData.date > 86400000 && new Date().getTime() - userData.date < (2*86400000))  {// 1 < Day < 2     Difference
+        userData.date = new Date().getTime();
+        userData.streak += 1;
+
+        db.doc(`users/${user.uid}`).set(userData);
+      }else if (new Date().getTime() - userData.date > (2*86400000)) {
+        userData.streak = 0;
+        db.doc(`users/${user.uid}`).set(userData);
+      }
+    }else {
+      userData.date = new Date().getTime();
+      userData.streak = 0;
+
+      db.doc(`users/${user.uid}`).set(userData);
+    }
+
     let pageData = [];
 
     for(let i = 0; i < userData.courses.length; i++){
@@ -108,7 +125,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                             :
                               <div className={styles.first}>
                                 <div className={styles.circle}><h6>{e.lesson+1}.{e.sub_lesson}</h6></div>
-                                <h5>{capitalize(props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson].type)}</h5>
+                                <h5>{capitalize(props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson-1].type)}</h5>
                                 <p>{props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson-1].name}</p>
                               </div>
                           }
@@ -125,7 +142,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                             :
                               <div className={styles.first}>
                                 <div className={styles.circle}><h6>{e.lesson+1}.{e.sub_lesson+2}</h6></div>
-                                <h5>{capitalize(props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson].type)}</h5>
+                                <h5>{capitalize(props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson+1].type)}</h5>
                                 <p>{props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson+1].name}</p>
                               </div>
                           }
@@ -176,7 +193,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   {/* PRESUMING TEACHER IS ASSIGNED ; */}
                   <div>
                     <h4>Daily Streak</h4>
-                    <h1><strong>0</strong> <i>Days</i></h1>
+                    <h1><strong>{props.userData.streak}</strong> <i>Days</i></h1>
                   </div>
                 </div>
               </div>

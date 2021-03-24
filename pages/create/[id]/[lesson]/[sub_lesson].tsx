@@ -94,10 +94,17 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const [ chooseLessonVisible, setChooseLessonVisible ] = useState(false);
   const [ createNewLessonVisible, setCreateNewLessonVisible ] = useState(false);
   const [ syncStatus, setSyncStatus ] = useState(true);
+
   const [ newLesson, setNewLesson ] = useState({
     desc: convertToRaw(EditorState.createEmpty().getCurrentContent()),
     name: '',
     type: ''
+  });
+
+  const [ newSection, setNewSection ] = useState({
+    name: '',
+    desc: '',
+    sub_lessons: []
   })
 
   return (
@@ -178,6 +185,60 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
       </div>
       <div className={`${(!overlayVisible) ? styles.normalOut : styles.blackOut}`} onClick={() => setOverlayVisible(!overlayVisible)}></div>
 
+      <div className={`${styles.codeDesc} ${(!createNewLessonVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
+        <div>
+          <div className={styles.subClasses}>
+            <h2>{props.pageData.title}</h2>
+            <h5>Create Section</h5>
+
+            <form action="#">
+              <div>
+                <h3>TITLE</h3>
+                <TextInput placeholder="Enter Section Name" onChange={(e) => {
+                  console.log(e);
+
+                  let temp_lesson = newSection;
+                  temp_lesson.name = e.target.value;
+                    
+                  setNewSection(temp_lesson);
+                }}/>
+
+                <h3>DESCRPTION</h3>
+                <TextInput placeholder="Brief Descrption" onChange={(e) => {
+                  console.log(e);
+
+                  let temp_lesson = newSection;
+                  temp_lesson.desc = e.target.value;
+                    
+                  setNewSection(temp_lesson);
+                }}/>
+              </div>
+
+              <Button title={"Create"} onClick={(e, callback) => {
+                e.preventDefault();
+
+                props.pageData.lessons.push(newSection);
+                const db = firebaseClient.firestore();
+
+                db.doc(`courses/${props.courseId}`).set(props.pageData).then((doc) => {
+                  console.log("Update Sucessful.");
+                  
+                  callback();
+                  setNewSection({
+                    name: '',
+                    desc: '',
+                    sub_lessons: []
+                  });
+                }).catch(e => {
+                  console.log(e);
+                });
+              }}></Button>
+            </form>
+          </div>                    
+        </div>
+      </div>
+      <div className={`${(!createNewLessonVisible) ? styles.normalOut : styles.blackOut}`} onClick={() => setCreateNewLessonVisible(!createNewLessonVisible)}></div>
+
       <div className={`${styles.codeDesc} ${(!chooseLessonVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
         <div>
           <div className={styles.subClasses}>
@@ -203,6 +264,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             
             <Button title={"Create New"} onClick={(e, callback) => {
               setCreateNewLessonVisible(!createNewLessonVisible);
+              setChooseLessonVisible(!chooseLessonVisible);
               callback();
             }}></Button>
           </div>                    

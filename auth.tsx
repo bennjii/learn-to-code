@@ -60,6 +60,7 @@ export function AuthProvider({ children }: any) {
       console.log(`updating token...`);
       const token = await user.getIdToken();
       setUser(user);
+
       nookies.destroy(null, "token");
       nookies.set(null, "token", token, {});
     });
