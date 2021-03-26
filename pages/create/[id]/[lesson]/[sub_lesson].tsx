@@ -85,6 +85,8 @@ type Lesson = {
   type: string
 }
 
+let allowed = true;
+
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const user = props.user;
   const [ activeEdit, setActiveEdit ] = useState(props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]]);
@@ -98,14 +100,21 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const [ newLesson, setNewLesson ] = useState({
     desc: convertToRaw(EditorState.createEmpty().getCurrentContent()),
     name: '',
-    type: ''
+    type: '',
+    template_code: ''
   });
 
   const [ newSection, setNewSection ] = useState({
     name: '',
     desc: '',
     sub_lessons: []
-  })
+  });
+
+  useEffect(() => {
+    console.log("New Edit");
+    console.log(activeEdit);
+
+  }, [activeEdit])
 
   return (
     <div className={styles.container}>
@@ -315,8 +324,6 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                                       setActiveEdit(props.pageData.lessons[index].sub_lessons[index2]);
                                       setActiveLocation([index, index2]);
 
-                                      console.log(activeEdit);
-
                                       Router.push(`../../${props.courseId}/${index}/${index2}`);
                                     }}>
                                       {index + 1}.{index2 + 1} {e2.name}
@@ -421,18 +428,30 @@ const reMergeContent = (newAddition, additionLocation, master, callback: Functio
   if(!newAddition.desc.blocks) {
     newAddition.desc = convertToRaw(newAddition.desc);
   } 
+
+  master.pageData.lessons.forEach((e, i) => {
+    e.sub_lessons.forEach((__e, k) => {
+      if(!__e.desc.blocks) {
+        console.log(`ATTEMPTING TO CONVERT:`);
+        console.log(master.pageData.lessons[i].sub_lessons[k])
+        master.pageData.lessons[i].sub_lessons[k].desc = convertToRaw(__e.desc);
+      } 
+
+      // console.log(master.pageData.lessons[i].sub_lessons[k].desc);
+    })
+  })
   
   master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]] = newAddition;
   
   const db = firebaseClient.firestore();
-  db.doc(`courses/${courseId}`).set(master.pageData).then((doc) => {
-    console.log("Update Sucessful.");
-    lastDebounce = new Date();
+  // db.doc(`courses/${courseId}`).set(master.pageData).then((doc) => {
+  //   console.log("Update Sucessful.");
+  //   lastDebounce = new Date();
 
-    callback(true);
-  }).catch(e => {
-    callback(false);
-  });
+  //   callback(true);
+  // }).catch(e => {
+  //   callback(false);
+  // });
 }
 
 export default HomePage;

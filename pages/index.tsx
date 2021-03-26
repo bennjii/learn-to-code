@@ -28,6 +28,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
     const userData = await (await db.doc(`users/${user.uid}`).get()).data();
 
     if(userData.date) {
+      console.log(86400000 - (new Date().getTime() - userData.date));
+
       if(new Date().getTime() - userData.date > 86400000 && new Date().getTime() - userData.date < (2*86400000))  {// 1 < Day < 2     Difference
         userData.date = new Date().getTime();
         userData.streak += 1;
