@@ -1,5 +1,6 @@
 import AceEditor from 'react-ace';
 
+import styles from '../../styles/Home.module.css'
 import brace from 'brace';
 import "brace/theme/solarized_dark";
 import "brace/theme/tomorrow_night";
@@ -8,19 +9,20 @@ import 'brace/theme/github';
 import "brace/mode/javascript"
 
 import React from 'react'
-class TextEditor extends React.Component<{lan: string, onChange: Function, placeholder: string}> {
+import Button from './button';
+
+import axios from 'axios'
+class TextEditor extends React.Component<{lan: string, onChange: Function, placeholder: string}, {console: string, consoleVisible: boolean}> {
     constructor(props) {
         super(props);
-    }
-    componentDidMount() {
-        // const customMode = new CustomSqlMode();
-        // this.refs.aceEditor.editor.getSession().setMode(customMode);
+
+        this.state = { console: '', consoleVisible: false };
     }
     
     render() {
         return (
             <div className="textEditor">
-                <div>
+                <div className={styles.textEditorToolbar}>
                     <h5>main.js</h5> 
                 </div>
                 
@@ -39,6 +41,32 @@ class TextEditor extends React.Component<{lan: string, onChange: Function, place
                     value={this.props.placeholder}
                     tabSize={2}
                 />
+
+                <div className={styles.textEditorFooter}>
+                    <div className={styles.textEditorFooterSticky}>
+                        <p>CONSOLE</p>
+
+                        <Button title={"Run"} onClick={async () => {
+                            const response = await axios.post(
+                                "https://emkc.org/api/v1/piston/execute",
+                                {
+                                    "language": this.props.lan,
+                                    "source": this.props.placeholder,
+                                    "args": []
+                                },
+                                { headers: {'Content-Type': 'application/json'} }
+                            )
+
+                            this.setState({ console: response.data.output, consoleVisible: true });
+                        }}/>
+                    </div>
+
+                    <div hidden={this.state.consoleVisible}>
+                        <p>
+                            {this.state.console}
+                        </p>
+                    </div>
+                </div>
             </div>
         );
     }

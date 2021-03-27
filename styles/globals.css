@@ -259,6 +259,12 @@ button:hover {
   background-color: #01111f;
 }
 
+.textEditor > div:last-of-type {
+  background-color: #01111f;
+
+  padding: .5rem 1rem;
+}
+
 .textEditor > div:first-of-type h5 {
   width: fit-content;
 }

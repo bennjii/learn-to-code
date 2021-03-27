@@ -1745,17 +1745,30 @@ div.headerProgress {
   height: 100%;
 }
 
+.textEditorToolbar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-between;
+}
+
+.textEditorFooter {
+  display: flex;
+  flex-direction: row;
+}
+
+.textEditorFooterSticky {
+
+}
+
+
 .textEditor > div {
   height: 100%;
   width: 100%;
 
   flex: 1;
 }
-
-/* .textEditor > div * {
-  height: 100%;
-  width: 100%;
-} */
 
 .createWindow {
   height: 100%;

@@ -110,11 +110,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
     sub_lessons: []
   });
 
-  useEffect(() => {
-    console.log("New Edit");
-    console.log(activeEdit);
+  // useEffect(() => {
+  //   console.log("New Edit");
+  //   console.log(activeEdit);
 
-  }, [activeEdit])
+  // }, [activeEdit])
 
   return (
     <div className={styles.container}>
@@ -133,8 +133,6 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
               <div>
                 <h3>TITLE</h3>
                 <TextInput placeholder="Enter lesson name" onChange={(e) => {
-                  console.log(e);
-
                   let temp_lesson = newLesson;
                   temp_lesson.name = e.target.value;
                     
@@ -175,14 +173,13 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 props.pageData.lessons[props.lessonVariance[0]].sub_lessons.push(newLesson);
                 const db = firebaseClient.firestore();
 
-                db.doc(`courses/${props.courseId}`).set(props.pageData).then((doc) => {
-                  console.log("Update Sucessful.");
-                  
+                db.doc(`courses/${props.courseId}`).set(props.pageData).then((doc) => {      
                   callback();
                   setNewLesson({
                     desc: convertToRaw(EditorState.createEmpty().getCurrentContent()),
                     name: '',
-                    type: ''
+                    type: '',
+                    template_code: ''
                   });
                 }).catch(e => {
                   console.log(e);
@@ -204,8 +201,6 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
               <div>
                 <h3>TITLE</h3>
                 <TextInput placeholder="Enter Section Name" onChange={(e) => {
-                  console.log(e);
-
                   let temp_lesson = newSection;
                   temp_lesson.name = e.target.value;
                     
@@ -214,8 +209,6 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
                 <h3>DESCRPTION</h3>
                 <TextInput placeholder="Brief Descrption" onChange={(e) => {
-                  console.log(e);
-
                   let temp_lesson = newSection;
                   temp_lesson.desc = e.target.value;
                     
@@ -229,9 +222,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 props.pageData.lessons.push(newSection);
                 const db = firebaseClient.firestore();
 
-                db.doc(`courses/${props.courseId}`).set(props.pageData).then((doc) => {
-                  console.log("Update Sucessful.");
-                  
+                db.doc(`courses/${props.courseId}`).set(props.pageData).then((doc) => {  
                   callback();
                   setNewSection({
                     name: '',
@@ -349,16 +340,13 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   (activeEdit.type == 'code')
                   ?
                     <div className={styles.textEditor}>
-
                       <div className={styles.editingContent}> 
-                        <input type="text" placeholder={activeEdit.name} defaultValue={activeEdit.name} onChange={(e) => {
+                        <input type="text" defaultValue={activeEdit.name} onChange={(e) => {
                           let editClone = activeEdit;
                           editClone.name = (e.target.value);
+
                           setActiveEdit(editClone)
-
                           setSyncStatus(false);
-
-                          console.log(activeEdit);
 
                           updateSync(() => {
                             // @ts-ignore
@@ -429,29 +417,25 @@ const reMergeContent = (newAddition, additionLocation, master, callback: Functio
     newAddition.desc = convertToRaw(newAddition.desc);
   } 
 
+  master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]] = newAddition;
+
+  // All texteditor elements that are in thier object form are to be converted into raw form for storage.
   master.pageData.lessons.forEach((e, i) => {
     e.sub_lessons.forEach((__e, k) => {
       if(!__e.desc.blocks) {
-        console.log(`ATTEMPTING TO CONVERT:`);
-        console.log(master.pageData.lessons[i].sub_lessons[k])
         master.pageData.lessons[i].sub_lessons[k].desc = convertToRaw(__e.desc);
-      } 
-
-      // console.log(master.pageData.lessons[i].sub_lessons[k].desc);
+      }
     })
   })
   
-  master.pageData.lessons[additionLocation[0]].sub_lessons[additionLocation[1]] = newAddition;
-  
   const db = firebaseClient.firestore();
-  // db.doc(`courses/${courseId}`).set(master.pageData).then((doc) => {
-  //   console.log("Update Sucessful.");
-  //   lastDebounce = new Date();
+  db.doc(`courses/${courseId}`).set(master.pageData).then((doc) => {
+    lastDebounce = new Date();
 
-  //   callback(true);
-  // }).catch(e => {
-  //   callback(false);
-  // });
+    callback(true);
+  }).catch(e => {
+    callback(false);
+  });
 }
 
 export default HomePage;
