@@ -1753,15 +1753,77 @@ div.headerProgress {
   justify-content: space-between;
 }
 
+.textEditorToolbar button {
+  background-color: transparent;
+}
+
 .textEditorFooter {
+  width: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  color: #f4f4f4;
 }
 
 .textEditorFooterSticky {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
 
+  justify-content: space-between;
+  align-items: center;
 }
 
+.textEditorFooterSticky p {
+  margin: 0;
+}
+
+.textEditorFooterSticky svg {
+  height: 1rem;
+  width: 1rem;
+}
+
+.textEditorFooterSticky svg:hover {
+  cursor: pointer;
+}
+
+.consoleElement {
+  background-color: rgba(216, 221, 228, 0.1);
+  border-radius: 5px;
+  
+  padding: .25rem 1rem;
+  margin-top: .8rem;
+
+  font-family: 'Consolas' !important;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  gap: 15px;
+}
+
+.consoleHeader {
+  background-color: rgba(216, 221, 228, 0.2);
+  padding: 2px 5px;
+
+  border-radius: 3px;
+}
+
+.consoleElement p {
+  font-family: "Consolas" !important;
+}
+
+.consoleCompiled {
+  background-color: rgba(216, 221, 228, 0.2);
+}
+
+.consoleErrored {
+  background-color: rgba(219, 86, 86, 0.534);
+  color: #ee544a;
+}
 
 .textEditor > div {
   height: 100%;

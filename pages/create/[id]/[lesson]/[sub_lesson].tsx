@@ -1,27 +1,27 @@
 import React, { useEffect, useReducer, useState } from "react";
 import nookies from "nookies";
 
-import styles from '../../../../styles/Home.module.css'
+import styles from '@styles/Home.module.css'
 import Head from 'next/head'
-import Button from '../../../../public/components/button'
+import Button from '@components/button'
 import Router from 'next/router'
 
-import TextInput from '../../../../public/components/text_input'
+import TextInput from '@components/text_input'
 
 import { EditorState, convertFromRaw, ContentState } from 'draft-js'
 
 import dynamic from 'next/dynamic'
-const TextEditor = dynamic(import('../../../../public/components/text_editor'), {
+const TextEditor = dynamic(import('@components/text_editor'), {
   ssr: false
 });
 
 import { convertToRaw } from 'draft-js'
 
-import { firebaseAdmin } from "../../../../firebaseAdmin"
+import { firebaseAdmin } from "@root/firebaseAdmin"
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 
-import { SimpleEditor } from '../../../../public/components/editor' 
-import { firebaseClient } from "../../../../firebaseClient";
+import { SimpleEditor } from '@components/editor' 
+import { firebaseClient } from "@root/firebaseClient";
 import { useRouter } from 'next/router'
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {

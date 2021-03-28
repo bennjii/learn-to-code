@@ -12,11 +12,23 @@ import React from 'react'
 import Button from './button';
 
 import axios from 'axios'
-class TextEditor extends React.Component<{lan: string, onChange: Function, placeholder: string}, {console: string, consoleVisible: boolean}> {
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+
+interface Console {
+    language: string,
+    output: string,
+    ran: boolean,
+    stderr: string,
+    stdout: string,
+    version: string
+}
+
+class TextEditor extends React.Component<{lan: string, onChange: Function, placeholder: string}, {console: Console, consoleVisible: boolean}> {
     constructor(props) {
         super(props);
 
-        this.state = { console: '', consoleVisible: false };
+        this.state = { console: null, consoleVisible: true };
     }
     
     render() {
@@ -24,6 +36,23 @@ class TextEditor extends React.Component<{lan: string, onChange: Function, place
             <div className="textEditor">
                 <div className={styles.textEditorToolbar}>
                     <h5>main.js</h5> 
+
+                    <Button title={"Run"} onClick={async (e, callback) => {
+                        const response = await axios.post(
+                            "https://emkc.org/api/v1/piston/execute",
+                            {
+                                "language": this.props.lan,
+                                "source": this.props.placeholder,
+                                "args": []
+                            },
+                            { headers: {'Content-Type': 'application/json'} }
+                        ).then((res) => {
+                            callback();
+                            return res;
+                        })
+
+                        this.setState({ console: response.data, consoleVisible: false });
+                    }}/>
                 </div>
                 
                 <AceEditor
@@ -46,24 +75,28 @@ class TextEditor extends React.Component<{lan: string, onChange: Function, place
                     <div className={styles.textEditorFooterSticky}>
                         <p>CONSOLE</p>
 
-                        <Button title={"Run"} onClick={async () => {
-                            const response = await axios.post(
-                                "https://emkc.org/api/v1/piston/execute",
-                                {
-                                    "language": this.props.lan,
-                                    "source": this.props.placeholder,
-                                    "args": []
-                                },
-                                { headers: {'Content-Type': 'application/json'} }
-                            )
-
-                            this.setState({ console: response.data.output, consoleVisible: true });
+                        <FontAwesomeIcon icon={(!this.state.consoleVisible) ? faChevronUp : faChevronDown} onClick={() => {
+                            this.setState({ consoleVisible: !this.state.consoleVisible });
                         }}/>
                     </div>
 
-                    <div hidden={this.state.consoleVisible}>
+                    <div hidden={this.state.consoleVisible} className={styles.consoleElement}>
+                        <p className={`${styles.consoleHeader} ${(!this.state.console?.stderr) ? styles.consoleCompiled : styles.consoleErrored}`}>
+                            {
+                                (this.state.console?.stderr) ?
+                                "STDERR"
+                                :
+                                "STDOUT"
+                            }
+                        </p>
+
                         <p>
-                            {this.state.console}
+                            {
+                                (this.state.console?.output) ? 
+                                this.state.console?.output
+                                :
+                                "Press 'Run' to run code."
+                            }
                         </p>
                     </div>
                 </div>

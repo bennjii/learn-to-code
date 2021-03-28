@@ -262,7 +262,7 @@ button:hover {
 .textEditor > div:last-of-type {
   background-color: #01111f;
 
-  padding: .5rem 1rem;
+  padding: 1rem 1rem;
 }
 
 .textEditor > div:first-of-type h5 {
