@@ -95,7 +95,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const [ lessonCompleted, setLessonCompleted ] = useState(false)
 
   const [ lessonSelectorVisible, setLessonSelectorVisible ] = useState(false)
-  let currentLesson = props.pageData.lessons[lesson].sub_lessons[subLesson];
+  const  [currentLesson, setCurrentLesson ] = useState(props.pageData.lessons[lesson].sub_lessons[subLesson])
 
   const [ content, setContent ] = useState(EditorState.createWithContent(
     convertFromRaw(currentLesson.desc)
@@ -159,9 +159,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                                 convertFromRaw(props.pageData.lessons[lesson].sub_lessons[index].desc)
                               ))
 
-                              currentLesson = (
-                                props.pageData.lessons[lesson].sub_lessons[index]
-                              )
+                              setCurrentLesson(props.pageData.lessons[lesson].sub_lessons[index])
                             }}>
                             
                               {`${lesson+1}.${index+1}`} {e2.name}
@@ -228,7 +226,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     </div>
                   </div>
 
-                  <TextEditor lan='javascript' placeholder={currentLesson.template_code}/>
+                  <TextEditor lan='javascript' placeholder={currentLesson.template_code} onChange={(e) => {
+                    let edit = currentLesson;
+                    edit.template_code = e;
+                    setCurrentLesson(edit)
+                  }}/>
                   
                 </div>
               :
@@ -265,10 +267,8 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     setContent(EditorState.createWithContent(
                       convertFromRaw(props.pageData.lessons[lesson].sub_lessons[subLesson-1].desc)
                     ))
-
-                    currentLesson = (
-                      props.pageData.lessons[lesson].sub_lessons[subLesson-1]
-                    );
+                    
+                    setCurrentLesson(props.pageData.lessons[lesson].sub_lessons[subLesson-1])
 
                     callback();
                   }}></Button>
@@ -281,9 +281,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       convertFromRaw(props.pageData.lessons[lesson].sub_lessons[subLesson+1].desc)
                     ))
 
-                    currentLesson = (
-                      props.pageData.lessons[lesson].sub_lessons[subLesson+1]
-                    );
+                    setCurrentLesson(props.pageData.lessons[lesson].sub_lessons[subLesson+1])
 
                     callback();
                   }} disabled={(!lessonCompleted)}></Button>
