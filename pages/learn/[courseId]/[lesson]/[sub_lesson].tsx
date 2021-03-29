@@ -226,11 +226,21 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     </div>
                   </div>
 
-                  <TextEditor lan='javascript' placeholder={currentLesson.template_code} onChange={(e) => {
-                    let edit = currentLesson;
-                    edit.template_code = e;
-                    setCurrentLesson(edit)
-                  }}/>
+                  {
+                    (currentLesson.template_code) ?
+                    <TextEditor lan='javascript' placeholder={currentLesson.template_code} onChange={(e) => {
+                      let edit = currentLesson;
+                      edit.template_code = e;
+                      setCurrentLesson(edit);
+                    }}/>
+                    :
+                    <TextEditor lan='javascript' placeholder={currentLesson.template_code} onChange={(e) => {
+                      let edit = currentLesson;
+                      edit.template_code = e;
+                      setCurrentLesson(edit);
+                    }}/>
+                  }
+                  
                   
                 </div>
               :

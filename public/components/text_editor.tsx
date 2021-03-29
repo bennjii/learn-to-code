@@ -24,11 +24,18 @@ interface Console {
     version: string
 }
 
-class TextEditor extends React.Component<{lan: string, onChange: Function, placeholder: string}, {console: Console, consoleVisible: boolean}> {
+class TextEditor extends React.Component<{lan: string, onChange: Function, placeholder: string}, {console: Console, consoleVisible: boolean, value: string}> {
     constructor(props) {
         super(props);
 
-        this.state = { console: null, consoleVisible: true };
+        this.state = { console: null, consoleVisible: true, value: this.props.placeholder };
+        this.onChange = this.onChange.bind(this);
+    }
+
+    onChange(e) {
+        this.props.onChange(e);
+
+        this.setState({ value: e });
     }
     
     render() {
@@ -42,7 +49,7 @@ class TextEditor extends React.Component<{lan: string, onChange: Function, place
                             "https://emkc.org/api/v1/piston/execute",
                             {
                                 "language": this.props.lan,
-                                "source": this.props.placeholder,
+                                "source": this.state.value,
                                 "args": []
                             },
                             { headers: {'Content-Type': 'application/json'} }
@@ -59,7 +66,7 @@ class TextEditor extends React.Component<{lan: string, onChange: Function, place
                     mode={`${this.props.lan}`}
                     theme="solarized_dark"
                     // @ts-ignore
-                    onChange={this.props.onChange}
+                    onChange={this.onChange}
                     name="editor"
                     editorProps={{
                         $blockScrolling: true
@@ -67,7 +74,7 @@ class TextEditor extends React.Component<{lan: string, onChange: Function, place
                     fontSize={"16px"}
                     height=''
                     width='100%'
-                    value={this.props.placeholder}
+                    value={this.state.value}
                     tabSize={2}
                 />
 
