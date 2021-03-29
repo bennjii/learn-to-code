@@ -2,24 +2,26 @@ import React, { useEffect } from "react";
 import { useState } from "react"
 import nookies from "nookies";
 
-import styles from '../../../../styles/Home.module.css'
+import styles from '@styles/Home.module.css'
 import Head from 'next/head'
-import Button from "../../../../public/components/button"
+import Button from "@components/button"
+
 import { EditorState, convertFromRaw, ContentState } from 'draft-js'
 import Editor from 'draft-js-plugins-editor'
 
 import Router from 'next/router'
 import dynamic from 'next/dynamic'
-const TextEditor = dynamic(import('../../../../public/components/text_editor'), {
+const TextEditor = dynamic(import('@components/text_editor'), {
   ssr: false
 });
 
-import { firebaseAdmin } from "../../../../firebaseAdmin"
+import { updateSync } from '@components/debounce'
+import { firebaseAdmin } from "@root/firebaseAdmin"
+import { firebaseClient } from "@root/firebaseClient";
 
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faBookOpen } from "@fortawesome/free-solid-svg-icons";
-import { firebaseClient } from "../../../../firebaseClient";
 
 const styleMap = {
   'CODE': {
@@ -95,7 +97,19 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const [ lessonCompleted, setLessonCompleted ] = useState(false)
 
   const [ lessonSelectorVisible, setLessonSelectorVisible ] = useState(false)
-  const  [currentLesson, setCurrentLesson ] = useState(props.pageData.lessons[lesson].sub_lessons[subLesson])
+  const  [currentLesson, setCurrentLesson ] = useState(props.pageData.lessons[lesson].sub_lessons[subLesson]);
+
+  
+  useEffect(() => {
+    if(localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== null && localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== currentLesson.tempalate_code) {
+      let cloneLesson = currentLesson;
+      cloneLesson.template_code = localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`);
+  
+      setCurrentLesson(currentLesson);
+    }else {
+
+    }  
+  }, [currentLesson])
 
   const [ content, setContent ] = useState(EditorState.createWithContent(
     convertFromRaw(currentLesson.desc)
@@ -138,7 +152,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
         <div className={`${styles.codeDesc} ${(!lessonSelectorVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
           {
-            props.pageData.lessons.map(e => {
+            props.pageData.lessons.map((e, index1) => {
               return ( 
                 <div>
                   <div className={styles.subClasses}>
@@ -152,17 +166,17 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                         e.sub_lessons.map((e2, index) => {
                           return (
                             <div className={styles.exc} onClick={() => { 
-                              setLessonVariance([lesson, index]); 
+                              setLessonVariance([index1, index]); 
                               setLessonSelectorVisible(!lessonSelectorVisible);
 
                               setContent(EditorState.createWithContent(
-                                convertFromRaw(props.pageData.lessons[lesson].sub_lessons[index].desc)
+                                convertFromRaw(props.pageData.lessons[index1].sub_lessons[index].desc)
                               ))
 
-                              setCurrentLesson(props.pageData.lessons[lesson].sub_lessons[index])
+                              setCurrentLesson(props.pageData.lessons[index1].sub_lessons[index])
                             }}>
                             
-                              {`${lesson+1}.${index+1}`} {e2.name}
+                              {`${index1+1}.${index+1}`} {e2.name}
                             </div>
                           )
                         })
@@ -226,22 +240,15 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     </div>
                   </div>
 
-                  {
-                    (currentLesson.template_code) ?
-                    <TextEditor lan='javascript' placeholder={currentLesson.template_code} onChange={(e) => {
-                      let edit = currentLesson;
-                      edit.template_code = e;
-                      setCurrentLesson(edit);
-                    }}/>
-                    :
-                    <TextEditor lan='javascript' placeholder={currentLesson.template_code} onChange={(e) => {
-                      let edit = currentLesson;
-                      edit.template_code = e;
-                      setCurrentLesson(edit);
-                    }}/>
-                  }
-                  
-                  
+                  <TextEditor lan='javascript' placeholder={currentLesson.template_code} onChange={(e) => {
+                    let edit = currentLesson;
+                    edit.template_code = e;
+                    setCurrentLesson(edit);
+
+                    updateSync(() => {
+                      localStorage.setItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`, e);
+                    })
+                  }}/>
                 </div>
               :
                 <div className={styles.widthContent}>
@@ -283,7 +290,20 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     callback();
                   }}></Button>
                   <h3>{subLesson + 1} / {props.pageData.lessons[lesson].sub_lessons.length}</h3>
-                  <Button title={"Next Lesson"} onClick={(e, callback) => { 
+                  <Button title={(props.pageData.lessons[lesson].sub_lessons.length == subLesson+1) ? "Finish" : "Next Lesson"} onClick={(e, callback) => { 
+                    if((props.pageData.lessons[lesson].sub_lessons.length == subLesson+1)) {
+                      setLessonVariance([lesson+1, 0]);
+
+                      setContent(EditorState.createWithContent(
+                        convertFromRaw(props.pageData.lessons[lesson+1].sub_lessons[0].desc)
+                      ))
+  
+                      setCurrentLesson(props.pageData.lessons[lesson+1].sub_lessons[0])
+
+                      callback();
+                      return;
+                    }
+
                     if(!props.pageData.lessons[lesson].sub_lessons[subLesson+1]) return callback();
                     setLessonVariance([lesson, subLesson+1]);
 
