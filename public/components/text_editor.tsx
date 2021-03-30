@@ -24,7 +24,7 @@ interface Console {
     version: string
 }
 
-const TextEditor: React.FC<{lan: string, onChange: Function, placeholder: string}> = ({ children, lan, onChange, placeholder }) => {
+const TextEditor: React.FC<{lan: string, onChange: Function, placeholder: string, onReset?: Function}> = ({ lan, placeholder, onChange, onReset }) => {
     const [ console, setConsole ] = useState(null);
     const [ consoleVisible, setConsoleVisible ] = useState(true);
     const [ codeValue, setCodeValue ] = useState(placeholder);
@@ -41,6 +41,15 @@ const TextEditor: React.FC<{lan: string, onChange: Function, placeholder: string
         <div className="textEditor">
             <div className={styles.textEditorToolbar}>
                 <h5>main.js</h5> 
+
+
+                <Button title={"Reset"} onClick={async (e, callback) => {
+                    onReset(placeholder, (__e) => {
+                        setCodeValue(__e)
+                    });
+
+                    callback();
+                }}/>
 
                 <Button title={"Run"} onClick={async (e, callback) => {
                     const response = await axios.post(

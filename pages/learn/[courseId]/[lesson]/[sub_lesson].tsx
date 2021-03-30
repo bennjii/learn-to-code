@@ -96,24 +96,31 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const [ [lesson, subLesson], setLessonVariance ] = useState(props.lessonVariance);
   const [ lessonCompleted, setLessonCompleted ] = useState(false)
 
-  const [ lessonSelectorVisible, setLessonSelectorVisible ] = useState(false)
-  const  [currentLesson, setCurrentLesson ] = useState(props.pageData.lessons[lesson].sub_lessons[subLesson]);
+  const [ lessonSelectorVisible, setLessonSelectorVisible ] = useState(false);
 
-  
-  useEffect(() => {
-    if(localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== null || localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) == undefined && localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== currentLesson.tempalate_code) {
-      let cloneLesson = currentLesson;
-      cloneLesson.template_code = localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`);
-  
-      setCurrentLesson(currentLesson);
-    }else {
-
-    }  
-  }, [currentLesson])
+  const currentLessonTemplate = Object.create(props.pageData.lessons[lesson].sub_lessons[subLesson]);
+  const [ currentLesson, setCurrentLesson ] = useState(currentLessonTemplate);
 
   const [ content, setContent ] = useState(EditorState.createWithContent(
     convertFromRaw(currentLesson.desc)
   ))
+
+  useEffect(() => {
+    console.log(props.pageData.lessons[lesson].sub_lessons[subLesson]);
+    if(
+    localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== null && 
+    localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== undefined &&
+    localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== 'undefined' &&
+    localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== 'null' &&
+    localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== '' &&  
+    localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== currentLesson.tempalate_code) {
+      let cloneLesson = currentLesson;
+      cloneLesson.template_code = localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`);
+  
+      setCurrentLesson(currentLesson);
+    }
+    console.log(props.pageData.lessons[lesson].sub_lessons[subLesson]);
+  }, [currentLesson])
 
   useEffect(() => {
     const data = props.userData.courses.findIndex(f => f._loc == props.pageData.inherit_id)
@@ -248,6 +255,13 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     updateSync(() => {
                       localStorage.setItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`, e);
                     })
+                  }} onReset={(e, callback) => {
+                    localStorage.setItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`, props.pageData.lessons[lesson].sub_lessons[subLesson].template_code);
+                    let cloneLesson = currentLesson;
+                    cloneLesson.template_code = props.pageData.lessons[lesson].sub_lessons[subLesson].template_code;
+
+                    setCurrentLesson(cloneLesson);
+                    callback(props.pageData.lessons[lesson].sub_lessons[subLesson].template_code)
                   }}/>
                 </div>
               :
