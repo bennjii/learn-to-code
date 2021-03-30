@@ -158,42 +158,46 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
         </Head>
 
         <div className={`${styles.codeDesc} ${(!lessonSelectorVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
-          {
-            props.pageData.lessons.map((e, index1) => {
-              return ( 
-                <div>
-                  <div className={styles.subClasses}>
-                    <h2>{props.pageData.title} </h2>
+          
+            <div>
+              <div className={styles.subClasses}>
+                  <h2>{props.pageData.title}</h2>
+                  {
+                    props.pageData.lessons.map((e, index1) => {
+                    return ( 
+                      <div>
+                        <h5>{e.name}</h5>
+                        <h3>LESSONS</h3>
+                        
+                        <div className={styles.lessonList}>
+                          {
+                            e.sub_lessons.map((e2, index) => {
+                              return (
+                                <div className={styles.exc} onClick={() => { 
+                                  setLessonVariance([index1, index]); 
+                                  setLessonSelectorVisible(!lessonSelectorVisible);
 
-                    <h5>{e.name}</h5>
-                    <h3>LESSONS</h3>
-                    
-                    <div className={styles.lessonList}>
-                      {
-                        e.sub_lessons.map((e2, index) => {
-                          return (
-                            <div className={styles.exc} onClick={() => { 
-                              setLessonVariance([index1, index]); 
-                              setLessonSelectorVisible(!lessonSelectorVisible);
+                                  setContent(EditorState.createWithContent(
+                                    convertFromRaw(props.pageData.lessons[index1].sub_lessons[index].desc)
+                                  ))
 
-                              setContent(EditorState.createWithContent(
-                                convertFromRaw(props.pageData.lessons[index1].sub_lessons[index].desc)
-                              ))
-
-                              setCurrentLesson(props.pageData.lessons[index1].sub_lessons[index])
-                            }}>
-                            
-                              {`${index1+1}.${index+1}`} {e2.name}
-                            </div>
-                          )
-                        })
-                      }
-                    </div>
-                  </div>                    
-                </div>
-              )
-            })
-          }
+                                  setCurrentLesson(props.pageData.lessons[index1].sub_lessons[index])
+                                }}>
+                                
+                                  {`${index1+1}.${index+1}`} {e2.name}
+                                </div>
+                              )
+                            })
+                          }
+                        </div>
+                      </div>
+                    )
+                  })
+                }
+              </div>                    
+            </div>
+            
+          
         </div>
         <div className={`${(!lessonSelectorVisible) ? styles.normalOut : styles.blackOut}`} onClick={() => setLessonSelectorVisible(!lessonSelectorVisible)}></div>
 
@@ -290,6 +294,22 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
                 <div className={styles.navigationBottom}>
                   <Button title={"Go Back"} onClick={(e, callback) => { 
+                    if((subLesson == 0 && lesson-1 >= 0)) {
+                      let size = props.pageData.lessons[lesson-1].sub_lessons.length;
+
+                      setLessonVariance([lesson-1, size-1]);
+                      console.log(size, lesson-1);
+
+                      setContent(EditorState.createWithContent(
+                        convertFromRaw(props.pageData.lessons[lesson-1].sub_lessons[size-1].desc)
+                      ))
+  
+                      setCurrentLesson(props.pageData.lessons[lesson-1].sub_lessons[size-1]);
+
+                      callback();
+                      return;
+                    }
+
                     if(!props.pageData.lessons[lesson].sub_lessons[subLesson-1]) return callback();
                     setLessonVariance([lesson, subLesson-1]);
 
@@ -302,9 +322,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     setCurrentLesson(props.pageData.lessons[lesson].sub_lessons[subLesson-1])
 
                     callback();
-                  }}></Button>
+                  }} disabled={(subLesson == 0 && lesson == 0)}></Button>
                   <h3>{subLesson + 1} / {props.pageData.lessons[lesson].sub_lessons.length}</h3>
-                  <Button title={(props.pageData.lessons[lesson].sub_lessons.length == subLesson+1) ? "Finish" : "Next Lesson"} onClick={(e, callback) => { 
+                  <Button title={(props.pageData.lessons[lesson].sub_lessons.length == subLesson+1) ? ((lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1)) ? "Finish" : "Test" : "Next Lesson"} onClick={(e, callback) => { 
                     if((props.pageData.lessons[lesson].sub_lessons.length == subLesson+1)) {
                       setLessonVariance([lesson+1, 0]);
 
@@ -328,7 +348,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     setCurrentLesson(props.pageData.lessons[lesson].sub_lessons[subLesson+1])
 
                     callback();
-                  }} disabled={(!lessonCompleted)}></Button>
+                  }} disabled={(!lessonCompleted || (lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1))}></Button>
                 </div>
 
                 <div>

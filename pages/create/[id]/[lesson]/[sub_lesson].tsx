@@ -7,6 +7,7 @@ import Button from '@components/button'
 import Router from 'next/router'
 
 import TextInput from '@components/text_input'
+import { MultiChoice } from '@components/multi_choice'
 
 import { EditorState, convertFromRaw, ContentState } from 'draft-js'
 
@@ -23,6 +24,46 @@ import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { SimpleEditor } from '@components/editor' 
 import { firebaseClient } from "@root/firebaseClient";
 import { useRouter } from 'next/router'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBook } from "@fortawesome/free-solid-svg-icons";
+import { edit } from "ace-builds";
+
+interface Answer {
+  value: string,
+  index: number
+}
+interface Questions {
+  type: "fill" | "multichoice" | "select", // Denotes Render Method
+  correct_ans: string | number | number[], // Fill uses string, multichoice is number and select is numerical array.
+  hint?: string, // for Fill only
+  possible_ans?: Answer[] // for multichoice and select only 
+}
+interface Test {
+  questions: Questions[],
+  desc: string,
+  dificulty: 0 | 1 | 2,
+  title: string
+}
+
+type LessonParent = {
+  name: string,
+  sub_lessons: Array<Lesson>,
+  test: Test
+}
+
+type Instruction = {
+  desc: string,
+  desired_output: string,
+  server_code?: string
+}
+
+type Lesson = {
+  desc: string,
+  type: string
+  name: string,
+  template_code?: string,
+  instructions?: Array<Instruction>,
+}
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
@@ -66,25 +107,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   }
 };
 
-type LessonParent = {
-    name: string,
-    sub_lessons: Array<Lesson>,
-}
-
-type Instruction = {
-    desc: string,
-    desired_output: string,
-    server_code?: string
-}
-
-type Lesson = {
-  desc: string,
-  instructions?: Array<Instruction>,
-  name: string,
-  template_code?: string,
-  type: string
-}
-
 let allowed = true;
 
 const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
@@ -96,6 +118,8 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const [ chooseLessonVisible, setChooseLessonVisible ] = useState(false);
   const [ createNewLessonVisible, setCreateNewLessonVisible ] = useState(false);
   const [ syncStatus, setSyncStatus ] = useState(true);
+
+  const [ editTest, setEditTest ] = useState({ open: false, location: null });
 
   const [ newLesson, setNewLesson ] = useState({
     desc: convertToRaw(EditorState.createEmpty().getCurrentContent()),
@@ -260,6 +284,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 )
               })
             }
+
             </div>
             
             <Button title={"Create New"} onClick={(e, callback) => {
@@ -273,24 +298,51 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
       <div className={`${(!chooseLessonVisible) ? styles.normalOut : styles.blackOut}`} onClick={() => setChooseLessonVisible(!chooseLessonVisible)}></div>
 
       <div className={styles.headerCustom}>
-            <div className={styles.headerInsideCustom}>
-                <h3 className={styles.headerTitle} onClick={() => Router.push("/")}>Learn to Code.</h3> 
+          <div className={styles.headerInsideCustom}>
+              <h3 className={styles.headerTitle} onClick={() => Router.push("/")}>Learn to Code.</h3> 
 
-                <h4>{activeEdit.name}</h4>
+              <h4>{activeEdit.name}</h4>
 
-                <div className={styles.linear}>
-                  <a className={(syncStatus) ? styles.syncStatusTrue : styles.syncStatusFalse}>
-                  {
-                    (syncStatus)
-                    ?
-                    "Synced"
-                    :
-                    "Not Synced"
-                  }
-                  </a>
-                </div>
-            </div>
-        </div>
+              <div className={styles.linear}>
+                <a className={(syncStatus) ? styles.syncStatusTrue : styles.syncStatusFalse}>
+                {
+                  (syncStatus)
+                  ?
+                  "Synced"
+                  :
+                  "Not Synced"
+                }
+                </a>
+              </div>
+          </div>
+      </div>
+      
+      <div className={`${styles.createTest} ${(editTest.open) ? styles.testOpen : styles.lessonsHidden }`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
+        {
+          editTest.location !== null ? 
+            <div className={styles.subClasses}>
+              <h2>{props.pageData.title}</h2>
+
+              <MultiChoice value={{
+                questions: [{
+                  type: "multichoice",
+                  correct_ans: [0],
+                  possible_ans: [{value: "Console.log(\"Hello!\")", index: 0}, {value: "log.console(\"Hello!\")", index: 1}],
+                  question: "How would you log Hello! to the console?"
+                }],
+                dificulty: 0,
+                title: "Javascript Basic Concepts"
+              }} onChange={(e) => {
+                console.log(e);
+              }} submitForm={(e) => {
+                console.log(e);
+              }}/>
+            </div>                    
+          :
+            <></>
+        }
+        
+      </div>
 
       <div className={styles.createCode + " " + styles.dark}>
           <div className={styles.refrence + " " + styles.vertical}>
@@ -322,6 +374,13 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                                   )
                                 })
                               }
+
+                              <div className={styles.changeDefault} onClick={() => { 
+                                setEditTest({open: true, location: index});
+                              }}>
+                                <FontAwesomeIcon icon={faBook}/> Test
+                              </div>
+
                             </div>
                           </div>
                         )

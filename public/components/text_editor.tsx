@@ -95,7 +95,7 @@ const TextEditor: React.FC<{lan: string, onChange: Function, placeholder: string
                     }}/>
                 </div>
 
-                <div hidden={consoleVisible} className={styles.consoleElement}>
+                <div hidden={consoleVisible} className={`${styles.consoleElement} ${(!consoleVisible) ? styles.consoleVisible : styles.consoleInvisible}`}>
                     <p className={`${styles.consoleHeader} ${(!console?.stderr) ? styles.consoleCompiled : styles.consoleErrored}`}>
                         {
                             (console?.stderr) ?
