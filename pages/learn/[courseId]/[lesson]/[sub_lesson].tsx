@@ -101,7 +101,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
   
   useEffect(() => {
-    if(localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== null && localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== currentLesson.tempalate_code) {
+    if(localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== null || localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) == undefined && localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== currentLesson.tempalate_code) {
       let cloneLesson = currentLesson;
       cloneLesson.template_code = localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`);
   

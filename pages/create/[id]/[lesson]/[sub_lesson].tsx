@@ -424,9 +424,13 @@ const reMergeContent = (newAddition, additionLocation, master, callback: Functio
     e.sub_lessons.forEach((__e, k) => {
       if(!__e.desc.blocks) {
         master.pageData.lessons[i].sub_lessons[k].desc = convertToRaw(__e.desc);
+      }else {
+        console.log(__e.desc);
       }
+
+      console.log(__e.desc);
     })
-  })
+  });
   
   const db = firebaseClient.firestore();
   db.doc(`courses/${courseId}`).set(master.pageData).then((doc) => {

@@ -1,6 +1,6 @@
 import AceEditor from 'react-ace';
 
-import styles from '../../styles/Home.module.css'
+import styles from '@styles/Home.module.css'
 import brace from 'brace';
 import "brace/theme/solarized_dark";
 import "brace/theme/tomorrow_night";
@@ -8,7 +8,7 @@ import "brace/theme/tomorrow_night";
 import 'brace/theme/github';
 import "brace/mode/javascript"
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from './button';
 
 import axios from 'axios'
@@ -24,92 +24,90 @@ interface Console {
     version: string
 }
 
-class TextEditor extends React.Component<{lan: string, onChange: Function, placeholder: string}, {console: Console, consoleVisible: boolean, value: string}> {
-    constructor(props) {
-        super(props);
+const TextEditor: React.FC<{lan: string, onChange: Function, placeholder: string}> = ({ children, lan, onChange, placeholder }) => {
+    const [ console, setConsole ] = useState(null);
+    const [ consoleVisible, setConsoleVisible ] = useState(true);
+    const [ codeValue, setCodeValue ] = useState(placeholder);
 
-        this.state = { console: null, consoleVisible: true, value: this.props.placeholder };
-        this.onChange = this.onChange.bind(this);
-    }
+    useEffect(() => {
+        onChange(codeValue);
+    }, [codeValue, placeholder])
 
-    onChange(e) {
-        this.props.onChange(e);
-
-        this.setState({ value: e });
-    }
+    useEffect(() => {
+        setCodeValue(placeholder);
+    }, [placeholder])
     
-    render() {
-        return (
-            <div className="textEditor">
-                <div className={styles.textEditorToolbar}>
-                    <h5>main.js</h5> 
+    return (
+        <div className="textEditor">
+            <div className={styles.textEditorToolbar}>
+                <h5>main.js</h5> 
 
-                    <Button title={"Run"} onClick={async (e, callback) => {
-                        const response = await axios.post(
-                            "https://emkc.org/api/v1/piston/execute",
-                            {
-                                "language": this.props.lan,
-                                "source": this.state.value,
-                                "args": []
-                            },
-                            { headers: {'Content-Type': 'application/json'} }
-                        ).then((res) => {
-                            callback();
-                            return res;
-                        })
+                <Button title={"Run"} onClick={async (e, callback) => {
+                    const response = await axios.post(
+                        "https://emkc.org/api/v1/piston/execute",
+                        {
+                            "language": lan,
+                            "source": codeValue,
+                            "args": []
+                        },
+                        { headers: {'Content-Type': 'application/json'} }
+                    ).then((res) => {
+                        callback();
+                        return res;
+                    })
 
-                        this.setState({ console: response.data, consoleVisible: false });
+                    setConsoleVisible(false);
+                    setConsole(response.data);
+                }}/>
+            </div>
+            
+            <AceEditor
+                mode={`${lan}`}
+                theme="solarized_dark"
+                // @ts-ignore
+                onChange={setCodeValue}
+                name="editor"
+                editorProps={{
+                    $blockScrolling: true
+                }}
+                fontSize={"16px"}
+                height=''
+                width='100%'
+                value={codeValue}
+                tabSize={2}
+            />
+
+            <div className={styles.textEditorFooter}>
+                <div className={styles.textEditorFooterSticky}>
+                    <p>CONSOLE</p>
+
+                    <FontAwesomeIcon icon={(!consoleVisible) ? faChevronUp : faChevronDown} onClick={() => {
+                        setConsoleVisible(!consoleVisible);
                     }}/>
                 </div>
-                
-                <AceEditor
-                    mode={`${this.props.lan}`}
-                    theme="solarized_dark"
-                    // @ts-ignore
-                    onChange={this.onChange}
-                    name="editor"
-                    editorProps={{
-                        $blockScrolling: true
-                    }}
-                    fontSize={"16px"}
-                    height=''
-                    width='100%'
-                    value={this.state.value}
-                    tabSize={2}
-                />
 
-                <div className={styles.textEditorFooter}>
-                    <div className={styles.textEditorFooterSticky}>
-                        <p>CONSOLE</p>
+                <div hidden={consoleVisible} className={styles.consoleElement}>
+                    <p className={`${styles.consoleHeader} ${(!console?.stderr) ? styles.consoleCompiled : styles.consoleErrored}`}>
+                        {
+                            (console?.stderr) ?
+                            "STDERR"
+                            :
+                            "STDOUT"
+                        }
+                    </p>
 
-                        <FontAwesomeIcon icon={(!this.state.consoleVisible) ? faChevronUp : faChevronDown} onClick={() => {
-                            this.setState({ consoleVisible: !this.state.consoleVisible });
-                        }}/>
-                    </div>
-
-                    <div hidden={this.state.consoleVisible} className={styles.consoleElement}>
-                        <p className={`${styles.consoleHeader} ${(!this.state.console?.stderr) ? styles.consoleCompiled : styles.consoleErrored}`}>
-                            {
-                                (this.state.console?.stderr) ?
-                                "STDERR"
-                                :
-                                "STDOUT"
-                            }
-                        </p>
-
-                        <p>
-                            {
-                                (this.state.console?.output) ? 
-                                this.state.console?.output
-                                :
-                                "Press 'Run' to run code."
-                            }
-                        </p>
-                    </div>
+                    <p>
+                        {
+                            (console?.output) ? 
+                            console?.output
+                            :
+                            "Press 'Run' to run code."
+                        }
+                    </p>
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }
 
 export default TextEditor
