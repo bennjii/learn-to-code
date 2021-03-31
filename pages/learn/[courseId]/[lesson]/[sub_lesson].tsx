@@ -24,6 +24,7 @@ import { firebaseClient } from "@root/firebaseClient";
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faBookOpen } from "@fortawesome/free-solid-svg-icons";
+import { Test } from "@components/test";
 
 const styleMap = {
   'CODE': {
@@ -166,25 +167,30 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             <div className={styles.subClasses}>
               <h2>{props.pageData.title}</h2>
 
-              <MultiChoice value={{
-                questions: [{
+              <Test 
+                value={{  //props.pageData.lessons[lesson].test
+                questions: [{ 
                   type: "multichoice",
-                  correct_ans: [0],
-                  possible_ans: [{value: "Console.log(\"Hello!\")", index: 0}, {value: "log.console(\"Hello!\")", index: 1}],
+                  correct_ans: [2],
+                  possible_ans: [{value: "Console.log(\"Hello!\")", index: 0}, {value: "log.console(\"Hello!\")", index: 1}, {value: "console.log(\"Hello!\")", index: 2}, {value: "log.console(\"Hello!\")", index: 3}],
                   question: "How would you log Hello! to the console?"
+                },
+                { 
+                  type: "multichoice",
+                  correct_ans: [1],
+                  possible_ans: [{value: "// \n //", index: 0}, {value: "/*\n*/", index: 1}, {value: "//", index: 2}, {value: "*/\n/*", index: 3}],
+                  question: "What is the standard to comment more than two lines?"
                 }],
                 dificulty: 0,
                 title: "Javascript Basic Concepts"
-              }} onChange={(e) => {
-                console.log(e);
               }} submitForm={(e) => {
-                console.log(e);
+
               }}/>
+              
             </div>                    
           :
             <></>
         }
-        
       </div>
 
         <div className={`${styles.codeDesc} ${(!lessonSelectorVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}

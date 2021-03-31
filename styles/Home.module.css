@@ -1425,6 +1425,8 @@ div.headerProgress {
   right: 0;
 
   position: fixed;
+  z-index: 999;
+
   background-color: #f4f4f4;
 }
 
@@ -2011,6 +2013,12 @@ div.headerProgress {
   to {width: 0%}
 }
 
+.buttonDisabled {
+  background-color: rgb(98 104 112 / 20%) !important;
+  color: rgba(255,255,255,.1) !important;
+  border-color: #eaeaea33 !important;
+}
+
 .activeRadialInput {
   border: 1.5px solid rgba(var(--border-color-rgb), 0.4) !important;
   background-color: rgba(255, 255, 255, 0.2) !important;
@@ -2042,7 +2050,6 @@ div.headerProgress {
   display: flex;
 
   align-items: center;
-  justify-content: space-between;
 
   border: 1.5px solid rgba(255,255,255,.1);
   background-color: rgba(255,255,255,.02);
@@ -2062,13 +2069,14 @@ div.headerProgress {
   filter: drop-shadow(0 4px 0 rgba(220,226,229,0.45));
   cursor: pointer;
   color: #2d3846;
+
+  font-size: 1.5rem;
+  align-items: flex-start;
 }
 
 .multiChoiceQuestion {
   display: flex;
   flex-direction: column;
-
-  width: 40%;
   
   margin: auto;
   margin-top: 5%;
@@ -2080,6 +2088,110 @@ div.headerProgress {
   flex: 1;
 
   display: flex;
+  flex-direction: column;
+}
+
+.testQuestions {
+  display: flex;
+  flex-direction: column;
+  
+  margin: auto;
+  margin-top: 5%;
+
+  width: 30%;
+}
+
+.testQuestions > div:last-of-type {
+  width: 100%;
+  display: flex;
+
+  justify-content: space-between;
+}
+
+.testQuestions > div:last-of-type button {
+  display: flex;
+  font-size: 13.333px;
+  font-weight: 100;
+
+  font-family: 'consolas' !important;
+
+  align-items: center;
+  height: fit-content;
+
+  justify-content: center;
+
+  width: 20%;
+  user-select: none;
+
+  background: #f9f9fa;
+  border: 1px solid #dce2e5;
+
+  border-radius: 4px;
+  margin: 16px 0;
+  padding: 16px 24px;
+
+  word-break: break-word;
+  filter: drop-shadow(0 4px 0 rgba(220,226,229,0.45));
+  cursor: pointer;
+  color: #2d3846;
+}
+
+.testQuestions > div:last-of-type button:disabled {
+  background-color: #2d38461c !important;
+  color: #2d384652 !important;
+}
+
+.testQuestions > div:last-of-type button:hover {
+
+}
+
+.questionComplete {
+  width: clamp(2rem, 4rem, 30%);
+  height: 5px;
+
+  padding: calc(.25rem + 2px) calc(.8rem + 2px);
+  border-radius: 55px;
+
+  background-color: #4f5cea96;
+}
+
+.questionTracker {
+  width: 100%;
+  display: flex;
+
+  flex-direction: row;
+  align-items: center;
+
+  justify-content: center;
+  gap: 1rem;
+}
+
+.questionIdle {
+  border: 2px solid #4f5cea31;
+  width: clamp(2rem, 4rem, 30%);
+  height: 5px;
+
+  padding: .25rem .8rem;
+  border-radius: 55px;
+
+  background-color: #4f5cea09;
+}
+
+.questionCompleting {
+  border: 2px solid #4f5ceab4;
+  width: clamp(2rem, 4rem, 30%);
+  height: 5px;
+
+  padding: .25rem .8rem;
+  border-radius: 55px;
+
+  background-color: #4f5cea34;
+}
+
+.testQuestions h1 {
+  color: #4b5962;
+
+  margin-top: 10%;
 }
 
 .multiChoiceQuestion h1 {

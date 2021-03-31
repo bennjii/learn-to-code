@@ -48,7 +48,14 @@ class Button extends React.Component<{title: string, redirect?: string | never, 
 
     render() {
         return (
-            <button type="submit" onClick={this.handleClick} style={(this.props.disabled) ? { backgroundColor: 'rgb(98 104 112 / 20%)', color: 'rgba(255,255,255,.1)' } : {}}  className={(this.state.hovered) ? `${styles.hoverButton} ${styles.button}` : `${styles.button}`} onMouseOver={() => this.setState({ hovered: true })} onMouseLeave={() => this.setState({ hovered: false })}>
+            <button 
+                type="submit" 
+                onClick={this.handleClick}  
+                className={(this.state.hovered) ? `${styles.hoverButton} ${styles.button} ${(this.props.disabled) ? styles.buttonDisabled : styles.buttonEnabled}` : `${(this.props.disabled) ? styles.buttonDisabled : styles.buttonEnabled} ${styles.button}`} 
+                onMouseOver={() => this.setState({ hovered: true })} 
+                onMouseLeave={() => this.setState({ hovered: false })}
+                disabled={this.props?.disabled}
+            >
                 {
                     (!this.state.activated)
                     ?
