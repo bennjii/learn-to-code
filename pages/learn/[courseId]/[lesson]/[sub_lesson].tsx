@@ -15,6 +15,8 @@ const TextEditor = dynamic(import('@components/text_editor'), {
   ssr: false
 });
 
+import { MultiChoice } from '@components/multi_choice'
+
 import { updateSync } from '@components/debounce'
 import { firebaseAdmin } from "@root/firebaseAdmin"
 import { firebaseClient } from "@root/firebaseClient";
@@ -100,6 +102,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
   const currentLessonTemplate = Object.create(props.pageData.lessons[lesson].sub_lessons[subLesson]);
   const [ currentLesson, setCurrentLesson ] = useState(currentLessonTemplate);
+  const [ editTest, setEditTest ] = useState({ open: false, location: null });
 
   const [ content, setContent ] = useState(EditorState.createWithContent(
     convertFromRaw(currentLesson.desc)
@@ -156,6 +159,33 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             <title>Learn to Code</title>
             <link rel="icon" href="/favicon.ico" />
         </Head>
+
+        <div className={`${styles.createTest} ${(editTest.open) ? styles.testOpen : styles.lessonsHidden }`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
+        {
+          editTest.location !== null ? 
+            <div className={styles.subClasses}>
+              <h2>{props.pageData.title}</h2>
+
+              <MultiChoice value={{
+                questions: [{
+                  type: "multichoice",
+                  correct_ans: [0],
+                  possible_ans: [{value: "Console.log(\"Hello!\")", index: 0}, {value: "log.console(\"Hello!\")", index: 1}],
+                  question: "How would you log Hello! to the console?"
+                }],
+                dificulty: 0,
+                title: "Javascript Basic Concepts"
+              }} onChange={(e) => {
+                console.log(e);
+              }} submitForm={(e) => {
+                console.log(e);
+              }}/>
+            </div>                    
+          :
+            <></>
+        }
+        
+      </div>
 
         <div className={`${styles.codeDesc} ${(!lessonSelectorVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
           
@@ -325,6 +355,10 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   }} disabled={(subLesson == 0 && lesson == 0)}></Button>
                   <h3>{subLesson + 1} / {props.pageData.lessons[lesson].sub_lessons.length}</h3>
                   <Button title={(props.pageData.lessons[lesson].sub_lessons.length == subLesson+1) ? ((lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1)) ? "Finish" : "Test" : "Next Lesson"} onClick={(e, callback) => { 
+                    if((props.pageData.lessons[lesson].sub_lessons.length == subLesson+1) && !(lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1)) {
+                      setEditTest({ open: true, location: lesson });
+                    }
+                    
                     if((props.pageData.lessons[lesson].sub_lessons.length == subLesson+1)) {
                       setLessonVariance([lesson+1, 0]);
 

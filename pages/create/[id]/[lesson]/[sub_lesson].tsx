@@ -317,32 +317,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
           </div>
       </div>
       
-      <div className={`${styles.createTest} ${(editTest.open) ? styles.testOpen : styles.lessonsHidden }`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
-        {
-          editTest.location !== null ? 
-            <div className={styles.subClasses}>
-              <h2>{props.pageData.title}</h2>
-
-              <MultiChoice value={{
-                questions: [{
-                  type: "multichoice",
-                  correct_ans: [0],
-                  possible_ans: [{value: "Console.log(\"Hello!\")", index: 0}, {value: "log.console(\"Hello!\")", index: 1}],
-                  question: "How would you log Hello! to the console?"
-                }],
-                dificulty: 0,
-                title: "Javascript Basic Concepts"
-              }} onChange={(e) => {
-                console.log(e);
-              }} submitForm={(e) => {
-                console.log(e);
-              }}/>
-            </div>                    
-          :
-            <></>
-        }
-        
-      </div>
+      
 
       <div className={styles.createCode + " " + styles.dark}>
           <div className={styles.refrence + " " + styles.vertical}>
