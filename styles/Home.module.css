@@ -271,12 +271,46 @@
   background-color: #5268f4; /* #3a4797;*/
   color: rgba(255,255,255,.8);
   font-weight: 600;
+
+  /* NEW STYLE */
+  /* display: flex;
+  font-size: 13.333px;
+  font-weight: 100;
+
+  font-family: 'consolas' !important;
+
+  align-items: center;
+  height: fit-content;
+
+  justify-content: center;
+
+  width: 20%;
+  user-select: none;
+
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+
+  border-radius: 4px;
+  margin: 16px 0;
+  padding: 16px 24px;
+
+  word-break: break-word;
+  box-shadow: 0 4px 0 rgba(220,226,229,0.45);
+  cursor: pointer;
+  color: var(--font-color); */
 }
 
 .hoverButton {
   background-color: #3f57f3;
   color: rgba(255,255,255,1);
   cursor: pointer;
+
+  /* NEW STYLE */
+  /* cursor: pointer;
+  background-color: #3f57f31c;
+  border-color: #3f57f35b;
+
+  box-shadow: 0 4px 0 #3f57f35b; */
 }
 
 .activeButton {
@@ -2017,6 +2051,10 @@ div.headerProgress {
   background-color: rgb(98 104 112 / 20%) !important;
   color: rgba(255,255,255,.1) !important;
   border-color: #eaeaea33 !important;
+
+  /* NEW STYLE */
+  /* background-color: #2d38461c !important;
+  color: #2d384652 !important; */
 }
 
 .activeRadialInput {
@@ -2098,17 +2136,17 @@ div.headerProgress {
   margin: auto;
   margin-top: 5%;
 
-  width: 30%;
+  width: max(30%, 550px);
 }
 
-.testQuestions > div:last-of-type {
+.testQuestionsToolbar {
   width: 100%;
   display: flex;
 
   justify-content: space-between;
 }
 
-.testQuestions > div:last-of-type button {
+.testQuestionsToolbar button {
   display: flex;
   font-size: 13.333px;
   font-weight: 100;
@@ -2136,13 +2174,169 @@ div.headerProgress {
   color: #2d3846;
 }
 
-.testQuestions > div:last-of-type button:disabled {
+.testQuestionsToolbar button:disabled {
   background-color: #2d38461c !important;
   color: #2d384652 !important;
 }
 
-.testQuestions > div:last-of-type button:hover {
+.testQuestionsToolbar button:hover {
+  cursor: pointer;
+  background-color: #3f57f31c;
+  border-color: #3f57f35b;
+}
 
+.questionAnswer {
+  padding: 1rem;
+  display: flex;
+
+
+  color: rgba(255, 255, 255, 0.363);
+  font-size: 13.333px;
+  font-weight: 100;
+
+  font-family: 'consolas' !important;
+
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: rgba(255, 255, 255, 0.0141);
+  border: 2px solid rgba(var(--border-color-rgb), 0.015);
+  border-radius: 5px;
+
+  height: fit-content;
+
+  padding: 10px;
+  border-radius: 5px;
+
+  display: flex;
+
+  align-items: center;
+
+  border: 1.5px solid rgba(255,255,255,.1);
+  background-color: rgba(255,255,255,.02);
+
+  width: 100%;
+
+  user-select: none;
+
+  background: #f9f9fa;
+  border: 1px solid #dce2e5;
+
+  border-radius: 4px;
+  margin: 16px 0;
+  padding: 16px 24px;
+
+  word-break: break-word;
+  filter: drop-shadow(0 4px 0 rgba(220,226,229,0.45));
+  cursor: pointer;
+  color: #2d3846;
+
+  font-size: 1.5rem;
+  align-items: center;
+}
+
+.questionAnswer svg {
+  height: 1rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.correctAnswer {
+  background-color: rgba(170, 255, 188, 0.397);
+  border-color: rgb(170, 255, 188);
+
+  box-shadow: 0px 4px 0 rgba(170, 255, 188, 0.397);
+}
+
+.correctAnswer svg {
+  color: #28432ebd;
+}
+
+.wrongAnswer {
+  background-color: rgba(255, 170, 170, 0.397);
+  border-color: rgb(255, 170, 170);
+
+  box-shadow: 0px 4px 0 rgba(255, 170, 170, 0.397);
+}
+
+.wrongAnswer svg {
+  color: #432828bd;
+}
+
+.answers {
+  display: flex;
+  flex-direction: column;
+
+  gap: 2rem;
+}
+
+.answers h3 i {
+  font-style: normal !important;
+  font-family: 'consolas' !important;
+  opacity: 1;
+
+  background-color: rgba(170, 255, 188, 0.397);
+  border-color: rgb(170, 255, 188);
+
+  box-shadow: 0px 4px 0 rgba(170, 255, 188, 0.397);
+  padding: .5rem 1rem;
+
+  border-radius: 5px;
+}
+
+.answers h3 strong {
+  opacity: 0.4 !important;
+}
+
+.answers h3 {
+  padding: 1rem;
+  display: flex;
+
+  color: rgba(255, 255, 255, 0.363);
+  font-size: 13.333px;
+  font-weight: 100;
+
+  font-family: 'consolas' !important;
+
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: rgba(255, 255, 255, 0.0141);
+  border: 2px solid rgba(var(--border-color-rgb), 0.015);
+  border-radius: 5px;
+
+  height: fit-content;
+
+  padding: 10px;
+  border-radius: 5px;
+
+  display: flex;
+
+  align-items: center;
+
+  border: 1.5px solid rgba(255,255,255,.1);
+  background-color: rgba(255,255,255,.02);
+
+  width: 100%;
+
+  user-select: none;
+
+  background: #f9f9fa;
+  border: 1px solid #dce2e5;
+
+  border-radius: 4px;
+  margin: 16px 0;
+  padding: 16px 24px;
+
+  word-break: break-word;
+  filter: drop-shadow(0 4px 0 rgba(220,226,229,0.45));
+  cursor: pointer;
+  color: #2d3846;
+
+  font-size: 1.5rem;
+  align-items: center;
 }
 
 .questionComplete {
@@ -2211,7 +2405,8 @@ div.headerProgress {
   background-color: #3f57f31c;
   border-color: #3f57f35b;
 
-  filter: drop-shadow(0 4px 0 rgba(220,226,229,0.45));
+  filter: drop-shadow(0 4px 0 rgba(195,219,236,0.45));
+  box-shadow: 0px 4px 0 #3f57f313;
 }
 
 .radialSelected label {
