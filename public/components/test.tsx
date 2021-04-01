@@ -3,6 +3,9 @@ import styles from '@styles/Home.module.css'
 import Button from './button';
 
 import { MultiChoice } from '@components/multi_choice'
+import { DragAndDrop } from '@components/drag'
+import { FindTheError } from '@components/error'
+
 import { securityRules } from 'firebase-admin';
 import { callbackify } from 'util';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,12 +17,11 @@ interface Answer {
 }
 
 interface Question {
-    type: "fill" | "multichoice" | "select", // Denotes Render Method
+    type: "errorfind" | "multichoice" | "drag", // Denotes Render Method
     correct_ans: string | number | number[], // Fill uses string, multichoice is number and select is numerical array.
     question: string,
     hint?: string, // for Fill only
     possible_ans?: Answer[] // for all *but* fill 
-    answer?: string // for Fill only
 }
 
 interface Test {
@@ -29,7 +31,16 @@ interface Test {
 }
 
 export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Function }> = ({ value, submitForm, closeForm }) => {
-    const [ currentSelections, setCurrentSelections ] = useState(value.questions.map(() => { return {value: "", index: -1} }));
+    const [ currentSelections, setCurrentSelections ] = useState(value.questions.map((e) => {
+        switch (e.type) {
+            case "errorfind":
+                return {value: "", index: -1} 
+            case "multichoice":
+                return {value: "", index: -1}                                 
+            case "drag":
+                return []
+        }
+    }));
     const [ currentQuestion, setCurrentQuestion ] = useState(0);
     const [ takingTest, setTakingTest ] = useState(true);
 
@@ -40,18 +51,19 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
         let score = { questions: value.questions.length, score: 0};
 
         currentSelections.forEach((element, index) => {
-            console.log("A:", value.questions[index].correct_ans[0]);
-            console.log("B:", element.index);
+            if(typeof element == 'object') {
 
-            if(value.questions[index].correct_ans[0] == element.index){
-                score.score += 1;
-            }else{
-                pass = false;
+            }else {
+                //@ts-ignore
+                if(value.questions[index].correct_ans[0] == element.index){
+                    score.score += 1;
+                }else{
+                    pass = false;
+                }
             }
         });
 
-        console.log(score);
-
+        const userResult = {selections: currentSelections, score};
         submitForm(pass, ((score.score / score.questions) * 100));
     }
 
@@ -75,17 +87,24 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
                 <h1>{(takingTest) ? value.title : "Results"}</h1>
                 <p>{(takingTest) ? value.questions[currentQuestion].question : ""}</p>
 
-                <div>
+                <div style={{ overflow: 'auto', height: 'calc(100vh - 50vh)', padding: '1rem' }}>
                     {
                         (takingTest) ?
                         (() => {
                             switch (value.questions[currentQuestion].type) {
-                                case "fill":
+                                case "errorfind":
                                     return (
-                                        <></>
+                                        <FindTheError question={value.questions[currentQuestion]} selection={currentSelections[currentQuestion]}
+                                        onChange={(e) => {
+                                            let clone = currentSelections; 
+                                            clone[currentQuestion] = e;
+                                            
+                                            setCurrentSelections(clone)
+                                        }}/>
                                     )
                                 case "multichoice":
                                     return (
+                                        //@ts-ignore
                                         <MultiChoice question={value.questions[currentQuestion]} selection={currentSelections[currentQuestion]}
                                         onChange={(e) => {
                                             let clone = currentSelections; 
@@ -94,9 +113,10 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
                                             setCurrentSelections(clone)
                                         }}/>
                                     )                                
-                                case "select":
+                                case "drag":
                                     return (
-                                        <MultiChoice question={value.questions[currentQuestion]} selection={currentSelections[currentQuestion]}
+                                        //@ts-ignore
+                                        <DragAndDrop question={value.questions[currentQuestion]} selection={currentSelections[currentQuestion]}
                                         onChange={(e) => {
                                             console.log(e);
                                         }}/>
@@ -116,9 +136,15 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
                                                     console.log(e.correct_ans);
 
                                                     switch (e.type) {
-                                                        case "fill":
+                                                        case "errorfind":
                                                             return (
-                                                                <>{e.answer}</>
+                                                                <div className={`${styles.questionAnswer} ${(e.correct_ans[0] == currentSelections[index].index) ? styles.correctAnswer : styles.wrongAnswer}`}>
+                                                                    {
+                                                                        currentSelections[index].value
+                                                                    }
+
+                                                                    <FontAwesomeIcon icon={(e.correct_ans[0] == currentSelections[index].index) ? faCheckCircle : faTimes} />
+                                                                </div>
                                                             )
                                                         case "multichoice":
                                                             return (
@@ -130,7 +156,7 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
                                                                     <FontAwesomeIcon icon={(e.correct_ans[0] == currentSelections[index].index) ? faCheckCircle : faTimes} />
                                                                 </div>
                                                             )                                
-                                                        case "select":
+                                                        case "drag":
                                                             return (
                                                                 //@ts-ignore
                                                                 <>{e.correct_ans.map(e => { return ( <div>{e}</div> ) })}</>

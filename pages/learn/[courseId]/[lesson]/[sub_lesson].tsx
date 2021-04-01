@@ -171,6 +171,18 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   correct_ans: [1],
                   possible_ans: [{value: "// \n //", index: 0}, {value: "/*\n*/", index: 1}, {value: "//", index: 2}, {value: "*/\n/*", index: 3}],
                   question: "What is the standard to comment more than two lines?"
+                },
+                { 
+                  type: "drag",
+                  correct_ans: [1],
+                  possible_ans: [{value: "console", index: 0}, {value: ".log", index: 1}, {value: "(\"Hello World\")", index: 2}],
+                  question: "What is the correct order to log to the console?"
+                },
+                { 
+                  type: "errorfind",
+                  correct_ans: [0],
+                  possible_ans: [{value: "for(let i = 0; i < arr.length) {", index: 0}, {value: "\tconsole.log(i)", index: 1}, {value: "}", index: 2}],
+                  question: "What is the error in this statement?"
                 }],
                 dificulty: 0,
                 title: "Javascript Basic Concepts"

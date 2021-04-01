@@ -21,7 +21,7 @@ interface Test {
     title: string
 }
 
-export const MultiChoice: React.FC<{ question: Question, onChange: Function, selection: Answer }> = ({ question, onChange, selection }) => {
+export const FindTheError: React.FC<{ question: Question, onChange: Function, selection: Answer }> = ({ question, onChange, selection }) => {
     const [ currentSelection, setCurrentSelection ] = useState(null);
     const [ currentQuestion, setCurrentQuestion ] = useState(0);
 
@@ -30,17 +30,17 @@ export const MultiChoice: React.FC<{ question: Question, onChange: Function, sel
     }, [selection])
 
     return (
-        <div className={styles.multiChoiceRoom}>
+        <div className={styles.multiChoiceRoomMini}>
             {
                 question.possible_ans.map((e: Answer) => {
                     return (
-                        <div className={`${styles.radialInput} ${(currentSelection?.index == e.index) ? styles.radialSelected : styles.radialDefault}`} onClick={(_e) => {
+                        <div className={`${styles.errorInput} ${(currentSelection?.index == e.index) ? styles.radialSelected : styles.radialDefault}`} onClick={(_e) => {
                             onChange(e);
                             setCurrentSelection(e);
                         }}>
                             <input type="radio" className={styles.createInputRadial}/>
             
-                            <label>{e.index + 1})  {e.value}</label>
+                            <label>{e.value}</label>
                         </div>
                     )
                 })
