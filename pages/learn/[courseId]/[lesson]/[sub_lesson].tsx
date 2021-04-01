@@ -57,8 +57,6 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
     const userData = await (await db.doc(`users/${user.uid}`).get()).data();
     if(userData.date) {
-      console.log(86400000 - (new Date().getTime() - userData.date));
-      
       if(new Date().getTime() - userData.date > 86400000 && new Date().getTime() - userData.date < (2*86400000))  {// 1 < Day < 2     Difference
         userData.date = new Date().getTime();
         userData.streak += 1;
@@ -110,7 +108,6 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   ))
 
   useEffect(() => {
-    console.log(props.pageData.lessons[lesson].sub_lessons[subLesson]);
     if(
     localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== null && 
     localStorage.getItem(`${props.pageData.inherit_id}.${lesson}.${subLesson}`) !== undefined &&
@@ -123,7 +120,6 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   
       setCurrentLesson(currentLesson);
     }
-    console.log(props.pageData.lessons[lesson].sub_lessons[subLesson]);
   }, [currentLesson])
 
   useEffect(() => {
@@ -132,16 +128,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
       if(props.userData.courses[data].lesson < lesson) { props.userData.courses[data].lesson = lesson; props.userData.courses[data].sub_lesson = subLesson; }
       else if(props.userData.courses[data].lesson == lesson && props.userData.courses[data].sub_lesson < subLesson) { props.userData.courses[data].sub_lesson = subLesson; }
 
-      console.log(props.pageData.lessons);
       props.userData.courses[data].progress = (props.userData.courses[data].lesson + 1 / props.pageData.lessons.length); // + ((props.userData.courses[data].sub_lesson + 1 / props.pageData.lessons[lesson].sub_lessons.length) / props.pageData.lessons.length)
-      console.log(props.userData.courses[data].lesson + 1, props.pageData.lessons.length, props.userData.courses[data].sub_lesson + 1, props.pageData.lessons[lesson].sub_lessons.length);
-      
       firebaseClient.firestore().doc(`users/${user.uid}`).set(props.userData);
     }
     
     const les = props.userData.courses.find(f => f._loc == props.pageData.inherit_id);
-
-    console.log(les.lesson, lesson, les.sub_lesson, subLesson);
 
     if(currentLesson.type !== "code") 
       setLessonCompleted(true);
@@ -183,8 +174,21 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 }],
                 dificulty: 0,
                 title: "Javascript Basic Concepts"
-              }} submitForm={(e) => {
+              }} submitForm={(pass, score) => {
+                console.log("RESULTS", pass, score);
 
+                if(pass) {
+                  setLessonVariance([lesson+1, 0]);
+
+                  setContent(EditorState.createWithContent(
+                    convertFromRaw(props.pageData.lessons[lesson+1].sub_lessons[0].desc)
+                  ))
+
+                  setCurrentLesson(props.pageData.lessons[lesson+1].sub_lessons[0])
+                }
+                
+              }} closeForm={() => {
+                setEditTest({open: false, location: -1});
               }}/>
               
             </div>                    
@@ -329,12 +333,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 </div>
 
                 <div className={styles.navigationBottom}>
-                  <Button title={"Go Back"} onClick={(e, callback) => { 
+                  <Button title={"Return"} onClick={(e, callback) => { 
                     if((subLesson == 0 && lesson-1 >= 0)) {
                       let size = props.pageData.lessons[lesson-1].sub_lessons.length;
 
                       setLessonVariance([lesson-1, size-1]);
-                      console.log(size, lesson-1);
 
                       setContent(EditorState.createWithContent(
                         convertFromRaw(props.pageData.lessons[lesson-1].sub_lessons[size-1].desc)
@@ -360,9 +363,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     callback();
                   }} disabled={(subLesson == 0 && lesson == 0)}></Button>
                   <h3>{subLesson + 1} / {props.pageData.lessons[lesson].sub_lessons.length}</h3>
-                  <Button title={(props.pageData.lessons[lesson].sub_lessons.length == subLesson+1) ? ((lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1)) ? "Finish" : "Test" : "Next Lesson"} onClick={(e, callback) => { 
+                  <Button title={(props.pageData.lessons[lesson].sub_lessons.length == subLesson+1) ? ((lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1)) ? "Finish" : "Test" : "Next"} onClick={(e, callback) => { 
                     if((props.pageData.lessons[lesson].sub_lessons.length == subLesson+1) && !(lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1)) {
                       setEditTest({ open: true, location: lesson });
+                      callback();
+                      return;
                     }
                     
                     if((props.pageData.lessons[lesson].sub_lessons.length == subLesson+1)) {

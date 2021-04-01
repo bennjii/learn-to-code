@@ -2127,6 +2127,8 @@ div.headerProgress {
 
   display: flex;
   flex-direction: column;
+
+  overflow: auto;
 }
 
 .testQuestions {
@@ -2189,7 +2191,6 @@ div.headerProgress {
   padding: 1rem;
   display: flex;
 
-
   color: rgba(255, 255, 255, 0.363);
   font-size: 13.333px;
   font-weight: 100;
@@ -2233,6 +2234,8 @@ div.headerProgress {
 
   font-size: 1.5rem;
   align-items: center;
+
+  font-size: 18px;
 }
 
 .questionAnswer svg {

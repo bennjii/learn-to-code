@@ -28,15 +28,35 @@ interface Test {
     title: string
 }
 
-export const Test: React.FC<{ value: Test, submitForm: Function }> = ({ value, submitForm }) => {
+export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Function }> = ({ value, submitForm, closeForm }) => {
     const [ currentSelections, setCurrentSelections ] = useState(value.questions.map(() => { return {value: "", index: -1} }));
     const [ currentQuestion, setCurrentQuestion ] = useState(0);
     const [ takingTest, setTakingTest ] = useState(true);
 
     const callSubmitForm = () => {
-        submitForm(currentSelections);
-
         setTakingTest(false);
+
+        let pass = true;
+        let score = { questions: value.questions.length, score: 0};
+
+        currentSelections.forEach((element, index) => {
+            console.log("A:", value.questions[index].correct_ans[0]);
+            console.log("B:", element.index);
+
+            if(value.questions[index].correct_ans[0] == element.index){
+                score.score += 1;
+            }else{
+                pass = false;
+            }
+        });
+
+        console.log(score);
+
+        submitForm(pass, ((score.score / score.questions) * 100));
+    }
+
+    const callCloseForm = () => {
+        closeForm();
     }
 
     return (
@@ -149,7 +169,7 @@ export const Test: React.FC<{ value: Test, submitForm: Function }> = ({ value, s
 
                 <div className={(takingTest) ? styles.hidden : `${styles.visible} ${styles.testQuestionsToolbar}` }>
                     <div></div>
-                    <Button title={"Finish"} onClick={(e, callback) => { callSubmitForm(); callback(); }} />
+                    <Button title={"Finish"} onClick={(e, callback) => { callCloseForm(); callback(); }} />
                 </div>
             </div>
         </div>
