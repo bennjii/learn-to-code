@@ -154,10 +154,8 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
         <div className={`${styles.createTest} ${(editTest.open) ? styles.testOpen : styles.lessonsHidden }`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
         {
-          editTest.location !== null ? 
+          editTest.open && editTest.location !== null ? 
             <div className={styles.subClasses}>
-              <h2>{props.pageData.title}</h2>
-
               <Test 
                 value={{  //props.pageData.lessons[lesson].test
                 questions: [{ 
@@ -200,7 +198,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 }
                 
               }} closeForm={() => {
-                setEditTest({open: false, location: -1});
+                setEditTest({open: false, location: null});
               }}/>
               
             </div>                    

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import styles from '@styles/Home.module.css'
 import Button from './button';
 import { forceLoad } from '@sentry/browser';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowCircleRight, faRedo } from '@fortawesome/free-solid-svg-icons';
 
 interface Answer {
     value: string,
@@ -41,6 +43,10 @@ export const DragAndDrop: React.FC<{ question: Question, onChange: Function, sel
 
     return (
         <div className={styles.multiChoiceRoom}>
+            <div className={`${styles.dragInput}`}>
+                    <label>Reset</label><FontAwesomeIcon icon={faRedo}/>
+                </div>
+                
             <div className={styles.dragRecipient} onDragOver={(e) => e.preventDefault()} onDrop={(e) => {
                 const clone = draggedOrder;
                 clone.push(question.possible_ans[beingDragged]);
@@ -64,6 +70,9 @@ export const DragAndDrop: React.FC<{ question: Question, onChange: Function, sel
                         }
                     })
                 }
+
+                
+                
             </div>
 
             <div className={styles.dragAnswers}>
