@@ -2187,6 +2187,16 @@ div.headerProgress {
   gap: 1rem;
 }
 
+.dragInput button {
+  background-color: transparent;
+  padding: 0px;
+  margin: 0px;
+
+  color: #2d3846;
+  font-family: 'consolas';
+  font-weight: 400;
+}
+
 .dragInput svg {
   height: 1rem;
 }

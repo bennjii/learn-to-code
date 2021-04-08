@@ -11,6 +11,8 @@ import { callbackify } from 'util';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faCheckCircle, faCross, faTimes } from '@fortawesome/free-solid-svg-icons';
 
+import { Dispatch, SetStateAction } from 'react'
+
 interface Answer {
     value: string,
     index: number
@@ -31,7 +33,7 @@ interface Test {
 }
 
 export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Function }> = ({ value, submitForm, closeForm }) => {
-    const [ currentSelections, setCurrentSelections ] = useState(value.questions.map((e) => {
+    const [ currentSelections, setCurrentSelections ]: [(Answer[] | Answer)[], Dispatch<SetStateAction<(Answer[] | Answer)[]>>]  = useState(value.questions.map((e) => {
         switch (e.type) {
             case "errorfind":
                 return {value: "", index: -1} 
@@ -51,8 +53,27 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
         let score = { questions: value.questions.length, score: 0};
 
         currentSelections.forEach((element, index) => {
-            if(typeof element == 'object') {
+            if(typeof element == 'object') {             
+                if(element.length) {
+                    console.log("L")
+                    console.log(element) 
 
+                    const res = value.questions[index].correct_ans.map((e, i) => e.index == element[i].index);
+                    if(res) {
+                        score.score += 1;
+                    }else{
+                        pass = false;
+                    } 
+                }else {
+                    console.log("R")
+                    console.log(element)
+                    
+                    if(value.questions[index].correct_ans[0] == element.index) {
+                        score.score += 1;
+                    }else{
+                        pass = false;
+                    } 
+                }
             }else {
                 //@ts-ignore
                 if(value.questions[index].correct_ans[0] == element.index){
@@ -94,6 +115,7 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
                             switch (value.questions[currentQuestion].type) {
                                 case "errorfind":
                                     return (
+                                        //@ts-ignore
                                         <FindTheError question={value.questions[currentQuestion]} selection={currentSelections[currentQuestion]}
                                         onChange={(e) => {
                                             let clone = currentSelections; 
@@ -118,7 +140,6 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
                                         //@ts-ignore
                                         <DragAndDrop question={value.questions[currentQuestion]} selection={currentSelections[currentQuestion]}
                                         onChange={(e) => {
-                                            console.log(e);
                                         }}/>
                                     )
                             }
@@ -133,45 +154,80 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
                                             <h4 style={{ fontFamily: 'consolas', color: '#4b5962', textTransform: 'none' }}>{e.question}</h4>
                                             {
                                                 (() => {
-                                                    console.log(e.correct_ans);
 
                                                     switch (e.type) {
                                                         case "errorfind":
                                                             return (
+                                                                //@ts-ignore
                                                                 <div className={`${styles.questionAnswer} ${(e.correct_ans[0] == currentSelections[index].index) ? styles.correctAnswer : styles.wrongAnswer}`}>
                                                                     {
+                                                                        //@ts-ignore
                                                                         currentSelections[index].value
                                                                     }
-
+                                                                    {/* @ts-ignore */}
                                                                     <FontAwesomeIcon icon={(e.correct_ans[0] == currentSelections[index].index) ? faCheckCircle : faTimes} />
                                                                 </div>
                                                             )
                                                         case "multichoice":
                                                             return (
+                                                                //@ts-ignore
                                                                 <div className={`${styles.questionAnswer} ${(e.correct_ans[0] == currentSelections[index].index) ? styles.correctAnswer : styles.wrongAnswer}`}>
                                                                     {
+                                                                        //@ts-ignore
                                                                         currentSelections[index].value
                                                                     }
-
+                                                                    {/* @ts-ignore */}
                                                                     <FontAwesomeIcon icon={(e.correct_ans[0] == currentSelections[index].index) ? faCheckCircle : faTimes} />
                                                                 </div>
                                                             )                                
                                                         case "drag":
                                                             return (
-                                                                //@ts-ignore
-                                                                <>{e.correct_ans.map(e => { return ( <div>{e}</div> ) })}</>
+                                                                <>
+                                                                {
+                                                                    //@ts-ignore
+                                                                    e.correct_ans.map((e, __index) => { 
+                                                                        return ( 
+                                                                            //@ts-ignore
+                                                                            <div className={`${styles.questionAnswer} ${(e == currentSelections[index][__index].index) ? styles.correctAnswer : styles.wrongAnswer}`}>
+                                                                                {
+                                                                                    //@ts-ignore
+                                                                                    currentSelections[index][__index].value
+                                                                                }
+                                                                                {/*@ts-ignore*/}
+                                                                                <FontAwesomeIcon icon={(e == currentSelections[index][__index].index) ? faCheckCircle : faTimes} />
+                                                                            </div>
+                                                                        ) 
+                                                                    })
+                                                                }
+                                                                </>
                                                             )
                                                     }
                                                 })()
                                             }
 
                                             {
-                                            (e.correct_ans[0] !== currentSelections[index].index) ? 
-                                                <div>
-                                                    <h3 style={{ fontSize: '0.875rem', fontFamily: 'consolas' }}><strong>CORRECT ANSWER:</strong> <i>{e.possible_ans[e.correct_ans[0]].value}</i></h3>
-                                                </div>
-                                                :
-                                                <p></p>
+                                                //@ts-ignore
+                                                (e.correct_ans[0] !== currentSelections[index].index && e.type !== 'drag') ? 
+                                                    <div>
+                                                        <h3 style={{ fontSize: '0.875rem', fontFamily: 'consolas' }}><strong>CORRECT ANSWER:</strong> <i>{e.possible_ans[e.correct_ans[0]].value}</i></h3>
+                                                    </div>
+                                                    :
+                                                    <p></p>
+                                            }
+                                            {
+                                                // (e.type == 'drag') ? 
+                                                //     e.correct_ans.map((e, __index) => { 
+                                                //         return ( 
+                                                //             (e.index == currentSelections[__index].index) ?
+                                                //                 <div>
+                                                //                     <h3 style={{ fontSize: '0.875rem', fontFamily: 'consolas' }}><strong>CORRECT ANSWER:</strong></h3>
+                                                //                 </div>
+                                                //                 :
+                                                //                 <p></p>
+                                                //         ) 
+                                                //     })
+                                                //     :
+                                                //     <></>      
                                             }
                                         </div>
                                     )

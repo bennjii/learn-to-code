@@ -172,7 +172,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 },
                 { 
                   type: "drag",
-                  correct_ans: [1],
+                  correct_ans: [0, 1, 2],
                   possible_ans: [{value: "console", index: 0}, {value: ".log", index: 1}, {value: "(\"Hello World\")", index: 2}],
                   question: "What is the correct order to log to the console?"
                 },
