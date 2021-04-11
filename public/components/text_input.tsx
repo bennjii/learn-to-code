@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styles from '../../styles/Home.module.css'
 
@@ -15,52 +15,42 @@ interface Input {
     activated: boolean
 }
 
-class TextInput extends React.Component<{icon?: IconDefinition, onChange?: Function, placeholder: string}, Input> {
-    constructor(props) {
-        super(props)
+const TextInput: React.FC<{icon?: IconDefinition, onChange?: Function, placeholder: string}> = ({icon, onChange, placeholder}) => {
+    const [ state, setState ] = useState({ active: false, hovered: false, value: '', activated: false });
 
-        this.state = { active: false, hovered: false, value: '', activated: false }
-        this.activate = this.activate.bind(this);
-        this.deactivate = this.deactivate.bind(this);
-
-        this.handleInput = this.handleInput.bind(this);
+    const activate = () => {
+        setState({ ...state, active: true });
     }
 
-    activate() {
-        this.setState({ active: true })
+    const deactivate = () => {
+        setState({ ...state, active: false });
     }
 
-    deactivate() {
-        this.setState({ active: false })
-    }
+    const handleInput = (e) => {
+        setState({ ...state, value: e.target.value })
 
-    handleInput(e) {
-        this.setState({ value: e.target.value });
-
-        if(this.props.onChange) {
-            this.props.onChange(e);
+        if(onChange) {
+            onChange(e);
         }
     }
 
-    render() {
-        return (
-            <div className={(this.state.active) ? `${styles.activeAuthInput} ${styles.authenticationInput}` : (this.state.value !== "") ? `${styles.idle} ${styles.authenticationInput}` : `${styles.authenticationInput}`}>
-                {
-                    (this.props.icon)
-                    ?
-                    <FontAwesomeIcon
-                        icon={this.props.icon}
-                        size="1x"
-                        />
-                    :
-                    <div></div>
-                }
-                
+    return (
+        <div className={(state.active) ? `${styles.activeAuthInput} ${styles.authenticationInput}` : (state.value !== "") ? `${styles.idle} ${styles.authenticationInput}` : `${styles.authenticationInput}`}>
+            {
+                (icon)
+                ?
+                <FontAwesomeIcon
+                    icon={icon}
+                    size="1x"
+                    />
+                :
+                <div></div>
+            }
+            
 
-                <input onChange={this.handleInput} type={(this.props.icon == faLock ? "password" : (this.props.icon == faEnvelope) ? "email" : "text")} placeholder={this.props.placeholder} onFocus={this.activate} onBlur={this.deactivate} required/>
-            </div>
-        )
-    }
+            <input onChange={handleInput} type={(icon == faLock ? "password" : (icon == faEnvelope) ? "email" : "text")} placeholder={placeholder} onFocus={activate} onBlur={deactivate} required/>
+        </div>
+    )
 }
 
 export default TextInput

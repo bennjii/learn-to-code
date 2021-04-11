@@ -341,7 +341,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                                     <div key={`${index} ${index2}`} className={`${styles.changeDefault} ${(props.pageData.lessons[index].sub_lessons[index2] == props.pageData.lessons[props.lessonVariance[0]].sub_lessons[props.lessonVariance[1]]) ? styles.changeActive : ''}`} onClick={() => { 
                                       setActiveEdit(props.pageData.lessons[index].sub_lessons[index2]);
                                       setActiveLocation([index, index2]);
-
+                                      setEditTest({open: false, location: index});
+                                      
+                                      lastDebounce = new Date();
                                       Router.push(`../../${props.courseId}/${index}/${index2}`);
                                     }}>
                                       {index + 1}.{index2 + 1} {e2.name}
@@ -353,7 +355,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                               <div className={styles.changeDefault} onClick={() => { 
                                 setEditTest({open: true, location: index});
                               }}>
-                                <FontAwesomeIcon icon={faBook}/> Test
+                                Test <FontAwesomeIcon icon={faBook}/> 
                               </div>
 
                             </div>
@@ -371,6 +373,12 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
           <div className={`${styles.vertical} ${styles.createWindow}`}>
               <div>
                 {
+                  (editTest.open) ? 
+                  <div>
+
+                  </div>
+                  :
+                  // Switch Type, return value -> allow for tests, in test just have a synced text editor with JSON for the questions and stuff.
                   (activeEdit.type == 'code')
                   ?
                     <div className={styles.textEditor}>
@@ -416,6 +424,19 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     </div>
                   :
                     <div className={styles.editingContent}>
+                      <input type="text" defaultValue={activeEdit.name} onChange={(e) => {
+                        let editClone = activeEdit;
+                        editClone.name = (e.target.value);
+
+                        setActiveEdit(editClone)
+                        setSyncStatus(false);
+
+                        updateSync(() => {
+                          // @ts-ignore
+                          reMergeContent(activeEdit, activeLocation, props, setSyncStatus, props.courseId)  
+                        })   
+                      }}/>
+
                       <SimpleEditor content={activeEdit.desc} changeParent={setActiveEdit} currentParent={activeEdit} callback={() => { 
                           setSyncStatus(false);
 
@@ -458,11 +479,7 @@ const reMergeContent = (newAddition, additionLocation, master, callback: Functio
     e.sub_lessons.forEach((__e, k) => {
       if(!__e.desc.blocks) {
         master.pageData.lessons[i].sub_lessons[k].desc = convertToRaw(__e.desc);
-      }else {
-        console.log(__e.desc);
       }
-
-      console.log(__e.desc);
     })
   });
   

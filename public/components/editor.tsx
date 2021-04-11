@@ -1,6 +1,6 @@
-import React, {Component} from 'react'
+import React, { useState, useEffect } from 'react'
 import Editor from 'draft-js-plugins-editor'
-import { EditorState, convertFromRaw, ContentState } from 'draft-js'
+import { EditorState, convertFromRaw, ContentState, createFromBlockArray } from 'draft-js'
 
 import styles from '../../styles/Home.module.css'
 import buttonStyles from '../../styles/Home.button.module.css';
@@ -41,8 +41,7 @@ const styleMap = {
     width: '100%',
     display: 'block',
     boxSizing: 'border-box'
-  },
-  'blockquote': {
+  }, 'blockquote': {
     backgroundColor: '#051927',
     fontFamily: 'monospace',
     color: '#f4f4f4',
@@ -52,7 +51,6 @@ const styleMap = {
     display: 'block',
     boxSizing: 'border-box'
   },
-
 };
 
 type Lesson = {
@@ -68,80 +66,62 @@ type Instruction = {
   server_code?: string
 }
 
-class SimpleEditor extends Component<{content: ContentState | string, changeParent: Function, currentParent: Lesson, callback: Function}, {editorState: EditorState}> {
-  constructor(props) {
-    super(props);
+const SimpleEditor: React.FC<{content: ContentState | string, changeParent: Function, currentParent: Lesson, callback: Function}> = ({ content, changeParent, currentParent, callback }) => {
+  const _content = (content.blocks) ? convertFromRaw(content) : content;
+  const [ editorState, setEditorState ] = useState(EditorState.createWithContent(_content));
 
-    let content;
-    console.log(this.props.content);
+  const onChange = (es) => {
+    setEditorState(es);
 
-    if(typeof this.props.content === "string") {
-      content = convertFromRaw({
-        entityMap: {},
-        blocks: [
-            {
-                text: this.props.content,
-                key: 'foo',
-                type: 'unstyled',
-                entityRanges: [],
-            },
-        ],
-      });
-    }else if(!this.props.content._map){
-      content = convertFromRaw(this.props.content);
-    }
-
-    this.state = {
-      editorState: EditorState.createWithContent(content),
-    };
-
-    this.onChange = this.onChange.bind(this);
+    currentParent.desc = es.getCurrentContent()
+    changeParent(currentParent)
+    callback();
   }
 
-  onChange(es) {
-    this.setState({editorState: es}, () => {
-      this.props.currentParent.desc = es.getCurrentContent()
-      this.props.changeParent(this.props.currentParent)
-      this.props.callback();
+  useEffect(() => {
+    let keyPair = content
+    if(content.blocks) keyPair = convertFromRaw(keyPair);
 
-      this.forceUpdate();
-    });
-  }
+    console.log("ParentUpdate [")
+    console.log(keyPair);
+    console.log(editorState.getCurrentContent());
+    console.log("]")
 
-  render() {
-    return (
-      <div className={styles.editor}>
-        <Toolbar>
-            {
-              (externalProps) => (
-                <React.Fragment>
-                  <BoldButton {...externalProps} />
-                  <ItalicButton {...externalProps} />
-                  <UnderlineButton {...externalProps} />
-                  <CodeButton {...externalProps} />
-                  
-                  <HeadlineOneButton {...externalProps} />
-                  <HeadlineTwoButton {...externalProps} />
-                  <UnorderedListButton {...externalProps} />
-                  <OrderedListButton {...externalProps} />
-                  <BlockquoteButton {...externalProps} />
-                  <CodeBlockButton {...externalProps} />
-                </React.Fragment>
-              )
-            }
-          </Toolbar>
+    setEditorState(EditorState.createWithContent(keyPair));
+  }, [content])
 
-        <Editor
-          // @ts-ignore
-          editorState={this.state.editorState}
-          onChange={this.onChange}
-          plugins={[plugins, inlineToolbarPlugin]}
-          customStyleMap={styleMap}
-          spellCheck
-        />
-      </div>
-    );
-  }
+  return (
+    <div className={styles.editor}>
+      <Toolbar>
+          {
+            (externalProps) => (
+              <React.Fragment>
+                <BoldButton {...externalProps} />
+                <ItalicButton {...externalProps} />
+                <UnderlineButton {...externalProps} />
+                <CodeButton {...externalProps} />
+                
+                <HeadlineOneButton {...externalProps} />
+                <HeadlineTwoButton {...externalProps} />
+                <UnorderedListButton {...externalProps} />
+                <OrderedListButton {...externalProps} />
+                <BlockquoteButton {...externalProps} />
+                <CodeBlockButton {...externalProps} />
+              </React.Fragment>
+            )
+          }
+        </Toolbar>
+
+      <Editor
+        // @ts-ignore
+        editorState={editorState}
+        onChange={onChange}
+        plugins={[plugins, inlineToolbarPlugin]}
+        customStyleMap={styleMap}
+        spellCheck
+      />
+    </div>
+  );
 }
 
 export { SimpleEditor }
