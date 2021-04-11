@@ -373,9 +373,17 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
           <div className={`${styles.vertical} ${styles.createWindow}`}>
               <div>
                 {
-                  (editTest.open) ? 
-                  <div>
+                  (editTest.open) ?
+                  <div className={styles.maxHeight}>
+                    <TextEditor lan='javascript' placeholder={(props.pageData.lessons[editTest.location].test ? JSON.parse(props.pageData.lessons[editTest.location].test) : '')} onChange={(e) => {
+                      props.pageData.lessons[editTest.location].test = JSON.stringify(e.replace(/(?:\\[rn])+/g, ''));
+                      setSyncStatus(false);
 
+                      updateSync(() => {
+                        // @ts-ignore
+                        enterTest(props, setSyncStatus, props.courseId)      
+                      })
+                    }}/>
                   </div>
                   :
                   // Switch Type, return value -> allow for tests, in test just have a synced text editor with JSON for the questions and stuff.
@@ -465,6 +473,25 @@ const updateSync = (callback) => {
         return callback();
       }
     }, 2500);
+}
+
+const enterTest = (master, callback: Function, courseId: string) => {
+  master.pageData.lessons.forEach((e, i) => {
+    e.sub_lessons.forEach((__e, k) => {
+      if(!__e.desc.blocks) {
+        master.pageData.lessons[i].sub_lessons[k].desc = convertToRaw(__e.desc);
+      }
+    })
+  });
+
+  const db = firebaseClient.firestore();
+  db.doc(`courses/${courseId}`).set(master.pageData).then((doc) => {
+    lastDebounce = new Date();
+
+    callback(true);
+  }).catch(e => {
+    callback(false);
+  });
 }
 
 const reMergeContent = (newAddition, additionLocation, master, callback: Function, courseId: string) => {

@@ -157,37 +157,10 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
           editTest.open && editTest.location !== null ? 
             <div className={styles.subClasses}>
               <Test 
-                value={{  //props.pageData.lessons[lesson].test
-                questions: [{ 
-                  type: "multichoice",
-                  correct_ans: [2],
-                  possible_ans: [{value: "Console.log(\"Hello!\")", index: 0}, {value: "log.console(\"Hello!\")", index: 1}, {value: "console.log(\"Hello!\")", index: 2}, {value: "log.console(\"Hello!\")", index: 3}],
-                  question: "How would you log Hello! to the console?"
-                },
-                { 
-                  type: "multichoice",
-                  correct_ans: [1],
-                  possible_ans: [{value: "// \n //", index: 0}, {value: "/*\n*/", index: 1}, {value: "//", index: 2}, {value: "*/\n/*", index: 3}],
-                  question: "What is the standard to comment more than two lines?"
-                },
-                { 
-                  type: "drag",
-                  correct_ans: [0, 1, 2],
-                  possible_ans: [{value: "console", index: 0}, {value: ".log", index: 1}, {value: "(\"Hello World\")", index: 2}],
-                  question: "What is the correct order to log to the console?"
-                },
-                { 
-                  type: "errorfind",
-                  correct_ans: [0],
-                  possible_ans: [{value: "for(let i = 0; i < arr.length) {", index: 0}, {value: "\tconsole.log(i)", index: 1}, {value: "}", index: 2}],
-                  question: "What is the error in this statement?"
-                }],
-                dificulty: 0,
-                title: "Javascript Basic Concepts"
-              }} submitForm={(pass, score) => {
+                value={JSON.parse(JSON.parse(props.pageData.lessons[lesson].test.replace(/(?:\\[rn])+/g, '')))} submitForm={(pass, score) => {
                 console.log("RESULTS", pass, score);
 
-                if(pass) {
+                if(pass && lesson !== props.pageData.lessons.length-1) {
                   setLessonVariance([lesson+1, 0]);
 
                   setContent(EditorState.createWithContent(
@@ -378,6 +351,12 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       setEditTest({ open: true, location: lesson });
                       callback();
                       return;
+                    }else if((props.pageData.lessons[lesson].sub_lessons.length == subLesson+1) && (lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1)) {
+                      console.log("FINISHED!!!");
+                      setEditTest({ open: true, location: lesson });
+
+                      callback();
+                      return;
                     }
                     
                     if((props.pageData.lessons[lesson].sub_lessons.length == subLesson+1)) {
@@ -403,7 +382,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     setCurrentLesson(props.pageData.lessons[lesson].sub_lessons[subLesson+1])
 
                     callback();
-                  }} disabled={(!lessonCompleted || (lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1))}></Button>
+                  }} ></Button> {/* disabled={(!lessonCompleted || (lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1))} */}
                 </div>
 
                 <div>

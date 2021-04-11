@@ -56,6 +56,7 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
             if(typeof element == 'object') {  
                 //@ts-ignore           
                 if(element.length) {
+                    //@ts-ignore
                     const res = value.questions[index].correct_ans.map((e, i) => e.index == element[i].index);
                     if(res) {
                         score.score += 1;
@@ -63,6 +64,7 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
                         pass = false;
                     } 
                 }else {
+                    //@ts-ignore
                     if(value.questions[index].correct_ans[0] == element.index) {
                         score.score += 1;
                     }else{
