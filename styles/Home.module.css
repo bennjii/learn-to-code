@@ -272,6 +272,8 @@
   color: rgba(255,255,255,.8);
   font-weight: 600;
 
+  font-family: 'Public Sans';
+  font-weight: 500;
   /* NEW STYLE */
   /* display: flex;
   font-size: 13.333px;
@@ -2337,6 +2339,7 @@ div.headerProgress {
   display: flex;
 
   justify-content: space-between;
+  align-items: center;
 }
 
 .testQuestionsToolbar button {

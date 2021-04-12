@@ -96,6 +96,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
   const [ [lesson, subLesson], setLessonVariance ] = useState(props.lessonVariance);
   const [ lessonCompleted, setLessonCompleted ] = useState(false)
+  const [ showCourseFinished, setShowFinished ] = useState(false);
 
   const [ lessonSelectorVisible, setLessonSelectorVisible ] = useState(false);
 
@@ -152,33 +153,62 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <div className={`${styles.createTest} ${(editTest.open) ? styles.testOpen : styles.lessonsHidden }`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
-        {
-          editTest.open && editTest.location !== null ? 
-            <div className={styles.subClasses}>
-              <Test 
-                value={JSON.parse(JSON.parse(props.pageData.lessons[lesson].test.replace(/(?:\\[rn])+/g, '')))} submitForm={(pass, score) => {
-                console.log("RESULTS", pass, score);
+        <div className={`${styles.createTest} ${(showCourseFinished) ? styles.testOpen : styles.lessonsHidden }`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
+          <div className={styles.subClasses}>
+            <div className={styles.multiChoiceRoom}>
+              <div className={styles.testQuestions} style={{ flex: 1, marginBottom: '5%' }}>
+                <h1>Congratulations {props.user.name}</h1>
 
-                if(pass && lesson !== props.pageData.lessons.length-1) {
-                  setLessonVariance([lesson+1, 0]);
-
-                  setContent(EditorState.createWithContent(
-                    convertFromRaw(props.pageData.lessons[lesson+1].sub_lessons[0].desc)
-                  ))
-
-                  setCurrentLesson(props.pageData.lessons[lesson+1].sub_lessons[0])
-                }
+                <p>You have completed the {props.pageData.title} course!</p>
                 
-              }} closeForm={() => {
-                setEditTest({open: false, location: null});
-              }}/>
-              
-            </div>                    
-          :
-            <></>
-        }
-      </div>
+
+                <div style={{ flex: 1, display: 'flex' }}></div>
+
+                <div className={styles.testQuestionsToolbar}>
+                  <p>Try another course to expand your knowlege</p>
+                  <Button title={"Courses"} onClick={(e, _callback) => {
+                    Router.push('courses')
+                    _callback();
+                  }}></Button>
+                </div>
+              </div>
+            </div>
+          </div>                    
+        </div>
+
+        <div className={`${styles.createTest} ${(editTest.open) ? styles.testOpen : styles.lessonsHidden }`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
+          {
+            editTest.open && editTest.location !== null ? 
+              <div className={styles.subClasses}>
+                <Test 
+                  value={JSON.parse(JSON.parse(props.pageData.lessons[lesson].test.replace(/(?:\\[rn])+/g, '')))} submitForm={(pass, score) => {
+                  console.log("RESULTS", pass, score);
+
+                  if(pass && lesson !== props.pageData.lessons.length-1) {
+                    setLessonVariance([lesson+1, 0]);
+
+                    setContent(EditorState.createWithContent(
+                      convertFromRaw(props.pageData.lessons[lesson+1].sub_lessons[0].desc)
+                    ))
+
+                    setCurrentLesson(props.pageData.lessons[lesson+1].sub_lessons[0])
+                  }else if(pass && lesson == props.pageData.lessons.length-1) {
+                    // Finished Course, Give them a congrats!
+
+                    setShowFinished(true);
+                  }
+                  
+                }} closeForm={() => {
+                  setEditTest({open: false, location: null});
+                }}/>
+                
+              </div>                    
+            :
+              <></>
+          }
+        </div>
+
+        
 
         <div className={`${styles.codeDesc} ${(!lessonSelectorVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
           

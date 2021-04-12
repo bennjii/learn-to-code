@@ -7,6 +7,7 @@ import "brace/theme/tomorrow_night";
 
 import 'brace/theme/github';
 import "brace/mode/javascript"
+import "brace/mode/c_cpp"
 
 import React, { useEffect, useState } from 'react'
 import Button from './button';
