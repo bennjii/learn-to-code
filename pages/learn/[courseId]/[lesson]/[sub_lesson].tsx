@@ -11,19 +11,19 @@ import Editor from 'draft-js-plugins-editor'
 
 import Router from 'next/router'
 import dynamic from 'next/dynamic'
+import axios from 'axios'
 const TextEditor = dynamic(import('@components/text_editor'), {
   ssr: false
 });
 
 import { MultiChoice } from '@components/multi_choice'
-
 import { updateSync } from '@components/debounce'
 import { firebaseAdmin } from "@root/firebaseAdmin"
 import { firebaseClient } from "@root/firebaseClient";
 
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faBookOpen } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faBookOpen, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { Test } from "@components/test";
 
 const styleMap = {
@@ -104,6 +104,8 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   const [ currentLesson, setCurrentLesson ] = useState(currentLessonTemplate);
   const [ editTest, setEditTest ] = useState({ open: false, location: null });
 
+  const [ codeSubmissionPopup , setCodeSubmissionPopup ] = useState({ open: false, data: null })
+
   const [ content, setContent ] = useState(EditorState.createWithContent(
     convertFromRaw(currentLesson.desc)
   ))
@@ -152,6 +154,30 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             <title>Learn to Code</title>
             <link rel="icon" href="/favicon.ico" />
         </Head>
+
+		<div className={`${styles.codeSubmissionPopup} ${(codeSubmissionPopup.open) ? styles.testOpen : styles.lessonsHidden }`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
+          <div className={styles.codeSubClass}>
+			<h1>Running Code</h1>
+			
+			<div className={styles.codeSubmissions}>
+				{
+					(codeSubmissionPopup.data !== null)
+					?
+						(codeSubmissionPopup?.data.data.stderr) ?
+						<div>{JSON.stringify(codeSubmissionPopup?.data.data.stderr)}</div>
+						:
+						<div>{JSON.stringify(codeSubmissionPopup?.data.data.stdout)}</div>
+					:
+						<FontAwesomeIcon
+						icon={faSpinner}
+						size="1x"
+						/>
+				}
+				
+			</div>
+			
+          </div>                    
+        </div>
 
         <div className={`${styles.createTest} ${(showCourseFinished) ? styles.testOpen : styles.lessonsHidden }`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
           <div className={styles.subClasses}>
@@ -415,10 +441,44 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   }} ></Button> {/* disabled={(!lessonCompleted || (lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1))} */}
                 </div>
 
-                <div>
+                <div className={styles.codeSubmit}>
                   {
                     (currentLesson.type === 'code') ?
-                    <Button title="Submit" redirect="" router={Router}></Button>
+                    <Button title={"Submit"} onClick={(e, callback) => {
+						(async () => {
+							setCodeSubmissionPopup({ 
+								open: true,
+								data: null
+							});
+
+							const response = await axios.post(
+								"https://emkc.org/api/v1/piston/execute",
+								{
+									"language": "javascript",
+									"source": currentLesson.template_code,
+									"args": []
+								},
+								{ headers: {'Content-Type': 'application/json'} }
+							).then((res) => {
+								callback();
+								return res;
+							});
+
+							console.log(response);
+
+							setCodeSubmissionPopup({ 
+								open: true,
+								data: response
+							});
+
+							if(response.data.stderr == "") {
+								console.log("Compiled Sucessfully!", response.data.output);
+							}else {
+								console.log("Error: ", response.data.stderr)
+							}
+						})()
+						
+					}}/>
                     :
                     <div></div>
                   }
