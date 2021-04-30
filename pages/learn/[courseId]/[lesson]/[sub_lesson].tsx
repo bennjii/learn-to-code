@@ -155,28 +155,67 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
             <link rel="icon" href="/favicon.ico" />
         </Head>
 
-		<div className={`${styles.codeSubmissionPopup} ${(codeSubmissionPopup.open) ? styles.testOpen : styles.lessonsHidden }`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
-          <div className={styles.codeSubClass}>
-			<h1>Running Code</h1>
+		<div className={`${styles.codeSubmissionPopup} ${(codeSubmissionPopup.open) ? styles.testOpen : styles.lessonsHiddenNoAnim }`}
+			id={"codeSubmitPopup"}
+			onClick={(e) => {
+				//@ts-expect-error
+				(e.target.id == 'codeSubmitPopup')
+				&&
+				setCodeSubmissionPopup({
+					open: false,
+					data: null
+				});
+
+			}} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
 			
-			<div className={styles.codeSubmissions}>
-				{
+			<div className={styles.codeSubClass}>
+				<h1>Code Submission</h1>
+				
+				<div className={styles.codeSubmissions}>
+				{ 
 					(codeSubmissionPopup.data !== null)
 					?
-						(codeSubmissionPopup?.data.data.stderr) ?
-						<div>{JSON.stringify(codeSubmissionPopup?.data.data.stderr)}</div>
-						:
-						<div>{JSON.stringify(codeSubmissionPopup?.data.data.stdout)}</div>
+            <div className={(JSON.parse(codeSubmissionPopup?.data?.request?.response).valid) ? styles.passedTests : styles.failedTests}>
+              <div>
+                <h3>
+                  {
+                    (codeSubmissionPopup.data) &&
+                    (JSON.parse(codeSubmissionPopup?.data?.request?.response).valid) ? "Succesfully Passed Tests" : "Failed tests"
+                  }
+                </h3>
+              </div>
+              
+              {
+                (codeSubmissionPopup.data) &&
+                (
+					(!JSON.parse(codeSubmissionPopup?.data?.request?.response).valid) ?
+					<div>
+						<h4>Expected:</h4>
+						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).expected_response.replace(/>/g, "&gt;").replace(/</g, "&lt;"))}}></p>
+						<h4>Got:</h4>
+						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).code.data.output.replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
+					</div>
 					:
-						<FontAwesomeIcon
-						icon={faSpinner}
-						size="1x"
-						/>
+					<div>
+						<h4>Expected:</h4>
+						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).expected_response.replace(/>/g, "&gt;").replace(/</g, "&lt;"))}}></p>
+						<h4>Got:</h4>
+						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).code.data.stdout.replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
+					</div>
+                )
+              }
+
+              
+            </div> 
+					:
+					<FontAwesomeIcon
+					icon={faSpinner}
+					size="1x"
+					/>
 				}
 				
-			</div>
-			
-          </div>                    
+				</div>
+			</div>                    
         </div>
 
         <div className={`${styles.createTest} ${(showCourseFinished) ? styles.testOpen : styles.lessonsHidden }`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
@@ -345,7 +384,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
                     setCurrentLesson(cloneLesson);
                     callback(props.pageData.lessons[lesson].sub_lessons[subLesson].template_code)
-                  }}/>
+                  }} />
                 </div>
               :
                 <div className={styles.widthContent}>
@@ -459,12 +498,20 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 									"args": []
 								},
 								{ headers: {'Content-Type': 'application/json'} }
-							).then((res) => {
+							).then(async (res) => {
 								callback();
-								return res;
+								const response = await axios.post(
+								"http://localhost:3000/api/validate_code", 
+								{ computed: res, location: { lesson, subLesson, pageData: props.pageData }}, 
+								{ headers: {'Content-Type': 'application/json'}}
+								);
+
+								return response;
 							});
 
 							console.log(response);
+							if(response.data.valid) setLessonCompleted(true);
+							else setLessonCompleted(false);
 
 							setCodeSubmissionPopup({ 
 								open: true,

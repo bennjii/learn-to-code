@@ -415,11 +415,24 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       </div>
                       
 
+
                       <div className={styles.borderRadius}>
-                        
+                        <h4>CODE</h4>
                         <TextEditor lan='javascript' placeholder={activeEdit.template_code} onChange={(e) => {
                           let newEdit = activeEdit;
                           newEdit.template_code = e;
+                          setActiveEdit(newEdit);
+                          setSyncStatus(false);
+
+                          updateSync(() => {
+                            // @ts-ignore
+                            reMergeContent(activeEdit, activeLocation, props, setSyncStatus, props.courseId)    
+                          })
+                        }}/>
+                        <h4>APPENDED CODE</h4>
+                        <TextEditor lan='javascript' placeholder={(activeEdit.appended_code) ? activeEdit.appended_code : ""} onChange={(e) => {
+                          let newEdit = activeEdit;
+                          newEdit.appended_code = e;
                           setActiveEdit(newEdit);
                           setSyncStatus(false);
 

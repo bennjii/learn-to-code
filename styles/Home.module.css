@@ -1497,6 +1497,8 @@ div.headerProgress {
   position: relative;
   display: flex;
   flex-direction: column;
+
+  overflow: auto;
 }
 
 .codeSubClass svg {
@@ -1523,8 +1525,26 @@ div.headerProgress {
 
   padding: 1rem;
 
-  transform: translate3d(-100%, 0, 0); 
+  transform: translate3d(-150%, 0, 0); 
   animation: slideOut .2s ease;
+}
+
+.lessonsHiddenNoAnim {
+  z-index: 100;
+
+  position: absolute;
+
+  width: 40%;
+  height: 100%;
+
+  left: 0;
+
+  background-color: #010e17;
+  color: #eaeaea;
+
+  padding: 1rem;
+
+  transform: translate3d(-100%, 0, 0); 
 }
 
 @keyframes slideIn {
@@ -2045,6 +2065,15 @@ div.headerProgress {
 .borderRadius {
   border-radius: 7px;
   overflow: hidden;
+}
+
+.borderRadius > div {
+  height: 40% !important;
+  border-radius: 5px;
+}
+
+.borderRadius h4 {
+  color: #010e17;
 }
 
 .syncStatusFalse {
@@ -2722,4 +2751,63 @@ div.headerProgress {
 
   align-items: center;
   justify-content: flex-end;
+}
+
+.passedTests {
+  background-color: #fff;
+  border-radius: 5px;
+
+  overflow: hidden;
+  flex: 1;
+
+  height: 100%;
+}
+
+.passedTests > div:first-of-type {
+  border-top: 3px solid #44dc3a78;
+  background-color: #44dc3a14;
+  margin: 0;
+
+  padding: 1rem 1.5rem;
+}
+
+.passedTests > div:not(:first-of-type) {
+  padding: 1rem 1.5rem;
+  flex: 1;
+}
+
+.passedTests > div:first-of-type h3 {
+  margin: 0;
+}
+
+.failedTests {
+  background-color: #fff;
+  border-radius: 5px;
+
+  overflow: hidden;
+  flex: 1;
+
+  height: 100%;
+}
+
+.failedTests > div:first-of-type {
+  border-top: 3px solid #ec635d;
+  background-color: #ec645d27;
+  margin: 0;
+
+  padding: 1rem 1.5rem;
+}
+
+.failedTests > div:not(:first-of-type) {
+  padding: 1rem 1.5rem;
+  flex: 1;
+}
+
+.failedTests > div:not(:first-of-type) h4 {
+  color: #ec635d; /* EXPECTED:... */
+  font-weight: 400;
+}
+
+.failedTests > div:first-of-type h3 {
+  margin: 0;
 }

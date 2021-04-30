@@ -106,13 +106,12 @@ const TextEditor: React.FC<{lan: string, onChange: Function, placeholder: string
                         }
                     </p>
 
-                    <p>
-                        {
-                            (console?.output) ? 
-                            console?.output
-                            :
-                            "Press 'Run' to run code."
-                        }
+                    <p dangerouslySetInnerHTML={{
+                        __html: (console?.output) ? 
+                                    console?.output.replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />")
+                                    :
+                                    "Press 'Run' to run code."
+                    }}>
                     </p>
                 </div>
             </div>

@@ -227,7 +227,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                           <h4>COURSE</h4>
                           <h1>{e.title}</h1>
                         </div>   
-
+                    
                         <div className={styles.adminButtons}>
                           {/* /create/S7ioyCGZ1xow6DRyX3Rw/0/0 */}
                           <button onClick={() => Router.push(`/course/${e._loc}`)}>
