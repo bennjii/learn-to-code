@@ -55,11 +55,11 @@ class Footer extends React.Component<{}, {theme: string}> {
                     </div>
 
                     <div>
-                        <h5>Contact Us</h5>
-                        <input type="text" placeholder={"Email Us"} className={styles.authenticationInput}/>
+                        {/* <h5>Contact Us</h5>
+                        <input type="text" placeholder={"Email Us"} className={styles.authenticationInput}/> */}
                         
                         <div className={styles.footerSpacing}>
-                            <Button title={"Toggle Theme"} onClick={(e, callback) => { this.toggleTheme(); callback(); }}></Button>
+                            <Button title={this.state.theme == 'light' ? "Dark Theme" : "Light Theme" } onClick={(e, callback) => { this.toggleTheme(); callback(); }}></Button>
                         </div>
                     </div>
                 </div>
