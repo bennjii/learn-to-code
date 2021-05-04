@@ -134,11 +134,12 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
     sub_lessons: []
   });
 
-  // useEffect(() => {
-  //   console.log("New Edit");
-  //   console.log(activeEdit);
+  const [ answerSheet, setAnswerSheet ] = useState(null)
 
-  // }, [activeEdit])
+  //@ts-expect-error
+  useEffect(async () => {
+    setAnswerSheet(await (await firebaseClient.firestore().doc(`/courses/${props.courseId}/answers/${props.lessonVariance[0]+1}`).get()).data());
+  }, [props])
 
   return (
     <div className={styles.container}>
@@ -413,9 +414,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                           })                       
                         }}/>
                       </div>
-                      
-
-
+              
                       <div className={styles.borderRadius}>
                         <h4>CODE</h4>
                         <TextEditor lan='javascript' placeholder={activeEdit.template_code} onChange={(e) => {
@@ -439,6 +438,22 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                           updateSync(() => {
                             // @ts-ignore
                             reMergeContent(activeEdit, activeLocation, props, setSyncStatus, props.courseId)    
+                          })
+                        }}/>
+
+                        <h4>EXPECTED OUTPUT</h4>
+                        <TextEditor lan='javascript' placeholder={(answerSheet.answers[props.lessonVariance[1]]) ? answerSheet.answers[props.lessonVariance[1]] : ""} onChange={(e) => {
+                          setSyncStatus(false);
+
+                          updateSync(() => {
+                            // @ts-ignore
+                            const answers = answerSheet;
+                            answers.answers[props.lessonVariance[1]] = e;
+
+                            firebaseClient.firestore().doc(`/courses/${props.courseId}/answers/${props.lessonVariance[0]+1}`).update(answers)
+                            .then(() => {
+                              setSyncStatus(true);
+                            });
                           })
                         }}/>
                       </div>

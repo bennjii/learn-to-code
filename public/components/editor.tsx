@@ -82,11 +82,6 @@ const SimpleEditor: React.FC<{content: ContentState | string, changeParent: Func
     let keyPair = content
     if(content.blocks) keyPair = convertFromRaw(keyPair);
 
-    console.log("ParentUpdate [")
-    console.log(keyPair);
-    console.log(editorState.getCurrentContent());
-    console.log("]")
-
     setEditorState(EditorState.createWithContent(keyPair));
   }, [content])
 

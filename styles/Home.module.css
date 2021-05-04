@@ -2065,15 +2065,25 @@ div.headerProgress {
 .borderRadius {
   border-radius: 7px;
   overflow: hidden;
+
+  display: grid;
+  grid-template-rows: 3% 1fr 3% 20% 3% 20%;
 }
 
 .borderRadius > div {
-  height: 40% !important;
   border-radius: 5px;
 }
 
 .borderRadius h4 {
   color: #010e17;
+  margin: 0;
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  font-weight: 200;
 }
 
 .syncStatusFalse {
