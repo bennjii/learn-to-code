@@ -7,7 +7,7 @@ import axios from 'axios';
 const parse = (input) => {
 	input.replace('\\n', 'what');
 
-	return input.replace('\n','\\n').trim();
+	return input.split('\n').join('\\n').trim();
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
