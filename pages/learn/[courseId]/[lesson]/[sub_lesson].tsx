@@ -193,14 +193,14 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 						<h4>Expected:</h4>
 						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).expected_response.replace(/>/g, "&gt;").replace(/</g, "&lt;"))}}></p>
 						<h4>Got:</h4>
-						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).code.data.output.replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
+						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).givenResult.replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
 					</div>
 					:
 					<div>
 						<h4>Expected:</h4>
-						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).expected_response.replace(/>/g, "&gt;").replace(/</g, "&lt;"))}}></p>
+						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).expected_response.replace('\\n', '\n').replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
 						<h4>Got:</h4>
-						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).code.data.stdout.replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
+						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).givenResult.replace('\\n', '\n').replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
 					</div>
                 )
               }
@@ -213,7 +213,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 					size="1x"
 					/>
 				}
-				
+
+          <Button title={"Close"} onClick={() => setCodeSubmissionPopup({
+            open: false,
+            data: null 
+          })}/>
 				</div>
 			</div>                    
         </div>

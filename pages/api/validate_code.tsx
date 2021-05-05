@@ -5,8 +5,9 @@ import { firebaseAdmin } from '@root/firebaseAdmin';
 import axios from 'axios';
 
 const parse = (input) => {
-	input.replace("\r\n", "\n").replace('\r', '\n');
-	return input.trim();
+	input.replace('\\n', 'what');
+
+	return input.replace('\n','\\n').trim();
 }
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -36,10 +37,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	
 	console.log(`\x1b[36mReq. to courses/${id}/answers/${lesson+1}: ${answerData}`);
 		
-	const expectedResult = parse(answerData.answers[data.location.subLesson]);
-	const givenResult = parse(response.data.output);
+	let expectedResult = parse(answerData.answers[data.location.subLesson]);
+	let givenResult = parse(response.data.output);
 
-  	const valid = (expectedResult == givenResult);
+	givenResult = parse(givenResult);
+	expectedResult = parse(expectedResult);
+
+  	const valid = givenResult.includes(expectedResult);
 
 	console.log("Expected:");
 	console.log(expectedResult);
@@ -48,5 +52,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 	console.log(valid);
 
-  	return res.status(200).send({ valid, code: data.computed, expected_response: expectedResult });
+  	return res.status(200).send({ valid, code: data.computed, givenResult, expected_response: expectedResult });
 }
