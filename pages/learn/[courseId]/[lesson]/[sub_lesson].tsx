@@ -481,7 +481,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     setCurrentLesson(props.pageData.lessons[lesson].sub_lessons[subLesson+1])
 
                     callback();
-                  }} ></Button> {/* disabled={(!lessonCompleted || (lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1))} */}
+                  }} disabled={!lessonCompleted}></Button> {/* disabled={(!lessonCompleted || (lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1))} */}
                 </div>
 
                 <div className={styles.codeSubmit}>
