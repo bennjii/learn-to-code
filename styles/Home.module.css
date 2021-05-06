@@ -1508,6 +1508,15 @@ div.headerProgress {
 .codeSubmissions {
   display: flex;
   flex-direction: column;
+
+  height: 100%;
+  flex: 1;
+
+  gap: 1rem;
+}
+
+.codeSubmissions > div:first-of-type {
+  flex: 1;
 }
 
 .lessonsHidden {

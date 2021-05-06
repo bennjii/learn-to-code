@@ -43,8 +43,10 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
                 return []
         }
     }));
+
     const [ currentQuestion, setCurrentQuestion ] = useState(0);
     const [ takingTest, setTakingTest ] = useState(true);
+    const [ testData, setTestData ] = useState(null);
 
     const callSubmitForm = () => {
         setTakingTest(false);
@@ -82,11 +84,12 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
         });
 
         const userResult = {selections: currentSelections, score};
+        setTestData({ pass, score: ((score.score / score.questions) * 100)});
         submitForm(pass, ((score.score / score.questions) * 100));
     }
 
     const callCloseForm = () => {
-        closeForm();
+        closeForm(testData);
     }
 
     return (

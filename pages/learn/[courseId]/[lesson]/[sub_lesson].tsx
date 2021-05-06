@@ -139,9 +139,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
     if(currentLesson.type !== "code") 
       setLessonCompleted(true);
+    else if(props.userData.courses[props.userData.courses.findIndex(e => e._loc == props.pageData.inherit_id)].finished)
+      setLessonCompleted(true);
     else if(les.lesson > lesson) 
       setLessonCompleted(true);
-    else if(les.lesson >= lesson && les.sub_lesson >= subLesson) 
+    else if(les.lesson >= lesson && les.sub_lesson > subLesson) 
       setLessonCompleted(true);
     else 
       setLessonCompleted(false);
@@ -259,6 +261,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 <Test 
                   value={JSON.parse(JSON.parse(props.pageData.lessons[lesson].test.replace(/(?:\\[rn])+/g, '')))} submitForm={(pass, score) => {
                   console.log("RESULTS", pass, score);
+                }} closeForm={(testData) => {
+                  const pass = testData.pass;
+                  const score = testData.score;
 
                   if(pass && lesson !== props.pageData.lessons.length-1) {
                     setLessonVariance([lesson+1, 0]);
@@ -272,9 +277,15 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     // Finished Course, Give them a congrats!
 
                     setShowFinished(true);
+                    firebaseClient.firestore().doc(`users/${user.uid}`).get()
+                    .then(doc => {
+                      const data = doc.data();
+                      data.courses[data.courses.findIndex(e => e._loc == props.pageData.inherit_id)].finished = true;
+
+                      firebaseClient.firestore().doc(`users/${user.uid}`).set(data);
+                    })
                   }
-                  
-                }} closeForm={() => {
+
                   setEditTest({open: false, location: null});
                 }}/>
                 
@@ -512,7 +523,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 							).then(async (res) => {
 								callback();
 								const response = await axios.post(
-								"http://localhost:3000/api/validate_code", 
+								"http://localhost:3000/api/validate_code", //REPLACE IMMEDIATELY [WARN] [BUG]
 								{ computed: res, location: { lesson, subLesson, pageData: props.pageData }}, 
 								{ headers: {'Content-Type': 'application/json'}}
 								);
