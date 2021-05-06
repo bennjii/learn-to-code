@@ -188,20 +188,20 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
               {
                 (codeSubmissionPopup.data) &&
                 (
-					(!JSON.parse(codeSubmissionPopup?.data?.request?.response).valid) ?
-					<div>
-						<h4>Expected:</h4>
-						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).expected_response.replace(/>/g, "&gt;").replace(/</g, "&lt;"))}}></p>
-						<h4>Got:</h4>
-						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).givenResult.replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
-					</div>
-					:
-					<div>
-						<h4>Expected:</h4>
-						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).expected_response.replace('\\n', '\n').replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
-						<h4>Got:</h4>
-						<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).givenResult.replace('\\n', '\n').replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
-					</div>
+                  (!JSON.parse(codeSubmissionPopup?.data?.request?.response).valid) ?
+                  <div>
+                    <h4>Expected:</h4>
+                    <p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).expected_response.replace(/>/g, "&gt;").replace(/</g, "&lt;"))}}></p>
+                    <h4>Got:</h4>
+                    <p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).givenResult.replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
+                  </div>
+                  :
+                  <div>
+                    <h4>Expected:</h4>
+                    <p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).expected_response.replace('\\n', '\n').replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
+                    <h4>Got:</h4>
+                    <p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).givenResult.replace('\\n', '\n').replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
+                  </div>
                 )
               }
 
@@ -214,10 +214,14 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 					/>
 				}
 
-          <Button title={"Close"} onClick={() => setCodeSubmissionPopup({
-            open: false,
-            data: null 
-          })}/>
+          <Button title={"Close"} onClick={(e, callback) =>  {
+            callback();
+
+            setCodeSubmissionPopup({
+              open: false,
+              data: null 
+            })
+          }}/>
 				</div>
 			</div>                    
         </div>
@@ -236,7 +240,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                 <div className={styles.testQuestionsToolbar}>
                   <p>Try another course to expand your knowlege</p>
                   <Button title={"Courses"} onClick={(e, _callback) => {
-                    Router.push('courses')
+                    Router.replace('/courses')
                     _callback();
                   }}></Button>
                 </div>
@@ -249,6 +253,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
           {
             editTest.open && editTest.location !== null ? 
               <div className={styles.subClasses}>
+                {
+                  console.log(JSON.parse(JSON.parse(props.pageData.lessons[lesson].test.replace(/(?:\\[rn])+/g, ''))))
+                }
                 <Test 
                   value={JSON.parse(JSON.parse(props.pageData.lessons[lesson].test.replace(/(?:\\[rn])+/g, '')))} submitForm={(pass, score) => {
                   console.log("RESULTS", pass, score);
@@ -287,7 +294,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   {
                     props.pageData.lessons.map((e, index1) => {
                     return ( 
-                      <div>
+                      <div key={index1}>
                         <h5>{e.name}</h5>
                         <h3>LESSONS</h3>
                         
@@ -295,7 +302,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                           {
                             e.sub_lessons.map((e2, index) => {
                               return (
-                                <div className={styles.exc} onClick={() => { 
+                                <div key={index} className={styles.exc} onClick={() => { 
                                   setLessonVariance([index1, index]); 
                                   setLessonSelectorVisible(!lessonSelectorVisible);
 

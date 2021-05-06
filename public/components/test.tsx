@@ -96,7 +96,7 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
                 {
                     value.questions.map((e, index) => {
                         return (
-                            <div className={(index <= currentQuestion) ? ((index == currentQuestion) ? styles.questionCompleting : styles.questionComplete) : styles.questionIdle}></div>
+                            <div key={index} className={(index <= currentQuestion) ? ((index == currentQuestion) ? styles.questionCompleting : styles.questionComplete) : styles.questionIdle}></div>
                         )
                     })  
                 }
@@ -146,7 +146,7 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
                             {
                                 value.questions.map((e: Question, index) => {
                                     return (
-                                        <div>
+                                        <div key={index}>
                                             <h2 style={{ fontFamily: 'consolas', color: '#4b5962', textTransform: 'none' }}>Question {index+1}</h2>
                                             <h4 style={{ fontFamily: 'consolas', color: '#4b5962', textTransform: 'none' }}>{e.question}</h4>
                                             {
@@ -185,7 +185,7 @@ export const Test: React.FC<{ value: Test, submitForm: Function, closeForm: Func
                                                                     e.correct_ans.map((e, __index) => { 
                                                                         return ( 
                                                                             //@ts-ignore
-                                                                            <div className={`${styles.questionAnswer} ${(e == currentSelections[index][__index].index) ? styles.correctAnswer : styles.wrongAnswer}`}>
+                                                                            <div key={__index} className={`${styles.questionAnswer} ${(e == currentSelections[index][__index].index) ? styles.correctAnswer : styles.wrongAnswer}`}>
                                                                                 {
                                                                                     //@ts-ignore
                                                                                     currentSelections[index][__index].value
