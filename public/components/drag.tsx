@@ -63,10 +63,10 @@ export const DragAndDrop: React.FC<{ question: Question, onChange: Function, sel
                 <div className={styles.invisibleDelimiter}></div>
 
                 {
-                    question.possible_ans.map((element: Answer) => {
+                    question.possible_ans.map((element: Answer, _index) => {
                         if(draggedOrder.includes(element)) {
                             return (
-                                <div className={`${styles.dragInput}`}>
+                                <div className={`${styles.dragInput}`} key={_index}>
                                     <label>{element.value}</label>
                                 </div>
                             )

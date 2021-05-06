@@ -1329,7 +1329,6 @@ div.headerProgress {
 
 .codeDesc > div {
   padding: 1rem;
-  height: 800px;
 }
 
 .codeDesc h3 {
@@ -1677,6 +1676,15 @@ div.headerProgress {
 
   padding: 1rem 2rem;
   border: 2px solid rgba(var(--border-color-rgb), 0.1);
+}
+
+.excNada {
+  background-color: rgba(255,255,255,.02);
+  border-radius: 15px;
+
+  padding: 1rem 2rem;
+  border: 2px solid rgba(var(--border-color-rgb), 0.1);
+  color: rgba(220,226,229,0.25);
 }
 
 .exc:hover {

@@ -131,14 +131,29 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
       if(props.userData.courses[data].lesson < lesson) { props.userData.courses[data].lesson = lesson; props.userData.courses[data].sub_lesson = subLesson; }
       else if(props.userData.courses[data].lesson == lesson && props.userData.courses[data].sub_lesson < subLesson) { props.userData.courses[data].sub_lesson = subLesson; }
 
-      props.userData.courses[data].progress = (props.userData.courses[data].lesson + 1 / props.pageData.lessons.length); // + ((props.userData.courses[data].sub_lesson + 1 / props.pageData.lessons[lesson].sub_lessons.length) / props.pageData.lessons.length)
+      let count = 0;
+      let total = 0;
+      props.pageData.lessons.forEach((e, index) => {
+        e.sub_lessons.forEach((_, _index) => { 
+          if(index >= props.userData.courses[data].lesson && _index < props.userData.courses[data].sub_lesson) total++;
+          else if(index >= props.userData.courses[data].lesson && _index < props.userData.courses[data].sub_lesson) { 
+            total++; 
+            count++;
+          }else if(index < props.userData.courses[data].lesson) {
+            total++; 
+            count++;
+          }
+        });
+      });
+
+      props.userData.courses[data].progress = (total / count);
       firebaseClient.firestore().doc(`users/${user.uid}`).set(props.userData);
     }
     
     const les = props.userData.courses.find(f => f._loc == props.pageData.inherit_id);
 
     if(currentLesson.type !== "code") 
-      setLessonCompleted(true);
+      setLessonCompleted(true)
     else if(props.userData.courses[props.userData.courses.findIndex(e => e._loc == props.pageData.inherit_id)].finished)
       setLessonCompleted(true);
     else if(les.lesson > lesson) 
@@ -148,7 +163,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
     else 
       setLessonCompleted(false);
 
-  }, [currentLesson]);
+  }, [currentLesson, subLesson, lesson]);
 
   return (
     <div className={styles.container}>
@@ -298,7 +313,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
         
 
         <div className={`${styles.codeDesc} ${(!lessonSelectorVisible) ? styles.lessonsHidden : styles.lessonSelect}`} > {/* hidden={!lessonSelectorVisible}  style={{ display: (!lessonSelectorVisible)? "none" : "block" }}*/}
-          
+          {/* Prevent navigation into the locked!!! */}
             <div>
               <div className={styles.subClasses}>
                   <h2>{props.pageData.title}</h2>
@@ -312,16 +327,21 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                         <div className={styles.lessonList}>
                           {
                             e.sub_lessons.map((e2, index) => {
+                              const lesson2 = props.userData.courses[props.userData.courses.findIndex(e => e._loc == props.pageData.inherit_id)].lesson;
+                              const subLesson2 =  props.userData.courses[props.userData.courses.findIndex(e => e._loc == props.pageData.inherit_id)].sub_lesson;
+
                               return (
-                                <div key={index} className={styles.exc} onClick={() => { 
-                                  setLessonVariance([index1, index]); 
-                                  setLessonSelectorVisible(!lessonSelectorVisible);
+                                <div key={index} className={((lesson2 >= lesson && subLesson2 >= subLesson) || (lesson2 > lesson)) ? styles.exc : styles.excNada } onClick={() => { 
+                                  if((lesson2 >= lesson && subLesson2 >= subLesson) || (lesson2 > lesson)) {
+                                    setLessonVariance([index1, index]); 
+                                    setLessonSelectorVisible(!lessonSelectorVisible);
 
-                                  setContent(EditorState.createWithContent(
-                                    convertFromRaw(props.pageData.lessons[index1].sub_lessons[index].desc)
-                                  ))
+                                    setContent(EditorState.createWithContent(
+                                      convertFromRaw(props.pageData.lessons[index1].sub_lessons[index].desc)
+                                    ))
 
-                                  setCurrentLesson(props.pageData.lessons[index1].sub_lessons[index])
+                                    setCurrentLesson(props.pageData.lessons[index1].sub_lessons[index])
+                                  }
                                 }}>
                                 
                                   {`${index1+1}.${index+1}`} {e2.name}
@@ -463,7 +483,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     callback();
                   }} disabled={(subLesson == 0 && lesson == 0)}></Button>
                   <h3>{subLesson + 1} / {props.pageData.lessons[lesson].sub_lessons.length}</h3>
-                  <Button title={(props.pageData.lessons[lesson].sub_lessons.length == subLesson+1) ? ((lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1)) ? "Finish" : "Test" : "Next"} onClick={(e, callback) => { 
+                  <Button title={(props.pageData.lessons[lesson].sub_lessons.length == subLesson+1) ? ((lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1)) ? "Finish" : "Test" : "Next"} onClick={(e, callback) => {
                     if((props.pageData.lessons[lesson].sub_lessons.length == subLesson+1) && !(lesson == props.pageData.lessons.length-1 && subLesson == props.pageData.lessons[lesson].sub_lessons.length-1)) {
                       setEditTest({ open: true, location: lesson });
                       callback();
@@ -506,57 +526,55 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                   {
                     (currentLesson.type === 'code') ?
                     <Button title={"Submit"} onClick={(e, callback) => {
-						(async () => {
-							setCodeSubmissionPopup({ 
-								open: true,
-								data: null
-							});
+                    (async () => {
+                      setCodeSubmissionPopup({ 
+                        open: true,
+                        data: null
+                      });
 
-							const response = await axios.post(
-								"https://emkc.org/api/v1/piston/execute",
-								{
-									"language": "javascript",
-									"source": currentLesson.template_code,
-									"args": []
-								},
-								{ headers: {'Content-Type': 'application/json'} }
-							).then(async (res) => {
-								callback();
-								const response = await axios.post(
-								"http://localhost:3000/api/validate_code", //REPLACE IMMEDIATELY [WARN] [BUG]
-								{ computed: res, location: { lesson, subLesson, pageData: props.pageData }}, 
-								{ headers: {'Content-Type': 'application/json'}}
-								);
+                      const response = await axios.post(
+                        "https://emkc.org/api/v1/piston/execute",
+                        {
+                          "language": "javascript",
+                          "source": currentLesson.template_code,
+                          "args": []
+                        },
+                        { headers: {'Content-Type': 'application/json'} }
+                      ).then(async (res) => {
+                        callback();
+                        const response = await axios.post(
+                        "http://localhost:3000/api/validate_code", //REPLACE IMMEDIATELY [WARN] [BUG]
+                        { computed: res, location: { lesson, subLesson, pageData: props.pageData }}, 
+                        { headers: {'Content-Type': 'application/json'}}
+                        );
 
-								return response;
-							});
+                        return response;
+                      });
 
-							console.log(response);
-							if(response.data.valid) setLessonCompleted(true);
-							else setLessonCompleted(false);
+                      console.log(response);
+                      if(response.data.valid) setLessonCompleted(true);
+                      else setLessonCompleted(false);
 
-							setCodeSubmissionPopup({ 
-								open: true,
-								data: response
-							});
+                      setCodeSubmissionPopup({ 
+                        open: true,
+                        data: response
+                      });
 
-							if(response.data.stderr == "") {
-								console.log("Compiled Sucessfully!", response.data.output);
-							}else {
-								console.log("Error: ", response.data.stderr)
-							}
-						})()
-						
-					}}/>
+                      if(response.data.stderr == "") {
+                        console.log("Compiled Sucessfully!", response.data.output);
+                      }else {
+                        console.log("Error: ", response.data.stderr)
+                      }
+                    })()
+                    
+                  }}/>
                     :
                     <div></div>
                   }
-                  
                 </div>
               </div>
           </div> 
-        </div>
-            
+        </div>   
     </div>
   );
 }

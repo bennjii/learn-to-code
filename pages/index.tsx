@@ -103,7 +103,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
               {
                 props.userData.courses.map((e, index) => {
                   return (
-                    <div className={styles.boxDiv}>
+                    <div className={styles.boxDiv} key={index}>
                       <div>
                         <div>
                           <h4>COURSE</h4>
@@ -111,10 +111,10 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                         </div>
                         
                         <div className={styles.boxProgress}>
-                          <h5>{e.progress * 100}% Progress</h5>
+                          <h5>{e.progress ?  e.progress * 100 : 0 }% Progress</h5>
 
                           <div className={styles.progressBar}>
-                            <div style={{ width: `${e.progress * 100}%` }}></div>
+                            <div style={{ width: `${e.progress ?  e.progress * 100 : 0 }%` }}></div>
                           </div>
                         </div>
                       </div>

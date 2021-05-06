@@ -32,9 +32,9 @@ export const MultiChoice: React.FC<{ question: Question, onChange: Function, sel
     return (
         <div className={styles.multiChoiceRoom}>
             {
-                question.possible_ans.map((e: Answer) => {
+                question.possible_ans.map((e: Answer, _index) => {
                     return (
-                        <div className={`${styles.radialInput} ${(currentSelection?.index == e.index) ? styles.radialSelected : styles.radialDefault}`} onClick={(_e) => {
+                        <div key={_index} className={`${styles.radialInput} ${(currentSelection?.index == e.index) ? styles.radialSelected : styles.radialDefault}`} onClick={(_e) => {
                             onChange(e);
                             setCurrentSelection(e);
                         }}>

@@ -32,9 +32,9 @@ export const FindTheError: React.FC<{ question: Question, onChange: Function, se
     return (
         <div className={styles.multiChoiceRoomMini}>
             {
-                question.possible_ans.map((e: Answer) => {
+                question.possible_ans.map((e: Answer, _index) => {
                     return (
-                        <div className={`${styles.errorInput} ${(currentSelection?.index == e.index) ? styles.radialSelected : styles.radialDefault}`} onClick={(_e) => {
+                        <div key={_index} className={`${styles.errorInput} ${(currentSelection?.index == e.index) ? styles.radialSelected : styles.radialDefault}`} onClick={(_e) => {
                             onChange(e);
                             setCurrentSelection(e);
                         }}>
