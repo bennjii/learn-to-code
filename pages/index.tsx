@@ -111,10 +111,10 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                         </div>
                         
                         <div className={styles.boxProgress}>
-                          <h5>{e.progress ?  e.progress * 100 : 0 }% Progress</h5>
+                          <h5>{e.progress ?  (e.finished) ? 100 : (e.progress * 100) : 0 }% Progress</h5>
 
                           <div className={styles.progressBar}>
-                            <div style={{ width: `${e.progress ?  e.progress * 100 : 0 }%` }}></div>
+                            <div style={{ width: `${e.progress ?  (e.finished) ? 100 : (e.progress * 100) : 0 }%` }}></div>
                           </div>
                         </div>
                       </div>
@@ -139,11 +139,11 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                           </div>
 
                           {
-                            (!props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson+2]) ?
+                            (!props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson+1]) ?
                               <></>
                             :
                               <div className={styles.first}>
-                                <div className={styles.circle}><h6>{e.lesson+1}.{e.sub_lesson+2}</h6></div>
+                                <div className={styles.circle}><h6>{e.lesson+1}.{(e.sub_lesson+1) +1}</h6></div>
                                 <h5>{capitalize(props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson+1].type)}</h5>
                                 <p>{props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson+1].name}</p>
                               </div>
@@ -277,7 +277,28 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     <h1>Create a Course</h1>
 
                     <br/>
-                    <Button title={"Create"}></Button>
+                    <Button title={"Create"} onClick={() => {
+                      let id; // eeee
+                      firebaseClient.firestore().collection(`courses`).add({
+                        desc: "...",
+                        dificulty: 1,
+                        inherit_id: "",
+                        language: "",
+                        lessons: [],
+                        title: ""
+                      }).then(e => {
+                        id = e.id;
+                      });
+
+                      firebaseClient.firestore().collection(`course_index`).add({
+                        _short: "...",
+                        colour: "#f8efa7",
+                        desc: "...",
+                        link: "",
+                        lessons: [],
+                        title: ""
+                      })
+                    }}></Button>
                   </div>
                 </div>
               </div>
