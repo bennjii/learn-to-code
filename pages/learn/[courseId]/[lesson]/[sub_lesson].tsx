@@ -330,9 +330,21 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                               const lesson2 = props.userData.courses[props.userData.courses.findIndex(e => e._loc == props.pageData.inherit_id)].lesson;
                               const subLesson2 =  props.userData.courses[props.userData.courses.findIndex(e => e._loc == props.pageData.inherit_id)].sub_lesson;
 
+                              /*
+                                     up to
+                                      \/
+                                  [0, 1, 2]
+                                  [0]
+
+                                can go to 0-0 and 0-1 (currentlesson of 0-1)
+								lesson = 0, subLesson = 1;
+								lesson2 = 0, subLesson = 1;
+
+								
+                              */
                               return (
-                                <div key={index} className={((lesson2 >= lesson && subLesson2 >= subLesson) || (lesson2 > lesson)) ? styles.exc : styles.excNada } onClick={() => { 
-                                  if((lesson2 >= lesson && subLesson2 >= subLesson) || (lesson2 > lesson)) {
+                                <div key={index} className={((lesson2 >= index1 && subLesson2 >= index) || (lesson2 > index1)) ? styles.exc : styles.excNada } onClick={() => { 
+                                  if((lesson2 >= index1 && subLesson2 >= index) || (lesson2 > index1)) {
                                     setLessonVariance([index1, index]); 
                                     setLessonSelectorVisible(!lessonSelectorVisible);
 
