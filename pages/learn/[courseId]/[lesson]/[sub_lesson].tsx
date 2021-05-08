@@ -126,7 +126,8 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
   }, [currentLesson])
 
   useEffect(() => {
-    const data = props.userData.courses.findIndex(f => f._loc == props.pageData.inherit_id)
+    const data = props.userData.courses.findIndex(f => f._loc == props.pageData.inherit_id);
+
     if(data !== -1) {
       if(props.userData.courses[data].lesson < lesson) { props.userData.courses[data].lesson = lesson; props.userData.courses[data].sub_lesson = subLesson; }
       else if(props.userData.courses[data].lesson == lesson && props.userData.courses[data].sub_lesson < subLesson) { props.userData.courses[data].sub_lesson = subLesson; }
@@ -135,18 +136,18 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
       let total = 0;
       props.pageData.lessons.forEach((e, index) => {
         e.sub_lessons.forEach((_, _index) => { 
-          if(index >= props.userData.courses[data].lesson && _index < props.userData.courses[data].sub_lesson) total++;
-          else if(index >= props.userData.courses[data].lesson && _index < props.userData.courses[data].sub_lesson) { 
-            total++; 
-            count++;
-          }else if(index < props.userData.courses[data].lesson) {
-            total++; 
-            count++;
-          }
+			const l = props.userData.courses[data].lesson;
+			const sL = props.userData.courses[data].sub_lesson;
+			total++;
+
+			if(sL > _index && l >= index) count++;
+			else if(l > index) count++;
         });
       });
 
-      props.userData.courses[data].progress = (total / count);
+	  console.log(count, "/", total);
+
+      props.userData.courses[data].progress = (count / total);
       firebaseClient.firestore().doc(`users/${user.uid}`).set(props.userData);
     }
     
@@ -192,43 +193,46 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 				{ 
 					(codeSubmissionPopup.data !== null)
 					?
-            <div className={(JSON.parse(codeSubmissionPopup?.data?.request?.response).valid) ? styles.passedTests : styles.failedTests}>
-              <div>
-                <h3>
-                  {
-                    (codeSubmissionPopup.data) &&
-                    (JSON.parse(codeSubmissionPopup?.data?.request?.response).valid) ? "Succesfully Passed Tests" : "Failed tests"
-                  }
-                </h3>
-              </div>
+					<div className={(JSON.parse(codeSubmissionPopup?.data?.request?.response).valid) ? styles.passedTests : styles.failedTests}>
+						<div>
+							<h3>
+							{
+								(codeSubmissionPopup.data) &&
+								(JSON.parse(codeSubmissionPopup?.data?.request?.response).valid) ? "Succesfully Passed Tests" : "Failed tests"
+							}
+							</h3>
+						</div>
               
-              {
-                (codeSubmissionPopup.data) &&
-                (
-                  (!JSON.parse(codeSubmissionPopup?.data?.request?.response).valid) ?
-                  <div>
-                    <h4>Expected:</h4>
-                    <p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).expected_response.replace(/>/g, "&gt;").replace(/</g, "&lt;"))}}></p>
-                    <h4>Got:</h4>
-                    <p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).givenResult.replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
-                  </div>
-                  :
-                  <div>
-                    <h4>Expected:</h4>
-                    <p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).expected_response.replace('\\n', '\n').replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
-                    <h4>Got:</h4>
-                    <p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).givenResult.replace('\\n', '\n').replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
-                  </div>
-                )
-              }
-
-              
-            </div> 
+						{
+							(codeSubmissionPopup.data) &&
+							(
+							(!JSON.parse(codeSubmissionPopup?.data?.request?.response).valid) ?
+							<div>
+								<h4>Expected:</h4>
+								<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).expected_response.replace(/>/g, "&gt;").replace(/</g, "&lt;"))}}></p>
+								<h4>Got:</h4>
+								<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).givenResult.replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
+							</div>
+							:
+							<div>
+								<h4>Expected:</h4>
+								<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).expected_response.replace('\\n', '\n').replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
+								<h4>Got:</h4>
+								<p dangerouslySetInnerHTML={{ __html: (JSON.parse(codeSubmissionPopup?.data?.request?.response).givenResult.replace('\\n', '\n').replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/\n/g, "<br />"))}}></p>
+							</div>
+							)
+						}
+            		</div> 
 					:
-					<FontAwesomeIcon
-					icon={faSpinner}
-					size="1x"
-					/>
+					<div className={styles.codeAwaitingSubmit}>
+						<p>Submitting...</p>
+
+						<FontAwesomeIcon
+						icon={faSpinner}
+						size="1x"
+						/>
+					</div>
+					
 				}
 
           <Button title={"Close"} onClick={(e, callback) =>  {
@@ -290,12 +294,13 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     setCurrentLesson(props.pageData.lessons[lesson+1].sub_lessons[0])
                   }else if(pass && lesson == props.pageData.lessons.length-1) {
                     // Finished Course, Give them a congrats!
-
                     setShowFinished(true);
+
                     firebaseClient.firestore().doc(`users/${user.uid}`).get()
                     .then(doc => {
                       const data = doc.data();
                       data.courses[data.courses.findIndex(e => e._loc == props.pageData.inherit_id)].finished = true;
+					  data.courses[data.courses.findIndex(e => e._loc == props.pageData.inherit_id)].progress = 1;
 
                       firebaseClient.firestore().doc(`users/${user.uid}`).set(data);
                     })
@@ -339,9 +344,8 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                                 can go to 0-0 and 0-1 (currentlesson of 0-1)
 								lesson = 0, subLesson = 1;
 								lesson2 = 0, subLesson = 1;
-
-								
                               */
+
                               return (
                                 <div key={index} className={((lesson2 >= index1 && subLesson2 >= index) || (lesson2 > index1)) ? styles.exc : styles.excNada } onClick={() => { 
                                   if((lesson2 >= index1 && subLesson2 >= index) || (lesson2 > index1)) {

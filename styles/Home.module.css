@@ -1518,6 +1518,18 @@ div.headerProgress {
   flex: 1;
 }
 
+.codeAwaitingSubmit {
+  display: flex;
+  flex: 1;
+  height: 100%;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .lessonsHidden {
   z-index: 100;
 
