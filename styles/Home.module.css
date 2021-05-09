@@ -1166,6 +1166,20 @@ div.headerProgress {
   width: 26%;
 }
 
+.authError {
+  border-left: 5px solid rgb(235, 115, 115);
+  background-color: rgba(255, 115, 115, 0.137);
+
+  font-weight: 400;
+  border-radius: 5px;
+
+  display: flex;
+  flex-direction: row;
+
+  gap: 1rem;
+  padding: 0 2rem;
+}
+
 /* .signinBubble:hover h2 {
   color: rgba(255, 255, 255, .6);
 }

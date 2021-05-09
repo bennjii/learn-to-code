@@ -57,6 +57,8 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
       props: { userData, pageData, user },
     };
   } catch (err) {
+    console.log(err);
+    
     return {
       redirect: {
         permanent: false,

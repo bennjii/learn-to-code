@@ -1,6 +1,6 @@
 import styles from '../styles/Home.module.css'
 import * as React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import cookie from 'js-cookie';
@@ -34,20 +34,25 @@ firebaseClient.auth().onAuthStateChanged(async (user: firebaseClient.User) => {
   }
 });
 
-function login(e) {
+const login = async (e) => {
     const form = e.nativeEvent.target;
     if(!form[0].value || !form[1].value) return false;
 
-    firebaseClient.auth().signInWithEmailAndPassword(form[0].value, form[1].value)
+    let _status = null;
+
+    await firebaseClient.auth().signInWithEmailAndPassword(form[0].value, form[1].value)
     .then((user) => {
         Router.push("/")
     })
-    .catch((error) => {
+    .catch(async (error) => {
+        _status = { error_code: await e.code, error_message: await e.message };
         console.log(`${e.code} [::] ${e.message}`);
     });
+
+    return _status;
 }
 
-function submitForm(event) {
+const submitForm = async (event) => {
     const form = event.nativeEvent.target;
     if(!form[0].value || !form[1].value || !form[2].value) return false;
 
@@ -58,18 +63,41 @@ function submitForm(event) {
         console.log(form[i].value)
     }
 
-    firebaseClient.auth().createUserWithEmailAndPassword(form[1].value, form[2].value)
+    let _status = null;
+
+    await firebaseClient.auth().createUserWithEmailAndPassword(form[1].value, form[2].value)
     .then(e => {
         e.user.updateProfile({
             displayName: form[0].value
-        }).then(a => {
-            Router.push("/")
-        })
-    }).catch(e => {
-        console.log(`${e.code} [::] ${e.message}`);
+        }).then(async a => {
+            await firebaseClient.firestore().collection(`users`).doc(e.user.uid).get()
+            .then(async doc =>  {
+                let document = await doc;
+                
+                (!document.exists) 
+                ?
+                    await firebaseClient.firestore().collection(`users`).doc(e.user.uid).set({
+                        account_type: 'student',
+                        courses: [],
+                        badges: []
+                    }).then(e => {
+                        Router.push("/")
+                    })
+                :
+                    Router.push("/")
+            });
 
-        // TODO: Handle and Show user Errors regarding - Email, Password Etc...
-    })
+            Router.push("/");
+            return null;
+        });
+    }).catch(async e => {
+        console.log(`${e.code} [::] ${e.message}`);
+        _status = { error_code: await e.code, error_message: await e.message };
+
+        return { error_code: e.code, error_message: e.message };
+    });
+
+    return _status;
 }
 
 function handleSocialSignin(prov) {
@@ -81,7 +109,7 @@ function handleSocialSignin(prov) {
         provider = new firebaseClient.auth.GithubAuthProvider();
     else return 0
 
-    firebaseClient.auth()
+    const result = firebaseClient.auth()
     .signInWithPopup(provider)
     .then(async (result) =>  {
         console.log(firebaseClient.firestore().collection(`users`).doc(result.user.uid).get());
@@ -101,10 +129,15 @@ function handleSocialSignin(prov) {
                 })
             :
                 Router.push("/")
-        })
+            
+            return null;
+        });
     }).catch((e) => {
         console.log(`${e.code} [::] ${e.message}`);
+        return e;
     });
+
+    return result;
 }
 
 import nookies from "nookies";
@@ -145,11 +178,20 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     if(props.user && process.browser) Router.push('./');
 
-    const [isProgrammer, setIsProgrammer] = useState<boolean>(true)
+    const [ isProgrammer, setIsProgrammer ] = useState<boolean>(true);
+    const [ authError, setAuthError ] = useState(null);
+    const [ authMessage, setAuthMessage ] = useState(null);
 
     const toggleSignup = () => {
         setIsProgrammer(!isProgrammer)        
     }
+
+    useEffect(() => {
+        if(authError)
+            authError.then(e => {
+                setAuthMessage(e)
+            });
+    }, [authError])
 
     return (
         <div className={styles.authPage}>
@@ -214,19 +256,19 @@ const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
                     (isProgrammer)
                     ?
                     <div>
-                        <form onSubmit={(e) => { submitForm(e); e.preventDefault() }} method="POST">
+                        <form onSubmit={(e) => { setAuthError(submitForm(e)); e.preventDefault() }} method="POST">
                             <TextInput placeholder="Enter your Username" icon={faUser} />
 
                             <TextInput placeholder="Enter your Email" icon={faEnvelope} />
 
                             <TextInput placeholder="Enter your Password" icon={faLock} />
 
-                            <Button title="Start coding now" redirect="" router={Router}/>
+                            <Button title="Start coding now" redirect="" router={Router} />
                         </form>
                     </div>
                     :
                     <div>
-                        <form onSubmit={(e) => { login(e); e.preventDefault() }} method="POST">
+                        <form onSubmit={(e) => { setAuthError(login(e)); e.preventDefault() }} method="POST">
                             <TextInput placeholder="Enter your Email" icon={faEnvelope} />
 
                             <TextInput placeholder="Enter your Password" icon={faLock} />
@@ -235,7 +277,17 @@ const Home = (props: InferGetServerSidePropsType<typeof getServerSideProps>) => 
                         </form>
                     </div>
                 }
+
+                <br />
                 
+                {
+                    (authError && authMessage) && 
+                    <div className={styles.authError}>
+                        <p>{authMessage.error_message}</p>
+                    </div>
+                }
+
+                <br />
                 
                 <h6>Or continue with a social profile</h6>
                 

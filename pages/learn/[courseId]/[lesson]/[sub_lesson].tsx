@@ -341,9 +341,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                                   [0, 1, 2]
                                   [0]
 
-                                can go to 0-0 and 0-1 (currentlesson of 0-1)
-								lesson = 0, subLesson = 1;
-								lesson2 = 0, subLesson = 1;
+                                   can go to 0-0 and 0-1 (currentlesson of 0-1)
+                                    lesson = 0, subLesson = 1;
+                                    lesson2 = 0, subLesson = 1;
                               */
 
                               return (
@@ -559,7 +559,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       ).then(async (res) => {
                         callback();
                         const response = await axios.post(
-                        "http://localhost:3000/api/validate_code", //REPLACE IMMEDIATELY [WARN] [BUG]
+                        "/api/validate_code", //REPLACE IMMEDIATELY [WARN] [BUG]
                         { computed: res, location: { lesson, subLesson, pageData: props.pageData }}, 
                         { headers: {'Content-Type': 'application/json'}}
                         );
