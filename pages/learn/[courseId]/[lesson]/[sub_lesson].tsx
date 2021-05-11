@@ -228,8 +228,9 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 						<p>Submitting...</p>
 
 						<FontAwesomeIcon
-						icon={faSpinner}
-						size="1x"
+              icon={faSpinner}
+              size="1x"
+              spin={true}
 						/>
 					</div>
 					
@@ -300,7 +301,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     .then(doc => {
                       const data = doc.data();
                       data.courses[data.courses.findIndex(e => e._loc == props.pageData.inherit_id)].finished = true;
-					  data.courses[data.courses.findIndex(e => e._loc == props.pageData.inherit_id)].progress = 1;
+					            data.courses[data.courses.findIndex(e => e._loc == props.pageData.inherit_id)].progress = 1;
 
                       firebaseClient.firestore().doc(`users/${user.uid}`).set(data);
                     })
