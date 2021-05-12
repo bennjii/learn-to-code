@@ -428,7 +428,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     </div>
                   </div>
 
-                  <TextEditor lan='javascript' placeholder={currentLesson.template_code} onChange={(e) => {
+                  <TextEditor lan={props.pageData.language} placeholder={currentLesson.template_code} onChange={(e) => {
                     let edit = currentLesson;
                     edit.template_code = e;
                     setCurrentLesson(edit);
@@ -552,7 +552,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       const response = await axios.post(
                         "https://emkc.org/api/v1/piston/execute",
                         {
-                          "language": "javascript",
+                          "language": props.pageData.language,
                           "source": currentLesson.template_code,
                           "args": []
                         },

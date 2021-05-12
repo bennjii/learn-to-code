@@ -15,6 +15,7 @@ import { firebaseClient } from "../firebaseClient";
 import { InferGetServerSidePropsType, GetServerSidePropsContext } from "next";
 import TextInput from "../public/components/text_input";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { callbackify } from "util";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
   try {
@@ -101,7 +102,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
           (props.userData.account_type == "student")
           ?
           <div className={styles.insideFullScreen}>
-            <div>
+            <div style={{ display: "flex", gap: '1rem', flexDirection: 'column' }}>
               {
                 props.userData.courses.map((e, index) => {
                   return (
@@ -121,7 +122,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                         </div>
                       </div>
                       <div className={styles.progress}>
-                        <h4>{e.lesson+1} : { props.pageData[index].lessons[e.lesson].name}</h4> 
+                        <h4>{e.lesson+1} : { props.pageData[index]?.lessons[e?.lesson]?.name}</h4> 
                         <div>
                           {
                             (e.sub_lesson <= 0) ?
@@ -130,14 +131,14 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                               <div className={styles.first}>
                                 <div className={styles.circle}><h6>{e.lesson+1}.{e.sub_lesson}</h6></div>
                                 <h5>{capitalize(props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson-1].type)}</h5>
-                                <p>{props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson-1].name}</p>
+                                <p>{props.pageData[index]?.lessons[e.lesson]?.sub_lessons[e.sub_lesson-1]?.name}</p>
                               </div>
                           }
                           
                           <div className={styles.active}>
                             <div className={styles.circle}><h6>{e.lesson+1}.{e.sub_lesson+1}</h6></div>
                             <h5>{capitalize(props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson].type)}</h5>
-                            <p>{props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson].name}</p>
+                            <p>{props.pageData[index]?.lessons[e.lesson]?.sub_lessons[e.sub_lesson]?.name}</p>
                           </div>
 
                           {
@@ -147,7 +148,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                               <div className={styles.first}>
                                 <div className={styles.circle}><h6>{e.lesson+1}.{(e.sub_lesson+1) +1}</h6></div>
                                 <h5>{capitalize(props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson+1].type)}</h5>
-                                <p>{props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson+1].name}</p>
+                                <p>{props.pageData[index].lessons[e.lesson].sub_lessons[e.sub_lesson+1]?.name}</p>
                               </div>
                           }
                         </div>
@@ -214,7 +215,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                       return (
                         <div>
                           {
-                            doc.data().lessons[e.lesson].name
+                            doc.data()?.lessons[e.lesson]?.name
                             //sub_lessons[e.sub_lessons]
                           }
                         </div>
@@ -279,27 +280,58 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                     <h1>Create a Course</h1>
 
                     <br/>
-                    <Button title={"Create"} onClick={() => {
-                      let id; // eeee
-                      firebaseClient.firestore().collection(`courses`).add({
+                    <Button title={"Create"} onClick={(e, callback) => {
+                      const id = firebaseClient.firestore().collection(`courses`).doc().id;
+                      firebaseClient.firestore().collection(`courses`).doc(id).set({
                         desc: "...",
                         dificulty: 1,
-                        inherit_id: "",
+                        inherit_id: id,
                         language: "",
-                        lessons: [],
-                        title: ""
+                        lessons: [
+                          {
+                            name: "first",
+                            sub_lessons: [
+                              {
+                                appended_code: "",
+                                desc: "",
+                                instructions: [{}],
+                                name: "TEMPLATE",
+                                template_code: "// Hey!",
+                                type: "code"
+                              }
+                            ]
+                          }
+                        ],
+                        title: "..."
                       }).then(e => {
-                        id = e.id;
-                      });
+                        firebaseClient.firestore().doc(`courses/${id}/answers/1`).set({
+                          answers: [
+                            ""
+                          ]
+                        })
 
-                      firebaseClient.firestore().collection(`course_index`).add({
-                        _short: "...",
-                        colour: "#f8efa7",
-                        desc: "...",
-                        link: "",
-                        lessons: [],
-                        title: ""
-                      })
+                        firebaseClient.firestore().collection(`course_index`).add({
+                          _short: "...",
+                          colour: "#f8efa7",
+                          desc: "...",
+                          link: id,
+                          name: "..."
+                        });
+
+                        firebaseClient.firestore().doc(`users/${user.uid}`).get().then(async (q) => {
+                          const newData = await q.data();
+                          newData.courses.push({
+                            _loc: id,
+                            desc: "...",
+                            lesson: 0,
+                            progress: 0,
+                            sub_lesson: 0,
+                            title: "..."
+                          });
+                          
+                          firebaseClient.firestore().doc(`users/${user.uid}`).set(newData).then(() => callback());
+                        }) 
+                      });                   
                     }}></Button>
                   </div>
                 </div>

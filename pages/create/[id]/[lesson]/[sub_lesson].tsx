@@ -138,6 +138,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
 
   //@ts-expect-error
   useEffect(async () => {
+    console.log("Getting Answers")
     setAnswerSheet(await (await firebaseClient.firestore().doc(`/courses/${props.courseId}/answers/${props.lessonVariance[0]+1}`).get()).data());
   }, [props])
 
@@ -405,7 +406,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                           })   
                         }}/>
 
-                        <SimpleEditor content={activeEdit.desc} changeParent={setActiveEdit} currentParent={activeEdit} callback={() => { 
+                        <SimpleEditor content={(typeof activeEdit.desc == "string") ? convertToRaw(EditorState.createEmpty().getCurrentContent()) : activeEdit.desc} changeParent={setActiveEdit} currentParent={activeEdit} callback={() => { 
                           setSyncStatus(false);
 
                           updateSync(() => {
@@ -442,7 +443,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                         }}/>
 
                         <h4>EXPECTED OUTPUT</h4>
-                        <TextEditor lan='javascript' placeholder={(answerSheet.answers[props.lessonVariance[1]]) ? answerSheet.answers[props.lessonVariance[1]] : ""} onChange={(e) => {
+                        <TextEditor lan='javascript' placeholder={(answerSheet?.answers[props.lessonVariance[1]]) ? answerSheet?.answers[props.lessonVariance[1]] : "" } onChange={(e) => {
                           setSyncStatus(false);
 
                           updateSync(() => {
@@ -473,7 +474,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                         })   
                       }}/>
 
-                      <SimpleEditor content={activeEdit.desc} changeParent={setActiveEdit} currentParent={activeEdit} callback={() => { 
+                      <SimpleEditor content={(typeof activeEdit.desc == "string") ? convertToRaw(EditorState.createEmpty().getCurrentContent()) : activeEdit.desc} changeParent={setActiveEdit} currentParent={activeEdit} callback={() => { 
                           setSyncStatus(false);
 
                           updateSync(() => {
