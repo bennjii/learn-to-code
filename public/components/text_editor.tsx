@@ -72,7 +72,7 @@ const TextEditor: React.FC<{lan: string, onChange: Function, placeholder: string
             </div>
             
             <AceEditor
-                mode={`${lan}`}
+                mode={`${(lan == "cpp") ? "c_cpp" : lan}`}
                 theme="solarized_dark"
                 // @ts-ignore
                 onChange={setCodeValue}

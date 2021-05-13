@@ -114,7 +114,7 @@ const HomePage = (props: InferGetServerSidePropsType<typeof getServerSideProps>)
                         </div>
                         
                         <div className={styles.boxProgress}>
-                          <h5>{e.progress ?  (e.finished) ? 100 : (e.progress * 100) : 0 }% Progress</h5>
+                          <h5>{e.progress ?  (e.finished) ? 100 : Math.round(e.progress * 100) : 0 }% Progress</h5>
 
                           <div className={styles.progressBar}>
                             <div style={{ width: `${e.progress ?  (e.finished) ? 100 : (e.progress * 100) : 0 }%` }}></div>
