@@ -1058,6 +1058,10 @@ div.headerProgress {
   border-radius: 50%;
 }
 
+.headerImage {
+  cursor: pointer;
+}
+
 @keyframes easeIn {
   from {width: 0%;}
   to {width: 100%}
